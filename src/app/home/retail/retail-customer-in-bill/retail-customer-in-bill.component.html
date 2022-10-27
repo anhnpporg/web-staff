@@ -1,0 +1,42 @@
+<div>
+    <nz-select nzShowSearch nzPlaceHolder="Select a person" [(ngModel)]="selectedValue" style="width: 98%;"
+        (nzOnSearch)="searchcustomer($event)" (ngModelChange)="addcustomer()">
+        <nz-option *ngFor="let item of listCustomer" [nzValue]="item.userId" [nzLabel]="item.fullname">
+        </nz-option>
+    </nz-select>
+    <nz-divider></nz-divider>
+    <div>
+        <div *ngIf="customerInfo != null, else customerInfo">
+            <form nz-form>
+                <h5 class="mb-3 text-center">Khách hàng mới</h5>
+                <nz-form-item>
+                    <nz-form-label [nzSpan]="6" nzFor="phoneNumber" nzRequired>Số điện thoại</nz-form-label>
+                    <nz-form-control [nzSpan]="14">
+                        <input nz-input name="phoneNumber" type="tel" id="phoneNumber">
+                    </nz-form-control>
+                </nz-form-item>
+                <nz-form-item>
+                    <nz-form-label [nzSpan]="6" nzFor="customerName" nzRequired>Họ và Tên</nz-form-label>
+                    <nz-form-control [nzSpan]="14">
+                        <input nz-input name="customerName" type="text" id="customerName">
+                    </nz-form-control>
+                </nz-form-item>
+            </form>
+        </div>
+        <ng-template #customerInfo>
+            <div>
+                <h6>Số điện thoại {{phoneNumber}}</h6>
+            </div>
+            <div>
+                <h6>Họ và Tên {{customerName}}</h6>
+            </div>
+        </ng-template>
+    </div>
+    <div style="height: 530px;" class="d-flex align-content-end flex-wrap">
+        <button class="border w-100 p-3 d-flex justify-content-around btn btn-success">
+            <span>Thanh toán : 8123789 VNĐ</span>
+        </button>
+    </div>
+    <div>
+    </div>
+</div>

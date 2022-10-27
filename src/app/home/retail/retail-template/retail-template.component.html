@@ -1,0 +1,32 @@
+<div class="container-fluid">
+    <div class="row mt-5">
+        <div class="col-9">
+            <div class="p-3" id="customer__in__bill">
+                <div class="example-input">
+                    <div class="d-flex justify-content-md-between align-items-center">
+                        <nz-select nzShowSearch nzAllowClear nzPlaceHolder="Select a person" [(ngModel)]="selectedValue"
+                            style="width: 98%;" (ngModelChange)="addToListBill()" (nzOnSearch)="searchProduct($event)">
+                            <nz-option *ngFor="let item of listProduct" nzLabel={{item.name}} nzValue={{item.id}}>
+                            </nz-option>
+                        </nz-select>
+                        <i class="fa fa-barcode" role="button" style="font-size: 20px;"></i>
+                    </div>
+                    <nz-autocomplete [nzDataSource]="listProduct" nzBackfill #auto></nz-autocomplete>
+                    <nz-divider></nz-divider>
+                    <div>
+                        <div class="overflow-auto" style="height: 700px;">
+                            <app-retail-product-in-bill *ngFor="let item of listInBill let i =index" [index]="i + 1"
+                                [Product]="item">
+                            </app-retail-product-in-bill>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-3">
+            <div class="p-3 mb-3" id="customer__in__bill">
+                <app-retail-customer-in-bill></app-retail-customer-in-bill>
+            </div>
+        </div>
+    </div>
+</div>
