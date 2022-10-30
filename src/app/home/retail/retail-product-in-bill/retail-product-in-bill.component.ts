@@ -26,8 +26,6 @@ export class RetailProductInBillComponent implements OnInit {
   unitPrice: number = 0
   confirmModal?: NzModalRef
 
-
-
   constructor(
     private modal: NzModalService
   ) { }
