@@ -4,19 +4,31 @@
             <div class="p-3" id="customer__in__bill">
                 <div class="example-input">
                     <div class="d-flex justify-content-md-between align-items-center">
-                        <nz-select nzShowSearch nzAllowClear nzPlaceHolder="Select a person" [(ngModel)]="selectedValue"
-                            style="width: 98%;" (ngModelChange)="addToListBill()" (nzOnSearch)="searchProduct($event)">
-                            <nz-option *ngFor="let item of listProduct" nzLabel={{item.name}} nzValue={{item.id}}>
+                        <nz-select nzShowSearch nzAllowClear nzPlaceHolder="Thêm Thuốc vào hóa đơn"
+                            [(ngModel)]="selectedValue" style="width: 94%;" (ngModelChange)="addToListBill()"
+                            (nzOnSearch)="searchProduct($event)">
+                            <nz-option *ngFor="let item of listProduct" [nzLabel]="item.name + ' - ' + item.barcode"
+                                nzValue={{item.id}}>
                             </nz-option>
                         </nz-select>
                         <i class="fa fa-barcode" role="button" style="font-size: 20px;"></i>
+                        <i class="fa fa-clipboard-list" role="button" style="font-size: 20px;" nz-button
+                            (click)="showModal()">
+                        </i>
+                        <nz-modal [(nzVisible)]="isVisible" nzTitle="The first Modal" (nzOnCancel)="handleCancel()"
+                            (nzOnOk)="handleOk()" [nzWidth]="1000">
+                            <ng-container *nzModalContent>
+                                <app-example-bill></app-example-bill>
+                            </ng-container>
+                        </nz-modal>
                     </div>
                     <nz-autocomplete [nzDataSource]="listProduct" nzBackfill #auto></nz-autocomplete>
                     <nz-divider></nz-divider>
                     <div>
                         <div class="overflow-auto" style="height: 700px;">
                             <app-retail-product-in-bill *ngFor="let item of listInBill let i =index" [index]="i + 1"
-                                [Product]="item">
+                                [Product]="item" (quantityOfProduct)="quantityProduct($event)"
+                                (DeleteProduct)="deleteProductInBill($event)">
                             </app-retail-product-in-bill>
                         </div>
                     </div>
@@ -25,8 +37,21 @@
         </div>
         <div class="col-3">
             <div class="p-3 mb-3" id="customer__in__bill">
-                <app-retail-customer-in-bill></app-retail-customer-in-bill>
+                <app-retail-customer-in-bill [totalBill]="totalBill"></app-retail-customer-in-bill>
             </div>
         </div>
+    </div>
+</div>
+
+<div id="side__bar__bill" #bill>
+
+    <div id="bill__template">
+        <div>
+            <p class="text-end" role="button" (click)="closeBill()">
+                <i class="fa fa-times" style="color: black;"></i>
+            </p>
+        </div>
+        Lorem, ipsum dolor sit amet consectetur adipisicing elit. Atque numquam aspernatur fuga nobis dicta minus
+        reprehenderit nulla sint quas omnis corrupti, tempora veritatis consectetur iure reiciendis a officiis.
     </div>
 </div>

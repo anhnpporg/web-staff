@@ -1,3 +1,4 @@
+import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
 import { ProductService } from './../../../core/services/product/product.service';
 import { Component, Input, OnInit } from '@angular/core';
 import { Output, EventEmitter } from '@angular/core';
@@ -9,21 +10,26 @@ import { Output, EventEmitter } from '@angular/core';
 })
 export class RetailProductInBillComponent implements OnInit {
 
+
+  @Input() Product: any
+  @Input() index: number = 1
+  @Output() quantityOfProduct = new EventEmitter<{}>();
+  @Output() DeleteProduct = new EventEmitter<{}>();
+
   selectedValue: string = 'jack'
   demoValue: number = 1
   billQuantity: number = 1
   inputValue: string = ''
-  @Input() Product: any
   listRouteInAdministrations: any = []
   listUnitProduct: any[] = []
   unitPriceID: number = 1
   unitPrice: number = 0
+  confirmModal?: NzModalRef
 
 
-  @Input() index: number = 1
-  @Output() quantityOfProduct = new EventEmitter<{}>();
 
   constructor(
+    private modal: NzModalService
   ) { }
 
   ngOnInit(): void {
@@ -45,6 +51,21 @@ export class RetailProductInBillComponent implements OnInit {
   }
 
   addQuantity(event: any) {
-    this.quantityOfProduct.emit(this.unitPrice * this.billQuantity);
+    this.quantityOfProduct.emit(this.unitPrice * event);
   }
+
+  deleteProduct(id: number) {
+    this.DeleteProduct.emit(id)
+  }
+
+  showConfirm(): void {
+    this.confirmModal = this.modal.confirm({
+      nzTitle: 'Xóa thuốc',
+      nzContent: 'Bạn muốn xóa thuốc ra khỏi danh sách?',
+      nzOnOk: () => {
+        this.deleteProduct(this.Product.id)
+      }
+    });
+  }
+
 }

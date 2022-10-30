@@ -20,8 +20,6 @@ li.active a{
 nz-content{
     background-color: #f3f6ff;
     /* min-height: 1vh; */
-    margin-bottom: 48px;
-}
-nz-footer{
-    background-color: white;
+    margin-bottom: 30px;
+    min-height: 850px;
 }

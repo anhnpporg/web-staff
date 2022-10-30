@@ -1,6 +1,6 @@
 import { UserService } from './../../../core/services/user/user.service';
 import { ProductService } from './../../../core/services/product/product.service';
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 
 @Component({
   selector: 'app-retail-customer-in-bill',
@@ -9,11 +9,13 @@ import { Component, OnInit } from '@angular/core';
 })
 export class RetailCustomerInBillComponent implements OnInit {
 
-  selectedValue: string = ''
+  selectedValue: any = ''
   phoneNumber: string = ''
   customerName: string = ''
   listCustomer: any[] = []
   customerInfo: any = null
+  @Input() totalBill: any
+  isSpinning: boolean = true
 
   constructor(
     private user: UserService
@@ -23,6 +25,8 @@ export class RetailCustomerInBillComponent implements OnInit {
   }
 
   searchcustomer(value: string) {
+    console.log('search:' + value);
+
     if (value == '') {
       value = '0'
     }
@@ -36,18 +40,29 @@ export class RetailCustomerInBillComponent implements OnInit {
   }
 
   addcustomer() {
-    console.log('ok');
+    console.log(this.selectedValue.fullname);
+    this.phoneNumber = this.selectedValue.phoneNumber
+    this.customerName = this.selectedValue.fullname
+  }
 
-    this.listCustomer.forEach(element => {
-      if (element.userId == this.selectedValue) {
-        this.customerInfo = element
-        console.log(this.customerInfo);
-        this.phoneNumber = this.customerInfo?.phoneNumber
-        this.customerName = this.customerInfo.fullname
+  openBill() {
+    const a = document.getElementById('side__bar__bill');
+    if (a != null) {
+      a.style.display = 'block'
+      console.log(a);
 
-      }
-    });
+    }
+  }
 
+
+
+
+  inputValue?: string;
+  options: string[] = [];
+
+  onInput(event: Event): void {
+    const value = (event.target as HTMLInputElement).value;
+    this.options = value ? [value, value + value, value + value + value] : [];
   }
 
 }
