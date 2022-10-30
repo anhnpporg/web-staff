@@ -16,13 +16,17 @@
             <td colspan="2">
                 <textarea rows="2" placeholder="Ghi chú" nz-input [(ngModel)]="inputValue"></textarea>
             </td>
+            <td style="float: right;" role="button" (click)="showConfirm()">
+                <i class="fa fa-times-circle"></i>
+            </td>
         </tr>
         <tr>
             <td></td>
             <td></td>
             <td>Đơn giá: {{unitPrice}} VNĐ</td>
             <td>Số lượng:
-                <nz-input-number nzBorderless [(ngModel)]="billQuantity" [nzMin]="billQuantity" (ngModelChange)="addQuantity($event)"></nz-input-number>
+                <nz-input-number nzBorderless [(ngModel)]="billQuantity" [nzMin]="billQuantity"
+                    (ngModelChange)="addQuantity($event)"></nz-input-number>
             </td>
             <td>
                 <nz-select [(ngModel)]="unitPriceID" (ngModelChange)="chageUnitPrice()">

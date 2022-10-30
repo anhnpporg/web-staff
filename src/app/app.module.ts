@@ -9,6 +9,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AppComponent } from './app.component';
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
+import { NZ_I18N } from 'ng-zorro-antd/i18n';
+import { vi_VN } from 'ng-zorro-antd/i18n';
 
 
 const routes: Routes = [
@@ -31,7 +33,9 @@ const routes: Routes = [
     HomeModule,
     RouterModule.forRoot(routes),
   ],
-  providers: [],
+  providers: [
+    { provide: NZ_I18N, useValue: vi_VN },
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

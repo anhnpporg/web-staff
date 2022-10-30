@@ -8,6 +8,9 @@ import { InputTemplateComponent } from './input/input-template/input-template.co
 import { FormsModule } from '@angular/forms';
 import { RetailCustomerInBillComponent } from './retail/retail-customer-in-bill/retail-customer-in-bill.component';
 import { RetailProductInBillComponent } from './retail/retail-product-in-bill/retail-product-in-bill.component';
+import { ExampleBillComponent } from './retail/example-bill/example-bill.component';
+import { NgxPrintModule } from 'ngx-print';
+import { RetailBillTemplateComponent } from './retail/retail-bill-template/retail-bill-template.component';
 
 const homeRoute: Routes = [
   {
@@ -25,14 +28,17 @@ const homeRoute: Routes = [
     RetailTemplateComponent,
     InputTemplateComponent,
     RetailCustomerInBillComponent,
-    RetailProductInBillComponent
+    RetailProductInBillComponent,
+    ExampleBillComponent,
+    RetailBillTemplateComponent
   ],
   imports: [
+    NgxPrintModule,
     CommonModule,
     RouterModule.forRoot(homeRoute),
     AntdModule,
-    FormsModule
-    
+    FormsModule,
+
   ]
 })
 export class HomeModule { }

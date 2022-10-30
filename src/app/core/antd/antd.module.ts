@@ -11,6 +11,8 @@ import { NzSelectModule } from 'ng-zorro-antd/select';
 import { NzInputNumberModule } from 'ng-zorro-antd/input-number';
 import { NzNotificationModule } from 'ng-zorro-antd/notification';
 import { NzFormModule } from 'ng-zorro-antd/form';
+import { NzModalModule } from 'ng-zorro-antd/modal';
+import { NzSpinModule } from 'ng-zorro-antd/spin';
 
 
 @NgModule({
@@ -27,7 +29,9 @@ import { NzFormModule } from 'ng-zorro-antd/form';
     NzSelectModule,
     NzInputNumberModule,
     NzNotificationModule,
-    NzFormModule
+    NzFormModule,
+    NzModalModule,
+    NzSpinModule
   ]
 })
 export class AntdModule { }
