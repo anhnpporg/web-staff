@@ -1,7 +1,8 @@
+import { InvoiceInterface } from './../../../core/utils/App.interface';
 import { ProductService } from './../../../core/services/product/product.service';
 import { Component, ElementRef, OnInit, TemplateRef, ViewChild, ViewEncapsulation } from '@angular/core';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
-import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
+import { NzModalService } from 'ng-zorro-antd/modal';
 
 @Component({
   selector: 'app-retail-template',
@@ -10,15 +11,16 @@ import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
 })
 export class RetailTemplateComponent implements OnInit {
 
-  selectedValue: string = 'a';
+  selectedValue: string = 'test';
   listProduct: any[] = [];
   listInBill: any[] = []
   totalBill: number = 0
+  printBillList: any[] = []
+  listInvoiceProduct: any[] = []
 
   constructor(
     private product: ProductService,
-    private notification: NzNotificationService,
-    private modal: NzModalService
+    private notification: NzNotificationService
   ) { }
 
   ngOnInit(): void {
@@ -27,10 +29,31 @@ export class RetailTemplateComponent implements OnInit {
 
   searchProduct(value: string) {
     if (value == '') {
-      value = 'a'
+      value = 'test'
     }
     this.product.getAllProduct(value).subscribe((result) => {
-      this.listProduct = result.items
+      if (value.length == 13) {
+        console.log('value' + value);
+        const exist = this.listInBill.filter(bill => bill.barcode == result);
+        console.log('exit' + exist);
+        console.log(this.listInBill);
+
+        if (exist.length <= 0) {
+          this.listInBill.push(result.items[0])
+          console.log('ok');
+
+        } else {
+          this.notification.create(
+            'warning',
+            'Thuốc đã tồn tài trong hóa đơn',
+            ''
+          );
+        }
+
+      } else {
+        this.listProduct = result.items
+        // console.log(result.items);
+      }
     })
   }
 
@@ -45,6 +68,9 @@ export class RetailTemplateComponent implements OnInit {
           if (result.length <= 0) {
             console.log('ok');
             this.listInBill.push(element)
+            this.totalBill += element.productUnits[0].price
+
+            this.selectedValue = ''
           } else {
             this.notification.create(
               'warning',
@@ -56,6 +82,8 @@ export class RetailTemplateComponent implements OnInit {
           console.log('o element');
 
           this.listInBill.push(element);
+          this.totalBill += element.productUnits[0].price
+
         }
       }
     });
@@ -64,8 +92,37 @@ export class RetailTemplateComponent implements OnInit {
 
 
   quantityProduct(event: any) {
-    this.totalBill += event
-    console.log(this.totalBill);
+
+    let result = this.listInvoiceProduct.filter(item => item.productId == event.productID)
+
+    if (result.length <= 0) {
+      this.listInvoiceProduct.push({
+        productId: event.productID,
+        goodsIssueNote: {
+          quantity: event.quantity,
+          unit: event.unit
+        }
+      })
+    } else {
+      for (let i = 0; i < this.listInvoiceProduct.length; i++) {
+        let element = this.listInvoiceProduct[i];
+        if (element.productId == event.productID) {
+          this.listInvoiceProduct[i] = {
+            productId: event.productID,
+            goodsIssueNote: {
+              quantity: event.quantity,
+              unit: event.unit,
+              batchId: event.batches
+            }
+          }
+        }
+      }
+    }
+    if (event.status) {
+      this.totalBill += event.price
+    } else {
+      this.totalBill -= event.price
+    }
   }
   deleteProductInBill(event: any) {
     const indexOfObject = this.listInBill.findIndex((object) => {
@@ -92,15 +149,6 @@ export class RetailTemplateComponent implements OnInit {
   handleCancel(): void {
     console.log('Button cancel clicked!');
     this.isVisible = false;
-  }
-
-  closeBill() {
-    const a = document.getElementById('side__bar__bill');
-    if (a != null) {
-      a.style.display = 'none'
-      console.log(a);
-
-    }
   }
 
 }

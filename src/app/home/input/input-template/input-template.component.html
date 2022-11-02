@@ -1,1 +1,28 @@
-<p>input-template works!</p>
+<div class="container-fluid">
+    <div class="row mt-5">
+        <div class="col-9">
+            <div class="p-3" id="customer__in__bill">
+                <div class="example-input">
+                    <input placeholder="input here" nz-input [(ngModel)]="inputValue" [nzAutocomplete]="auto"
+                        (ngModelChange)="onInput()" />
+                    <nz-autocomplete #auto>
+                        <nz-auto-option *ngFor="let option of options" [nzValue]="option" [nzLabel]="option.name"
+                            (selectionChange)="onSelect($event ,option)">
+                            {{ option.name }} - {{option.barcode}}
+                        </nz-auto-option>
+                        <option></option>
+                    </nz-autocomplete>
+                </div>
+                <nz-divider></nz-divider>
+                <div>
+                    <app-input-element [listInputProduct]="listProductInput"></app-input-element>
+                </div>
+            </div>
+        </div>
+        <div class="col-3">
+            <div class="p-3 mb-3" id="customer__in__bill">
+                <!-- info -->
+            </div>
+        </div>
+    </div>
+</div>

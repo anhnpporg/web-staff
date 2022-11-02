@@ -1,17 +1,11 @@
-<!-- {{listInBill1.value}}
-<input type="number" class="form-group" [(ngModel)]="listInBill1.quantity" (ngModelChange)="addQuantity($event)"> -->
-
 <table class="mb-3">
     <tbody>
         <tr>
-            <td>{{index}}</td>
-            <td>{{Product.id}}</td>
+            <td>STT: {{index}}</td>
+            <td>{{Product.barcode}}</td>
             <td>{{Product.name}}</td>
             <td>
-                <nz-select ngModel="1">
-                    <nz-option *ngFor="let route of listRouteInAdministrations" nzValue={{route.id}}
-                        nzLabel={{route.name}}></nz-option>
-                </nz-select>
+                Đường dùng: {{listRouteInAdministrations[0].name}}
             </td>
             <td colspan="2">
                 <textarea rows="2" placeholder="Ghi chú" nz-input [(ngModel)]="inputValue"></textarea>
@@ -24,13 +18,13 @@
             <td></td>
             <td></td>
             <td>Đơn giá: {{unitPrice}} VNĐ</td>
-            <td>Số lượng:
-                <nz-input-number nzBorderless [(ngModel)]="billQuantity" [nzMin]="billQuantity"
-                    (ngModelChange)="addQuantity($event)"></nz-input-number>
+            <td>Số lượng: {{demoValue}}
+                <!-- <nz-input-number nzBorderless [(ngModel)]="billQuantity" [nzMin]="1"
+                    (ngModelChange)="addQuantity($event)"></nz-input-number> -->
             </td>
             <td>
                 <nz-select [(ngModel)]="unitPriceID" (ngModelChange)="chageUnitPrice()">
-                    <nz-option *ngFor="let item of listUnitProduct" nzValue={{item.id}} nzLabel={{item.unit.name}}>
+                    <nz-option *ngFor="let item of listUnitProduct" [nzValue]="item.id" nzLabel={{item.unit}}>
                     </nz-option>
                 </nz-select>
             </td>
@@ -39,24 +33,45 @@
             </td>
         </tr>
         <tr>
+            <td></td>
             <td colspan="2">
-                <nz-select nzShowSearch nzAllowClear nzPlaceHolder="Select a person" [(ngModel)]="selectedValue">
-                    <nz-option nzLabel="Jack" nzValue="jack"></nz-option>
-                    <nz-option nzLabel="Lucy" nzValue="lucy"></nz-option>
-                    <nz-option nzLabel="Tom" nzValue="tom"></nz-option>
+                <nz-select nzShowSearch nzAllowClear nzPlaceHolder="Select a person" [(ngModel)]="selectedbatchesValue"
+                    (ngModelChange)="selectBatches()">
+                    <nz-option *ngFor="let batches of listBatches"
+                        [nzLabel]="batches.batchBarcode + ' - hết hạn: ' + (batches.expiryDate | date:'dd-MM-yyyy') + ' - Tồn kho: ' + batches.currentQuantity"
+                        [nzValue]="batches">
+                    </nz-option>
+                </nz-select>
+            </td>
+            <td>hàng tồn: {{selectedbatchesValue?.currentQuantity || 0}}</td>
+            <td>Số lượng:
+                <nz-input-number nzBorderless [(ngModel)]="demoValue" (ngModelChange)="addQuantity($event)" [nzMin]="1"
+                    [nzMax]="selectedbatchesValue?.currentQuantity || 0"></nz-input-number>
+            </td>
+
+            <td role="button" (click)="addConsignment()" *ngIf="billQuantity > selectedbatchesValue?.currentQuantity">
+                <i class="fa fa-plus"></i>Thêm Lô
+            </td>
+        </tr>
+        <tr *ngFor="let item of numberOfConsignment, let i = index">
+            <td>{{i + 1}}</td>
+            <td colspan="2">
+                <nz-select nzShowSearch nzAllowClear nzPlaceHolder="Select a person" [(ngModel)]="selectedbatchesValue">
+                    <nz-option *ngFor="let batches of listBatches"
+                        [nzLabel]="batches.batchBarcode + ' - Ngày hết hạn: ' + (batches.expiryDate | date:'dd-MM-yyyy')"
+                        [nzValue]="batches">
+                    </nz-option>
                 </nz-select>
             </td>
             <td>hàng tồn: 10</td>
             <td>Số lượng:
                 <nz-input-number nzBorderless [(ngModel)]="demoValue"></nz-input-number>
             </td>
-            <td></td>
-            <td></td>
+
+            <td><i class="fa fa-trash-alt" role="button" (click)="deleteConsignment(i)"></i></td>
         </tr>
         <tr>
-            <td role="button">
-                <i class="fa fa-plus"></i>Thêm Lô
-            </td>
+
         </tr>
     </tbody>
 </table>

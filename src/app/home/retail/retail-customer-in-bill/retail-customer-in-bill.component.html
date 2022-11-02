@@ -1,47 +1,129 @@
 <div>
-    <nz-select nzShowSearch nzPlaceHolder="Nhập số điện thoại để chọn khách hàng" [(ngModel)]="selectedValue"
-        style="width: 98%;" (nzOnSearch)="searchcustomer($event)" (ngModelChange)="addcustomer()">
-        <nz-option *ngFor="let item of listCustomer" [nzValue]="item"
-            [nzLabel]="item.phoneNumber + ' - '+ item.fullname">
-        </nz-option>
-    </nz-select>
+    <div class="d-flex align-items-center justify-content-around">
+        <nz-select nzShowSearch nzPlaceHolder="Nhập số điện thoại để chọn khách hàng" [(ngModel)]="selectedValue"
+            style="width: 90%;" (nzOnSearch)="searchcustomer($event)" (ngModelChange)="addcustomer()">
+            <nz-option *ngFor="let item of listCustomer" [nzValue]="item"
+                [nzLabel]="item.phoneNumber + ' - '+ item.fullName">
+            </nz-option>
+        </nz-select>
+
+        <i class=" fa fa-plus" (click)="showModalAddNewCustomer()" role="button"></i>
+
+
+        <nz-modal [(nzVisible)]=" isVisibleNewCustomer" nzTitle="Tạo khách hàng" (nzOnCancel)="handleCancel()"
+            (nzOnOk)="handleOk()">
+            <ng-container *nzModalContent>
+                <div>
+                    <form nz-form>
+                        <!-- <h5 class="mb-3 text-center">Tạo khách hàng mới</h5> -->
+                        <nz-form-item>
+                            <nz-form-label [nzSpan]="6" nzFor="phoneNumber" nzRequired>Số điện thoại</nz-form-label>
+                            <nz-form-control [nzSpan]="14">
+                                <input nz-input name="phoneNumber" type="tel" id="phoneNumber" nz-input
+                                    [(ngModel)]="phoneNumber" (input)="onInput($event)" [nzAutocomplete]="auto">
+                                <nz-autocomplete [nzDataSource]="options" nzBackfill #auto></nz-autocomplete>
+                            </nz-form-control>
+                        </nz-form-item>
+                        <nz-form-item>
+                            <nz-form-label [nzSpan]="6" nzFor="customerName" nzRequired>Họ và Tên</nz-form-label>
+                            <nz-form-control [nzSpan]="14">
+                                <input nz-input name="customerName" type="text" id="customerName"
+                                    [(ngModel)]="customerName">
+                            </nz-form-control>
+                        </nz-form-item>
+                    </form>
+                </div>
+            </ng-container>
+        </nz-modal>
+    </div>
     <nz-divider></nz-divider>
     <div>
         <div>
-            <form nz-form>
-                <h5 class="mb-3 text-center">Khách hàng mới</h5>
-                <nz-form-item>
-                    <nz-form-label [nzSpan]="6" nzFor="phoneNumber" nzRequired>Số điện thoại</nz-form-label>
-                    <nz-form-control [nzSpan]="14">
-                        <input nz-input name="phoneNumber" type="tel" id="phoneNumber" nz-input [(ngModel)]="selectedValue"
-                            (input)="onInput($event)" [nzAutocomplete]="auto">
-                        <nz-autocomplete [nzDataSource]="options" nzBackfill #auto></nz-autocomplete>
-                    </nz-form-control>
-                </nz-form-item>
-                <nz-form-item>
-                    <nz-form-label [nzSpan]="6" nzFor="customerName" nzRequired>Họ và Tên</nz-form-label>
-                    <nz-form-control [nzSpan]="14">
-                        <input nz-input name="customerName" type="text" id="customerName">
-                    </nz-form-control>
-                </nz-form-item>
-            </form>
+            <h5 class="mb-3 text-center">Thông tin khách hàng</h5>
+            <div class="row">
+                <div class="col-4">
+                    <h6>Số điện thoại:</h6>
+                </div>
+                <div class="col-8">
+                    <h6>{{phoneNumber}}</h6>
+                </div>
+                <div class="col-4 mt-3">
+                    <h6>Họ và tên:</h6>
+                </div>
+                <div class="col-8 mt-3">
+                    <h6>{{customerName}}</h6>
+                </div>
+                <div class="col-12 d-flex justify-content-end">
+                    <button nz-button [nzType]="'dashed'" (click)="showInvoiceHistory()"><span>Lịch sử mua hàng</span></button>
+                    <nz-modal [(nzVisible)]="isVisibleHistoryInvoice" nzTitle="The first Modal" (nzOnCancel)="handleCancelInvoiceHistory()" (nzOnOk)="handleOkInvoiceHistory()">
+                        <ng-container *nzModalContent>
+                          <p>Content one</p>
+                          <p>Content two</p>
+                          <p>Content three</p>
+                        </ng-container>
+                      </nz-modal>
+                </div>
+            </div>
         </div>
-        <ng-template #customerInfo>
-            <div>
-                <h6>Số điện thoại: {{phoneNumber}}</h6>
-            </div>
-            <div>
-                <h6>Họ và Tên: {{customerName}}</h6>
-            </div>
-        </ng-template>
     </div>
-    <div style="height: 530px;" class="d-flex align-content-end flex-wrap">
+    <nz-divider></nz-divider>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-5 mb-5">
+                <h6>Tổng tiền:</h6>
+            </div>
+            <div class="col-7 mb-5">
+                <h6>{{totalBill | currency:'VND'}}</h6>
+            </div>
+            <div class="col-5 mb-5">
+                <h6>Tiền khách đưa:</h6>
+            </div>
+            <div class="col-7 mb-3">
+                <nz-input-number [(ngModel)]="reciveMoney" [nzMin]="1000" [nzStep]="1000" class="w-100">
+                </nz-input-number>
+            </div>
+            <div class="col-12 mb-5">
+                <div class="row">
+                    <div class="col-3">
+                        <button nz-button nzShape="round" class="money__button"
+                            (click)="addReciveMoney(50000)">₫50.000</button>
+                    </div>
+                    <div class="col-3">
+                        <button nz-button nzShape="round" class="money__button"
+                            (click)="addReciveMoney(100000)">₫100.000</button>
+                    </div>
+                    <div class="col-3">
+                        <button nz-button nzShape="round" class="money__button"
+                            (click)="addReciveMoney(200000)">₫200.000</button>
+                    </div>
+                    <div class="col-3">
+                        <button nz-button nzShape="round" class="money__button"
+                            (click)="addReciveMoney(500000)">₫500.000</button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-5 mb-5">
+                <h6>thối lại</h6>
+            </div>
+            <div class="col-7 mb-5">
+                <div *ngIf="reciveMoney - totalBill >= 0;else empty">
+                    <h6>{{reciveMoney - totalBill | currency:'VND'}}</h6>
+                </div>
+            </div>
+            <ng-template #empty>
+                <h6 style="color: red;">Tiền khách đưa không đủ</h6>
+            </ng-template>
+        </div>
+    </div>
+    <nz-divider></nz-divider>
+    <div style="height: 150px;" class="d-flex align-content-end flex-wrap">
         <button class="border w-100 p-3 d-flex justify-content-around btn btn-success" printSectionId="print-section"
-            ngxPrint>
-            <span>Thanh toán : {{totalBill | currency:'VND'}}</span>
+            ngxPrint (click)="createInvoice()">
+            <span>Thanh toán</span>
         </button>
         <div id="print-section" style="display: none;">
-            <app-retail-bill-template></app-retail-bill-template>
+            <app-retail-bill-template [listProductInBill]="TotalProductInBill" [printBill]="printBill">
+            </app-retail-bill-template>
         </div>
     </div>
     <div>

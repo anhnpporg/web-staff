@@ -16,17 +16,18 @@ export class RetailProductInBillComponent implements OnInit {
   @Output() quantityOfProduct = new EventEmitter<{}>();
   @Output() DeleteProduct = new EventEmitter<{}>();
 
-  selectedValue: string = 'jack'
+  selectedbatchesValue: any
   demoValue: number = 1
   billQuantity: number = 1
   inputValue: string = ''
   listRouteInAdministrations: any = []
   listUnitProduct: any[] = []
+  listBatches: any[] = []
   unitPriceID: number = 1
   unitPrice: number = 0
   confirmModal?: NzModalRef
-
-
+  numberOfConsignment: number[] = []
+  temp: number = 1
 
   constructor(
     private modal: NzModalService
@@ -37,9 +38,7 @@ export class RetailProductInBillComponent implements OnInit {
     this.listUnitProduct = this.Product.productUnits
     this.unitPriceID = this.listUnitProduct[0].id
     this.unitPrice = this.listUnitProduct[0].price
-    console.log(this.unitPriceID);
-    console.log(this.listUnitProduct);
-
+    this.listBatches = this.Product.batches
   }
 
   chageUnitPrice() {
@@ -51,7 +50,28 @@ export class RetailProductInBillComponent implements OnInit {
   }
 
   addQuantity(event: any) {
-    this.quantityOfProduct.emit(this.unitPrice * event);
+
+    if (this.temp > event) {
+      this.quantityOfProduct.emit({
+        price: this.unitPrice * (this.temp - event),
+        status: false,
+        unit: this.unitPriceID,
+        quantity: event,
+        productID: this.Product.id
+      });
+      this.temp = event
+    } else {
+      this.quantityOfProduct.emit({
+        price: this.unitPrice * (event - this.temp),
+        status: true,
+        unit: this.unitPriceID,
+        quantity: event,
+        productID: this.Product.id,
+        batches: this.selectedbatchesValue.id
+      });
+      this.temp = event
+    }
+
   }
 
   deleteProduct(id: number) {
@@ -68,4 +88,35 @@ export class RetailProductInBillComponent implements OnInit {
     });
   }
 
+  isVisible = false;
+
+  showModal(): void {
+    this.isVisible = true;
+  }
+
+  handleOk(): void {
+    console.log('Button ok clicked!');
+    this.isVisible = false;
+  }
+
+  handleCancel(): void {
+    console.log('Button cancel clicked!');
+    this.isVisible = false;
+  }
+
+  addConsignment() {
+    let a = this.numberOfConsignment.length + 1
+    this.numberOfConsignment.push(a)
+    console.log(this.numberOfConsignment);
+  }
+
+  deleteConsignment(index: number) {
+    console.log(index);
+    this.numberOfConsignment.splice(index, 1)
+    console.log(this.numberOfConsignment);
+  }
+
+  selectBatches() {
+    console.log(this.selectedbatchesValue);
+  }
 }
