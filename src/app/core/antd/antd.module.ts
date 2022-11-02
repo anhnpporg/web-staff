@@ -13,7 +13,8 @@ import { NzNotificationModule } from 'ng-zorro-antd/notification';
 import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzModalModule } from 'ng-zorro-antd/modal';
 import { NzSpinModule } from 'ng-zorro-antd/spin';
-
+import { NzMenuModule } from 'ng-zorro-antd/menu';
+import { NzTagModule } from 'ng-zorro-antd/tag';
 
 @NgModule({
   declarations: [],
@@ -31,7 +32,10 @@ import { NzSpinModule } from 'ng-zorro-antd/spin';
     NzNotificationModule,
     NzFormModule,
     NzModalModule,
-    NzSpinModule
+    NzSpinModule,
+    NzMenuModule,
+    NzTagModule
+    
   ]
 })
 export class AntdModule { }

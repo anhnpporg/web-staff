@@ -37,21 +37,9 @@
         </div>
         <div class="col-3">
             <div class="p-3 mb-3" id="customer__in__bill">
-                <app-retail-customer-in-bill [totalBill]="totalBill"></app-retail-customer-in-bill>
+                <app-retail-customer-in-bill [totalBill]="totalBill" [TotalProductInBill]="listInBill"
+                    [InvoiceProduct]="listInvoiceProduct"></app-retail-customer-in-bill>
             </div>
         </div>
-    </div>
-</div>
-
-<div id="side__bar__bill" #bill>
-
-    <div id="bill__template">
-        <div>
-            <p class="text-end" role="button" (click)="closeBill()">
-                <i class="fa fa-times" style="color: black;"></i>
-            </p>
-        </div>
-        Lorem, ipsum dolor sit amet consectetur adipisicing elit. Atque numquam aspernatur fuga nobis dicta minus
-        reprehenderit nulla sint quas omnis corrupti, tempora veritatis consectetur iure reiciendis a officiis.
     </div>
 </div>

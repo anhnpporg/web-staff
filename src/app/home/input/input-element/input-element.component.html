@@ -1,0 +1,75 @@
+<table class="table table-striped">
+    <thead>
+        <th></th>
+        <th>STT</th>
+        <th>barcode</th>
+        <th>Tên hàng</th>
+        <th>ĐVT</th>
+        <th>Số Lượng</th>
+        <th>Đơn giá</th>
+        <th>Thành Tiền</th>
+    </thead>
+    <tbody *ngFor="let product of listInputProduct, let index = index" class="mb-3">
+        <tr>
+            <td><i class="fa fa-trash-alt"></i></td>
+            <td>{{index}}</td>
+            <td>{{product.barcode}}</td>
+            <td>{{product.name}}</td>
+            <td></td>
+            <td>
+                <nz-input-number [nzMin]="1" [nzStep]="1"></nz-input-number>
+            </td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td></td>
+
+            <td [colSpan]="2">
+                <span role="button" (click)="showModalBatches()">chọn Lô</span>
+                <nz-modal [(nzVisible)]="isVisibleBatches" nzTitle="Tạo lô mới" (nzOnCancel)="handleCancelBatches()"
+                    (nzOnOk)="handleOkBatches()">
+                    <ng-container *nzModalContent>
+                        <div class="form-group">
+                            <label for="">Lô</label>
+                            <select type="batche" class="form-control">
+                                <option *ngFor="let batche of batchesList" [value]="batche.batchBarcode">
+                                    {{batche.batchBarcode}} - {{batche.expiryDate | date}}</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="">Số lượng</label>
+                            <input type="number" class="form-control" min="1">
+                        </div>
+                    </ng-container>
+                </nz-modal>
+            </td>
+            <td [colSpan]="4">
+                <nz-tag [nzColor]="'green'" *ngFor="let item of addBatchsList, let i = index">
+                    <span style="margin: 5px 10px 5px 5px;">{{item.barcode}} - {{item.quantity}}</span>
+                    <i class="fa fa-times" role="button" (click)="deleteSelectBatches(i)"></i>
+                </nz-tag>
+            </td>
+            <td role="button" (click)="showModal()">
+                <i class="fa fa-plus"></i>Thêm Lô
+                <nz-modal [(nzVisible)]="isVisible" nzTitle="Tạo lô mới" (nzOnCancel)="handleCancel()"
+                    (nzOnOk)="handleOk()">
+                    <ng-container *nzModalContent>
+                        <div class="form-group">
+                            <label for="">Lô</label>
+                            <input type="email" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label for="">Hạn sử dụng</label>
+                            <input type="date" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label for="">Số lượng</label>
+                            <input type="number" class="form-control" min="1">
+                        </div>
+                    </ng-container>
+                </nz-modal>
+            </td>
+        </tr>
+    </tbody>
+</table>

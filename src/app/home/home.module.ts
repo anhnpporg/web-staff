@@ -11,6 +11,8 @@ import { RetailProductInBillComponent } from './retail/retail-product-in-bill/re
 import { ExampleBillComponent } from './retail/example-bill/example-bill.component';
 import { NgxPrintModule } from 'ngx-print';
 import { RetailBillTemplateComponent } from './retail/retail-bill-template/retail-bill-template.component';
+import { InputElementComponent } from './input/input-element/input-element.component';
+import { RetailSelectConsignmentOfProductInBillComponent } from './retail/retail-select-consignment-of-product-in-bill/retail-select-consignment-of-product-in-bill.component';
 
 const homeRoute: Routes = [
   {
@@ -30,7 +32,9 @@ const homeRoute: Routes = [
     RetailCustomerInBillComponent,
     RetailProductInBillComponent,
     ExampleBillComponent,
-    RetailBillTemplateComponent
+    RetailBillTemplateComponent,
+    InputElementComponent,
+    RetailSelectConsignmentOfProductInBillComponent
   ],
   imports: [
     NgxPrintModule,

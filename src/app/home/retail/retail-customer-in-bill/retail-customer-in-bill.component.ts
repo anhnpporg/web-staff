@@ -1,3 +1,4 @@
+import { InvoiceInterface } from './../../../core/utils/App.interface';
 import { UserService } from './../../../core/services/user/user.service';
 import { ProductService } from './../../../core/services/product/product.service';
 import { Component, Input, OnInit } from '@angular/core';
@@ -15,13 +16,52 @@ export class RetailCustomerInBillComponent implements OnInit {
   listCustomer: any[] = []
   customerInfo: any = null
   @Input() totalBill: any
+  @Input() TotalProductInBill: any[] = []
+  @Input() InvoiceProduct: any[] = []
   isSpinning: boolean = true
+  reciveMoney: number = 0
+  isVisibleNewCustomer = false;
+  printBill: any
+  isVisibleHistoryInvoice = false
+
+
+
 
   constructor(
-    private user: UserService
+    private user: UserService,
+    private productservice: ProductService
   ) { }
 
   ngOnInit(): void {
+  }
+
+  showInvoiceHistory() {
+    this.isVisibleHistoryInvoice = true
+  }
+  handleOkInvoiceHistory(): void {
+    console.log('Button ok clicked!');
+    this.isVisibleHistoryInvoice = false;
+  }
+
+  handleCancelInvoiceHistory(): void {
+    console.log('Button cancel clicked!');
+    this.isVisibleHistoryInvoice = false;
+  }
+
+  createInvoice() {
+
+    console.log(this.InvoiceProduct);
+    var invoice: InvoiceInterface = {
+      customerId: this.selectedValue.id,
+      product: this.InvoiceProduct
+    }
+    this.printBill = invoice
+    console.log(invoice);
+
+
+    this.productservice.retailInvoice(invoice).subscribe((result) => {
+      console.log(result);
+    })
   }
 
   searchcustomer(value: string) {
@@ -42,7 +82,8 @@ export class RetailCustomerInBillComponent implements OnInit {
   addcustomer() {
     console.log(this.selectedValue.fullname);
     this.phoneNumber = this.selectedValue.phoneNumber
-    this.customerName = this.selectedValue.fullname
+    this.customerName = this.selectedValue.fullName
+    this.customerInfo = this.selectedValue
   }
 
   openBill() {
@@ -65,5 +106,21 @@ export class RetailCustomerInBillComponent implements OnInit {
     this.options = value ? [value, value + value, value + value + value] : [];
   }
 
+  addReciveMoney(money: number) {
+    this.reciveMoney = money
+  }
+
+  showModalAddNewCustomer(): void {
+    this.isVisibleNewCustomer = true;
+  }
+  handleOk(): void {
+    console.log('Button ok clicked!');
+    this.isVisibleNewCustomer = false;
+  }
+
+  handleCancel(): void {
+    console.log('Button cancel clicked!');
+    this.isVisibleNewCustomer = false;
+  }
 }
 

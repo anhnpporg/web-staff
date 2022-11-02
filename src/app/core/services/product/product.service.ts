@@ -29,6 +29,10 @@ export class ProductService {
   }
 
   getAllProduct(search: string): Observable<any> {
-    return this.httpClient.get(DOMAIN + `product-management/products/filter?searchValue=${search}&pageSize=10`, { headers: this.headers })
+    return this.httpClient.get(DOMAIN + `product-management/products/filter?searchValue=${search}&pageSize=5`, { headers: this.headers })
+  }
+
+  retailInvoice(data: any): Observable<any> {
+    return this.httpClient.post(DOMAIN + 'invoice-management/invoices', data, { headers: this.headers })
   }
 }
