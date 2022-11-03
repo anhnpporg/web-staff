@@ -1,8 +1,9 @@
 export interface InvoiceInterface {
-    customerId: string,
+    customerId: any,
     product: Product[],
+    customer: any
 }
 export interface Product {
     productId: number,
-    goodsIssueNote: any
+    goodsIssueNote: []
 }

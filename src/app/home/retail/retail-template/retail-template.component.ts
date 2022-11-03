@@ -29,25 +29,70 @@ export class RetailTemplateComponent implements OnInit {
 
   searchProduct(value: string) {
     if (value == '') {
-      value = 'test'
+      value = 'pro'
     }
+
     this.product.getAllProduct(value).subscribe((result) => {
       if (value.length == 13) {
-        console.log('value' + value);
-        const exist = this.listInBill.filter(bill => bill.barcode == result);
-        console.log('exit' + exist);
-        console.log(this.listInBill);
+        if (value.slice(0, 3) == 'BAT') {
+          this.product.getProductByBatchBarcode(value).subscribe((resultBatch) => {
+            this.product.getProductByID(resultBatch.data.product.id).subscribe((resultProductbyBatch) => {
+              var productOBJ = resultProductbyBatch
+              console.log(productOBJ);
 
-        if (exist.length <= 0) {
-          this.listInBill.push(result.items[0])
-          console.log('ok');
 
-        } else {
-          this.notification.create(
-            'warning',
-            'Thuốc đã tồn tài trong hóa đơn',
-            ''
-          );
+              productOBJ.batches = [resultBatch.data]
+              var check = true
+
+              this.listInBill.forEach(element => {
+                if (element.batches.length == 1) {
+                  if (element.batches[0].batchBarcode == productOBJ.batches[0].batchBarcode) {
+                    check = false
+                    this.notification.create(
+                      'warning',
+                      'Thuốc đã tồn tài trong hóa đơn',
+                      ''
+                    );
+                  }
+                }
+              });
+              if (check == true) {
+                this.listInBill.push(productOBJ)
+
+                this.listInvoiceProduct.push({
+                  productId: productOBJ.id,
+                  goodsIssueNote: [{
+                    quantity: 1,
+                    unit: productOBJ.productUnits[0].id,
+                    batchId: productOBJ.batches[0].id
+                  }]
+                })
+                this.totalBill += productOBJ.productUnits[0].price
+                this.selectedValue = ''
+              }
+            })
+          })
+        } else if (value.slice(0, 3) === 'PRO') {
+          const exist = this.listInBill.filter(bill => bill.barcode == result.barcode);
+          if (exist.length <= 0) {
+            this.listInBill.push(result.items[0])
+            this.listInvoiceProduct.push({
+              productId: result.items[0].id,
+              goodsIssueNote: [{
+                quantity: 1,
+                unit: result.items[0].productUnits[0].id,
+                batchId: result.items[0].batches[0].id
+              }]
+            })
+            this.totalBill += result.items[0].productUnits[0].price
+            this.selectedValue = ''
+          } else {
+            this.notification.create(
+              'warning',
+              'Thuốc đã tồn tài trong hóa đơn',
+              ''
+            );
+          }
         }
 
       } else {
@@ -70,6 +115,15 @@ export class RetailTemplateComponent implements OnInit {
             this.listInBill.push(element)
             this.totalBill += element.productUnits[0].price
 
+            this.listInvoiceProduct.push({
+              productId: element.id,
+              goodsIssueNote: {
+                quantity: 1,
+                unit: element.productUnits[0].id
+              }
+            })
+
+
             this.selectedValue = ''
           } else {
             this.notification.create(
@@ -79,19 +133,27 @@ export class RetailTemplateComponent implements OnInit {
             );
           }
         } else {
-          console.log('o element');
 
           this.listInBill.push(element);
           this.totalBill += element.productUnits[0].price
+
+          this.listInvoiceProduct.push({
+            productId: element.id,
+            goodsIssueNote: {
+              quantity: 1,
+              unit: element.productUnits[0].id
+            }
+          })
+
+          this.selectedValue = ''
 
         }
       }
     });
   }
-
-
-
   quantityProduct(event: any) {
+    console.log(event);
+
 
     let result = this.listInvoiceProduct.filter(item => item.productId == event.productID)
 
@@ -109,11 +171,11 @@ export class RetailTemplateComponent implements OnInit {
         if (element.productId == event.productID) {
           this.listInvoiceProduct[i] = {
             productId: event.productID,
-            goodsIssueNote: {
+            goodsIssueNote: [{
               quantity: event.quantity,
               unit: event.unit,
               batchId: event.batches
-            }
+            }]
           }
         }
       }
@@ -130,6 +192,7 @@ export class RetailTemplateComponent implements OnInit {
     });
     if (indexOfObject !== -1) {
       this.listInBill.splice(indexOfObject, 1);
+      this.listInvoiceProduct.splice(indexOfObject, 1)
     }
     console.log(this.listInBill);
 
