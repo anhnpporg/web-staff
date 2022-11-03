@@ -1,13 +1,15 @@
+<td></td>
 <td colspan="2">
-    <nz-select nzShowSearch nzAllowClear nzPlaceHolder="Select a person" [(ngModel)]="selectedValue">
-        <nz-option nzLabel="Jack" nzValue="jack"></nz-option>
-        <nz-option nzLabel="Lucy" nzValue="lucy"></nz-option>
-        <nz-option nzLabel="Tom" nzValue="tom"></nz-option>
+    <nz-select nzShowSearch nzAllowClear nzPlaceHolder="Select a person" [(ngModel)]="selectedbatchesValue">
+        <nz-option *ngFor="let batches of listBatches"
+            [nzLabel]="batches.batchBarcode + ' - Ngày hết hạn: ' + (batches.expiryDate | date:'dd-MM-yyyy')"
+            [nzValue]="batches">
+        </nz-option>
     </nz-select>
 </td>
 <td>hàng tồn: 10</td>
 <td>Số lượng:
-    <nz-input-number nzBorderless [(ngModel)]="demoValue"></nz-input-number>
+    <nz-input-number nzBorderless></nz-input-number>
 </td>
-<td></td>
-<td></td>
+
+<td><i class="fa fa-trash-alt" role="button"></i></td>

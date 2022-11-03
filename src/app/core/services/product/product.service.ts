@@ -28,11 +28,25 @@ export class ProductService {
     return this.httpClient.get(DOMAIN + 'product-management/units', { headers: this.headers })
   }
 
+  getProductByID(id: string): Observable<any> {
+    return this.httpClient.get(DOMAIN + `product-management/products/${id}`, { headers: this.headers })
+  }
+
   getAllProduct(search: string): Observable<any> {
     return this.httpClient.get(DOMAIN + `product-management/products/filter?searchValue=${search}&pageSize=5`, { headers: this.headers })
   }
 
+  //invoice
   retailInvoice(data: any): Observable<any> {
     return this.httpClient.post(DOMAIN + 'invoice-management/invoices', data, { headers: this.headers })
+  }
+
+  //batches
+  getBatchesByProductID(id: string): Observable<any> {
+    return this.httpClient.get(DOMAIN + 'batch-management/products/13/batches', { headers: this.headers })
+  }
+
+  getProductByBatchBarcode(barcode: string): Observable<any> {
+    return this.httpClient.get(DOMAIN + `batch-management/batches/filter?barcode=${barcode}`, { headers: this.headers })
   }
 }

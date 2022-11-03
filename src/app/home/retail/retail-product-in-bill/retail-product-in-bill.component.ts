@@ -17,7 +17,7 @@ export class RetailProductInBillComponent implements OnInit {
   @Output() DeleteProduct = new EventEmitter<{}>();
 
   selectedbatchesValue: any
-  demoValue: number = 1
+  // demoValue: number = 1
   billQuantity: number = 1
   inputValue: string = ''
   listRouteInAdministrations: any = []
@@ -28,28 +28,52 @@ export class RetailProductInBillComponent implements OnInit {
   confirmModal?: NzModalRef
   numberOfConsignment: number[] = []
   temp: number = 1
+  inventory: number = 0
+  inventoryUnit: string = ''
+  listInventory: any[] = []
+  lastUnitPrice: number = 0
+  newPrice: number = 0
 
   constructor(
     private modal: NzModalService
   ) { }
 
   ngOnInit(): void {
+    console.log(this.Product);
+
     this.listRouteInAdministrations.push(this.Product.routeOfAdministration)
     this.listUnitProduct = this.Product.productUnits
+    this.inventory = this.Product.batches[0].currentQuantity[0].currentQuantity
+    this.inventoryUnit = this.Product.batches[0].currentQuantity[0].unit
+    this.listInventory = this.Product.batches[0].currentQuantity
+
     this.unitPriceID = this.listUnitProduct[0].id
     this.unitPrice = this.listUnitProduct[0].price
     this.listBatches = this.Product.batches
+    this.selectedbatchesValue = this.listBatches[0]
+    this.lastUnitPrice = this.unitPrice
   }
 
   chageUnitPrice() {
+
+    this.listInventory.forEach(element => {
+      if (element.id == this.unitPriceID) {
+        this.inventory = element.currentQuantity
+        this.inventoryUnit = element.unit
+      }
+    });
+
     this.listUnitProduct.forEach(element => {
       if (element.id == this.unitPriceID) {
         this.unitPrice = element.price
       }
     });
+    this.addQuantity(this.temp)
   }
 
   addQuantity(event: any) {
+
+
 
     if (this.temp > event) {
       this.quantityOfProduct.emit({

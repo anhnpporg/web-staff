@@ -1,3 +1,6 @@
+import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
+import { Router } from '@angular/router';
 import { InvoiceInterface } from './../../../core/utils/App.interface';
 import { UserService } from './../../../core/services/user/user.service';
 import { ProductService } from './../../../core/services/product/product.service';
@@ -23,13 +26,22 @@ export class RetailCustomerInBillComponent implements OnInit {
   isVisibleNewCustomer = false;
   printBill: any
   isVisibleHistoryInvoice = false
+  confirmModal?: NzModalRef;
+  invoice: InvoiceInterface = {
+    customerId: '',
+    product: [],
+    customer: null
+  }
 
 
 
 
   constructor(
     private user: UserService,
-    private productservice: ProductService
+    private productservice: ProductService,
+    private router: Router,
+    private modal: NzModalService,
+    private notification: NzNotificationService
   ) { }
 
   ngOnInit(): void {
@@ -49,19 +61,53 @@ export class RetailCustomerInBillComponent implements OnInit {
   }
 
   createInvoice() {
-
-    console.log(this.InvoiceProduct);
-    var invoice: InvoiceInterface = {
+    this.invoice = {
       customerId: this.selectedValue.id,
-      product: this.InvoiceProduct
+      product: this.InvoiceProduct,
+      customer: null
     }
-    this.printBill = invoice
-    console.log(invoice);
+    var check = true
+    console.log(this.InvoiceProduct);
+
+    if (this.selectedValue.id == '') {
+      check = false
+      this.notification.create(
+        'error',
+        'Thiếu thông tin',
+        'Vui lòng chọn thông tin khách hàng'
+      );
+    }
+    if (this.invoice.product.length <= 0) {
+      check = false
+      this.notification.create(
+        'error',
+        'Thiếu thông tin',
+        'Vui lòng chọn thuốc'
+      );
+    }
+
+    if (check) {
+      this.printBill = this.invoice
+      console.log(this.invoice);
+      this.confirmModal = this.modal.confirm({
+        nzTitle: 'Bán hàng',
+        nzContent: 'xuất hóa đơn',
+        nzOnOk: () => {
+          this.productservice.retailInvoice(this.invoice).subscribe((result) => {
+            console.log(result);
+            let currentUrl = this.router.url;
+            this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
+              this.router.navigate([currentUrl]);
+              console.log(currentUrl);
+            });
+
+          })
+        }
+      });
+    }
 
 
-    this.productservice.retailInvoice(invoice).subscribe((result) => {
-      console.log(result);
-    })
+
   }
 
   searchcustomer(value: string) {
@@ -74,13 +120,13 @@ export class RetailCustomerInBillComponent implements OnInit {
       // console.log(result);
 
       this.listCustomer = result.items
-      console.log(this.listCustomer);
-
+      if (this.listCustomer.length == 0) {
+        this.phoneNumber = value
+      }
     })
   }
 
   addcustomer() {
-    console.log(this.selectedValue.fullname);
     this.phoneNumber = this.selectedValue.phoneNumber
     this.customerName = this.selectedValue.fullName
     this.customerInfo = this.selectedValue
@@ -113,13 +159,14 @@ export class RetailCustomerInBillComponent implements OnInit {
   showModalAddNewCustomer(): void {
     this.isVisibleNewCustomer = true;
   }
-  handleOk(): void {
+  handleOkAddNewCustomer(): void {
+
     console.log('Button ok clicked!');
+
     this.isVisibleNewCustomer = false;
   }
 
-  handleCancel(): void {
-    console.log('Button cancel clicked!');
+  handleCancelAddNewCustomer(): void {
     this.isVisibleNewCustomer = false;
   }
 }

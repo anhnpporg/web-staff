@@ -76,5 +76,7 @@ export class InputElementComponent implements OnInit {
     });
   }
 
+  // getBatches
+
 
 }
