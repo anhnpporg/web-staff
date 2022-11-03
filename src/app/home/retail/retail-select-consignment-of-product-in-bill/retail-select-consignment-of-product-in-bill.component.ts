@@ -10,12 +10,13 @@ export class RetailSelectConsignmentOfProductInBillComponent implements OnInit {
   demoValue: number = 0
   selectedbatchesValue: any
   @Input() listBatches: any[] = []
+  @Input() index = 0
 
   constructor() { }
 
   ngOnInit(): void {
     console.log(this.listBatches);
-    
+
   }
 
 
