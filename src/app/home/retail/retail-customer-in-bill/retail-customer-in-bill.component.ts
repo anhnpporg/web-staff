@@ -28,7 +28,7 @@ export class RetailCustomerInBillComponent implements OnInit {
   isVisibleHistoryInvoice = false
   confirmModal?: NzModalRef;
   invoice: InvoiceInterface = {
-    customerId: '',
+    customerId: null,
     product: [],
     customer: null
   }
@@ -95,10 +95,14 @@ export class RetailCustomerInBillComponent implements OnInit {
         nzOnOk: () => {
           this.productservice.retailInvoice(this.invoice).subscribe((result) => {
             console.log(result);
+            this.notification.create(
+              'success',
+              'Bán hàng thành công',
+              ''
+            );
             let currentUrl = this.router.url;
             this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
               this.router.navigate([currentUrl]);
-              console.log(currentUrl);
             });
 
           })
