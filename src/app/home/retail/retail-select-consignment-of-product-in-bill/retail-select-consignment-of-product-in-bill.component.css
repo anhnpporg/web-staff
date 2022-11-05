@@ -6,3 +6,6 @@ table{
 tr, td{
     padding: 10px;
 }
+nz-select{
+    width: 100%;
+}

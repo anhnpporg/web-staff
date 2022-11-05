@@ -63,15 +63,15 @@
 
             <td>
                 <div *ngIf="listBatches.length > 1">
-                    <!-- <div *ngIf="billQuantity > selectedbatchesValue?.currentQuantity" role="button" -->
-                    <div (click)="addConsignment()" class="w-100">
+                    <div role="button" (click)="addConsignment()" class="w-100">
                         <i class="fa fa-plus"></i>Thêm Lô
                     </div>
                 </div>
             </td>
         </tr>
-        <tr app-retail-select-consignment-of-product-in-bill *ngFor="let item of numberOfConsignment" [listBatches]="listBatches">
-
+        <tr app-retail-select-consignment-of-product-in-bill *ngFor="let item of numberOfConsignment; let i = index"
+            [listBatches]="listBatches" [inventoryUnitID]="inventoryUnitID" [index]="i"
+            (deleteBatches)="deleteConsignment($event)">
         </tr>
         <!-- <tr > -->
         <!-- <td>{{i + 1}}</td>

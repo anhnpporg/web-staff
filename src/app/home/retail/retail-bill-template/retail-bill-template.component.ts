@@ -13,7 +13,7 @@ export class RetailBillTemplateComponent implements OnInit {
   constructor() { }
 
   ngOnInit(): void {
-    console.log(this.printBill);
+    // console.log(this.printBill);
     
   }
 
