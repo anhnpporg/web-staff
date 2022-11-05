@@ -85,7 +85,6 @@ export class RetailCustomerInBillComponent implements OnInit {
         'Vui lòng chọn thuốc'
       );
     }
-
     if (check) {
       this.printBill = this.invoice
       console.log(this.invoice);
@@ -97,7 +96,7 @@ export class RetailCustomerInBillComponent implements OnInit {
             console.log(result);
             this.notification.create(
               'success',
-              'Bán hàng thành công',
+              result.message,
               ''
             );
             let currentUrl = this.router.url;

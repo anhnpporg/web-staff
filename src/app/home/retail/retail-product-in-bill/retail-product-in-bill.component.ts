@@ -30,6 +30,7 @@ export class RetailProductInBillComponent implements OnInit {
   temp: number = 1
   inventory: number = 0
   inventoryUnit: string = ''
+  inventoryUnitID: any
   listInventory: any[] = []
   lastUnitPrice: number = 0
   newPrice: number = 0
@@ -52,6 +53,7 @@ export class RetailProductInBillComponent implements OnInit {
     this.listBatches = this.Product.batches
     this.selectedbatchesValue = this.listBatches[0]
     this.lastUnitPrice = this.unitPrice
+    this.inventoryUnitID = this.Product.batches[0].currentQuantity[0]
   }
 
   chageUnitPrice() {
@@ -60,6 +62,7 @@ export class RetailProductInBillComponent implements OnInit {
       if (element.id == this.unitPriceID) {
         this.inventory = element.currentQuantity
         this.inventoryUnit = element.unit
+        this.inventoryUnitID = element
       }
     });
 
@@ -68,7 +71,9 @@ export class RetailProductInBillComponent implements OnInit {
         this.unitPrice = element.price
       }
     });
-    this.addQuantity(this.temp)
+    console.log(this.inventoryUnitID);
+
+    // this.addQuantity(this.temp)
   }
 
   addQuantity(event: any) {
@@ -130,11 +135,12 @@ export class RetailProductInBillComponent implements OnInit {
 
   addConsignment() {
     let a = this.numberOfConsignment.length + 1
-    this.numberOfConsignment.push(a)
-    console.log(this.numberOfConsignment);
+    if (a < this.listBatches.length) {
+      this.numberOfConsignment.push(a)
+    }
   }
 
-  deleteConsignment(index: number) {
+  deleteConsignment(index: any) {
     console.log(index);
     this.numberOfConsignment.splice(index, 1)
     console.log(this.numberOfConsignment);
