@@ -1,3 +1,4 @@
+import { ProductService } from './../../../core/services/product/product.service';
 import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
 
 @Component({
@@ -6,30 +7,64 @@ import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
   styleUrls: ['./retail-select-consignment-of-product-in-bill.component.css']
 })
 export class RetailSelectConsignmentOfProductInBillComponent implements OnInit {
-  selectedValue: any
-  demoValue: number = 0
-  selectedbatchesValue: any
 
-  @Input() listBatches: any[] = []
   @Input() index = 0
-  @Input() inventoryUnitID: any
+  @Input() listUnitProduct: any[] = []
   @Output() deleteBatches = new EventEmitter<{}>();
-  @Output() ChangeInventory = new EventEmitter<{}>();
-  // = this.listBatches[0].currentQuantity[0]
+  @Output() ChangeProductQuantity = new EventEmitter<{}>();
 
   inventory: number = 0
   inventoryUnit: string = ''
+  unitPriceID: any
+  ProductOfBatchQuantity: number = 1
+  selectedValue: any
+  demoValue: number = 0
+  selectedbatchesValue: any
+  unitPrice: number = 0
+  listBatches: any[] = []
 
-  constructor() { }
+
+  constructor(
+    private productService: ProductService
+  ) { }
 
   ngOnInit(): void {
-    this.inventory = this.inventoryUnitID.currentQuantity
-    this.inventoryUnit = this.inventoryUnitID.unit
-    console.log(this.inventoryUnitID);
+
+
+    this.unitPriceID = this.listUnitProduct[0]
+    this.productService.getInvetoryByUnitID(this.unitPriceID.id).subscribe((result) => {
+      this.listBatches = result.data
+      this.selectedbatchesValue = this.listBatches[this.index].batchId
+      this.inventory = this.listBatches[this.index].currentQuantity
+
+    })
+    this.unitPrice = this.unitPriceID?.price
   }
 
   deleteconsignment() {
     console.log('ok');
     this.deleteBatches.emit(this.index)
+  }
+  chageUnitPrice() {
+    this.unitPrice = this.unitPriceID?.price
+    this.productService.getInvetoryByUnitID(this.unitPriceID.id).subscribe((result) => {
+      this.listBatches = result.data
+      console.log(result.data);
+      console.log(this.listBatches);
+    })
+  }
+
+  chageProductInBillQuantity() {
+    var tempQuantity = this.ProductOfBatchQuantity
+
+    this.ChangeProductQuantity.emit({
+      index: this.index,
+      unitPrice: this.unitPriceID.price,
+      info: {
+        quantity: tempQuantity,
+        unit: this.unitPriceID.id,
+        batchId: this.selectedbatchesValue
+      }
+    })
   }
 }

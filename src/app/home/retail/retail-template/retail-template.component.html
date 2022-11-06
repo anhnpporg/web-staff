@@ -26,8 +26,8 @@
                     <nz-divider></nz-divider>
                     <div>
                         <div class="overflow-auto" style="height: 700px;">
-                            <app-retail-product-in-bill *ngFor="let item of listInBill let i =index" [index]="i + 1"
-                                [Product]="item" (quantityOfProduct)="quantityProduct($event)"
+                            <app-retail-product-in-bill *ngFor="let item of listInBill let i = index" [index]="i + 1"
+                                [Product]="item" (quantityOfProduct)="quantityProduct($event)" (invoiceInfoProduct)="addInvoice($event)"
                                 (DeleteProduct)="deleteProductInBill($event)">
                             </app-retail-product-in-bill>
                         </div>

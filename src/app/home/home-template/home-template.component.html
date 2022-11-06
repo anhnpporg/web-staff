@@ -19,13 +19,14 @@
                 <i class="fa fa-bell" style="font-size: 32px;"></i>
             </nz-badge>
             <nz-divider nzType="vertical"></nz-divider>
-            <nz-avatar nzIcon="user" nzSrc="https://picsum.photos/200/300"></nz-avatar>
+            <!-- <nz-avatar nzIcon="user" [nzSrc]="avatar"></nz-avatar> -->
 
             <ul nz-menu nzMode="horizontal" class="pl-1">
 
-                <li nz-submenu nzPlacement="bottomLeft" nzTitle="Phước Anh" style="padding-left: 5px;">
+                <li nz-submenu nzPlacement="bottomLeft" [nzTitle]="fullname" style="padding-left: 5px;">
                     <ul>
-                        <li nz-menu-item style="color: red;" (click)="logout()"> <i class="glyphicon glyphicon-log-out"></i> Đăng xuất</li>
+                        <li nz-menu-item style="color: red;" (click)="logout()"> <i
+                                class="glyphicon glyphicon-log-out"></i> Đăng xuất</li>
                     </ul>
                 </li>
             </ul>

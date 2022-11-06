@@ -1,16 +1,41 @@
 <td></td>
 <td colspan="2">
+    <div *ngIf="listBatches.length > 1; else batchEqual0">
+        <nz-select nzShowSearch nzAllowClear nzPlaceHolder="Chọn lô thuốc cần bán" [(ngModel)]="selectedbatchesValue">
+            <nz-option *ngFor="let batches of listBatches"
+                [nzLabel]="batches.batchBarcode + ' - Hết hạn: ' + (batches.expiryDate | date:'dd-MM-yyyy') + ' - Tồn kho: ' + batches.currentQuantity +' '+ batches.unit"
+                [nzValue]="batches.batchId">
+            </nz-option>
+        </nz-select>
+    </div>
     <!-- <div *ngIf="listBatches.length > 1"> -->
-    <nz-select nzShowSearch nzAllowClear nzPlaceHolder="Select a person" [(ngModel)]="selectedbatchesValue">
-        <nz-option *ngFor="let batches of listBatches"
-            [nzLabel]="batches.batchBarcode + ' - Hết hạn: ' + (batches.expiryDate | date:'dd-MM-yyyy') + ' - Tồn kho: ' + inventory +' '+ inventoryUnit"
-            [nzValue]="batches">
+
+    <!-- </div> -->
+
+    <ng-template #batchEqual0>
+        <div *ngIf="listBatches.length == 0; else batchEqual1">
+            Không có lô hàng nào cho sản phẩm này <span style="color: #ffcc00;"><i
+                    class="fa fa-exclamation-triangle"></i></span>
+        </div>
+    </ng-template>
+    <ng-template #batchEqual1>
+        <div *ngFor="let batches of listBatches">
+            <input type="hidden" [(ngModel)]="selectedbatchesValue" [value]="batches">
+            {{batches.batchBarcode + ' - Hết hạn: ' + (batches.expiryDate | date:'dd-MM-yyyy') +
+            ' - Tồn kho: ' + batches.currentQuantity +' '+ batches.unit}}
+        </div>
+    </ng-template>
+</td>
+<td>
+    <nz-select [(ngModel)]="unitPriceID" (ngModelChange)="chageUnitPrice()">
+        <nz-option *ngFor="let item of listUnitProduct" [nzValue]="item" nzLabel={{item.unit}}>
         </nz-option>
     </nz-select>
-    <!-- </div> -->
 </td>
-<td>hàng tồn: {{inventory}}</td>
+<td>Đơn giá: {{unitPrice}} VNĐ</td>
 <td>Số lượng:
-    <nz-input-number nzBorderless></nz-input-number>
+    <nz-input-number nzBorderless [(ngModel)]="ProductOfBatchQuantity" [nzMin]="1"
+        (ngModelChange)="chageProductInBillQuantity()" [nzMax]="inventory">
+    </nz-input-number>
 </td>
-<td><i class="fa fa-trash-alt" role="button" (click)="deleteconsignment()"></i></td>
+<td *ngIf="index != 0"><i class="fa fa-trash-alt" role="button" (click)="deleteconsignment()"></i></td>

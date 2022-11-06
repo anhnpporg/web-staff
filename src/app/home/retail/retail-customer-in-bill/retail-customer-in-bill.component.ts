@@ -69,13 +69,24 @@ export class RetailCustomerInBillComponent implements OnInit {
     var check = true
     console.log(this.InvoiceProduct);
 
-    if (this.selectedValue.id == '') {
-      check = false
-      this.notification.create(
-        'error',
-        'Thiếu thông tin',
-        'Vui lòng chọn thông tin khách hàng'
-      );
+    if (this.invoice.customerId == undefined) {
+      if (this.phoneNumber == '' && this.customerName == '') {
+        check = false
+        this.notification.create(
+          'error',
+          'Thiếu thông tin',
+          'Vui lòng chọn thông tin khách hàng'
+        );
+      } else {
+        this.invoice = {
+          customerId: null,
+          product: this.InvoiceProduct,
+          customer: {
+            phoneNumber: this.phoneNumber,
+            fullName: this.customerName
+          }
+        }
+      }
     }
     if (this.invoice.product.length <= 0) {
       check = false
