@@ -1,3 +1,5 @@
+import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { Product } from './../../../core/utils/App.interface';
 import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
 import { ProductService } from './../../../core/services/product/product.service';
 import { Component, Input, OnInit } from '@angular/core';
@@ -15,6 +17,7 @@ export class RetailProductInBillComponent implements OnInit {
   @Input() index: number = 1
   @Output() quantityOfProduct = new EventEmitter<{}>();
   @Output() DeleteProduct = new EventEmitter<{}>();
+  @Output() invoiceInfoProduct = new EventEmitter<{}>();
 
   selectedbatchesValue: any
   // demoValue: number = 1
@@ -26,21 +29,21 @@ export class RetailProductInBillComponent implements OnInit {
   unitPriceID: number = 1
   unitPrice: number = 0
   confirmModal?: NzModalRef
-  numberOfConsignment: number[] = []
+  billProduct: any
   temp: number = 1
   inventory: number = 0
   inventoryUnit: string = ''
   inventoryUnitID: any
   listInventory: any[] = []
   lastUnitPrice: number = 0
-  newPrice: number = 0
+  totalPrice: number = 0
 
   constructor(
-    private modal: NzModalService
+    private modal: NzModalService,
+    private notification: NzNotificationService
   ) { }
 
   ngOnInit(): void {
-    console.log(this.Product);
 
     this.listRouteInAdministrations.push(this.Product.routeOfAdministration)
     this.listUnitProduct = this.Product.productUnits
@@ -54,6 +57,16 @@ export class RetailProductInBillComponent implements OnInit {
     this.selectedbatchesValue = this.listBatches[0]
     this.lastUnitPrice = this.unitPrice
     this.inventoryUnitID = this.Product.batches[0].currentQuantity[0]
+
+    this.billProduct = {
+      productId: this.Product.id,
+      goodsIssueNote: [{
+        quantity: 0,
+        unit: this.unitPriceID,
+        batchId: this.listBatches[0].id
+      }]
+    }
+
   }
 
   chageUnitPrice() {
@@ -76,30 +89,35 @@ export class RetailProductInBillComponent implements OnInit {
     // this.addQuantity(this.temp)
   }
 
-  addQuantity(event: any) {
+  getProductGoodIssueNote(event: any) {
 
-
-
-    if (this.temp > event) {
-      this.quantityOfProduct.emit({
-        price: this.unitPrice * (this.temp - event),
-        status: false,
-        unit: this.unitPriceID,
-        quantity: event,
-        productID: this.Product.id
+    var check = true
+    if (this.billProduct.goodsIssueNote[event.index].batchId == '') {
+      this.billProduct.goodsIssueNote.forEach((element: any) => {
+        if (element.batchId == event.info.batchId) {
+          check = false
+          this.notification.create(
+            'error',
+            'Lô thuốc này đã được chọn',
+            'Bạn vui lòng chọn lô thuốc khác'
+          );
+        }
       });
-      this.temp = event
-    } else {
-      this.quantityOfProduct.emit({
-        price: this.unitPrice * (event - this.temp),
-        status: true,
-        unit: this.unitPriceID,
-        quantity: event,
-        productID: this.Product.id,
-        batches: this.selectedbatchesValue.id
-      });
-      this.temp = event
+      if (check) {
+        this.billProduct.goodsIssueNote[event.index].batchId = event.info.batchId
+      }
     }
+    if (this.billProduct.goodsIssueNote[event.index].batchId == event.info.batchId && this.billProduct.goodsIssueNote[event.index].unit == event.info.unit) {
+      this.billProduct.goodsIssueNote[event.index].quantity = event.info.quantity
+    } else if (this.billProduct.goodsIssueNote[event.index].batchId == event.info.batchId && this.billProduct.goodsIssueNote[event.index].unit != event.info.unit) {
+      this.billProduct.goodsIssueNote[event.index].quantity = event.info.quantity
+      this.billProduct.goodsIssueNote[event.index].unit = event.info.unit
+    }
+    this.invoiceInfoProduct.emit(this.billProduct)
+    console.log(this.billProduct);
+  }
+
+  addQuantity(event: any) {
 
   }
 
@@ -134,16 +152,18 @@ export class RetailProductInBillComponent implements OnInit {
   }
 
   addConsignment() {
-    let a = this.numberOfConsignment.length + 1
-    if (a < this.listBatches.length) {
-      this.numberOfConsignment.push(a)
+    let a = this.billProduct.goodsIssueNote.length + 1
+    if (a <= this.listBatches.length) {
+      this.billProduct.goodsIssueNote.push({
+        quantity: 0,
+        unit: this.unitPriceID,
+        batchId: ''
+      })
     }
   }
 
   deleteConsignment(index: any) {
-    console.log(index);
-    this.numberOfConsignment.splice(index, 1)
-    console.log(this.numberOfConsignment);
+    this.billProduct.goodsIssueNote.splice(index, 1)
   }
 
   selectBatches() {

@@ -24,4 +24,8 @@ export class UserService {
     return this.httpClient.get(DOMAIN + `user-management/customers/filter?phoneNumber=${value}&pageSize=10`, { headers: this.headers })
   }
 
+  getProfile(): Observable<any> {
+    return this.httpClient.get(DOMAIN + 'user-management/auth/user/profile', { headers: this.headers })
+  }
+
 }

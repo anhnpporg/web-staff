@@ -49,4 +49,8 @@ export class ProductService {
   getProductByBatchBarcode(barcode: string): Observable<any> {
     return this.httpClient.get(DOMAIN + `batch-management/batches/filter?barcode=${barcode}`, { headers: this.headers })
   }
+
+  getInvetoryByUnitID(id: number): Observable<any> {
+    return this.httpClient.get(DOMAIN + `batch-management/unit/${id}/inventory`, { headers: this.headers })
+  }
 }

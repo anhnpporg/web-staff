@@ -59,14 +59,14 @@ export class RetailTemplateComponent implements OnInit {
               if (check == true) {
                 this.listInBill.push(productOBJ)
 
-                this.listInvoiceProduct.push({
-                  productId: productOBJ.id,
-                  goodsIssueNote: [{
-                    quantity: 1,
-                    unit: productOBJ.productUnits[0].id,
-                    batchId: productOBJ.batches[0].id
-                  }]
-                })
+                // this.listInvoiceProduct.push({
+                //   productId: productOBJ.id,
+                //   goodsIssueNote: [{
+                //     quantity: 1,
+                //     unit: productOBJ.productUnits[0].id,
+                //     batchId: productOBJ.batches[0].id
+                //   }]
+                // })
                 this.totalBill += productOBJ.productUnits[0].price
                 this.selectedValue = ''
               }
@@ -76,14 +76,14 @@ export class RetailTemplateComponent implements OnInit {
           const exist = this.listInBill.filter(bill => bill.barcode == result.barcode);
           if (exist.length <= 0) {
             this.listInBill.push(result.items[0])
-            this.listInvoiceProduct.push({
-              productId: result.items[0].id,
-              goodsIssueNote: [{
-                quantity: 1,
-                unit: result.items[0].productUnits[0].id,
-                batchId: result.items[0].batches[0].id
-              }]
-            })
+            // this.listInvoiceProduct.push({
+            //   productId: result.items[0].id,
+            //   goodsIssueNote: [{
+            //     quantity: 1,
+            //     unit: result.items[0].productUnits[0].id,
+            //     batchId: result.items[0].batches[0].id
+            //   }]
+            // })
             this.totalBill += result.items[0].productUnits[0].price
             this.selectedValue = ''
           } else {
@@ -115,13 +115,13 @@ export class RetailTemplateComponent implements OnInit {
             this.listInBill.push(element)
             this.totalBill += element.productUnits[0].price
 
-            this.listInvoiceProduct.push({
-              productId: element.id,
-              goodsIssueNote: {
-                quantity: 1,
-                unit: element.productUnits[0].id
-              }
-            })
+            // this.listInvoiceProduct.push({
+            //   productId: element.id,
+            //   goodsIssueNote: {
+            //     quantity: 1,
+            //     unit: element.productUnits[0].id
+            //   }
+            // })
 
 
             this.selectedValue = ''
@@ -137,13 +137,13 @@ export class RetailTemplateComponent implements OnInit {
           this.listInBill.push(element);
           this.totalBill += element.productUnits[0].price
 
-          this.listInvoiceProduct.push({
-            productId: element.id,
-            goodsIssueNote: {
-              quantity: 1,
-              unit: element.productUnits[0].id
-            }
-          })
+          // this.listInvoiceProduct.push({
+          //   productId: element.id,
+          //   goodsIssueNote: {
+          //     quantity: 1,
+          //     unit: element.productUnits[0].id
+          //   }
+          // })
 
           this.selectedValue = ''
 
@@ -158,13 +158,13 @@ export class RetailTemplateComponent implements OnInit {
     let result = this.listInvoiceProduct.filter(item => item.productId == event.productID)
 
     if (result.length <= 0) {
-      this.listInvoiceProduct.push({
-        productId: event.productID,
-        goodsIssueNote: {
-          quantity: event.quantity,
-          unit: event.unit
-        }
-      })
+      // this.listInvoiceProduct.push({
+      //   productId: event.productID,
+      //   goodsIssueNote: {
+      //     quantity: event.quantity,
+      //     unit: event.unit
+      //   }
+      // })
     } else {
       for (let i = 0; i < this.listInvoiceProduct.length; i++) {
         let element = this.listInvoiceProduct[i];
@@ -212,6 +212,29 @@ export class RetailTemplateComponent implements OnInit {
   handleCancel(): void {
     console.log('Button cancel clicked!');
     this.isVisible = false;
+  }
+
+  addInvoice(event: any) {
+    console.log(event);
+    
+    var check = true
+
+    // this.listInvoiceProduct.filter(item => item.goodsIssueNote)
+
+    this.listInvoiceProduct.forEach(element => {
+      if (element.productId == event.productId) {
+        element.goodsIssueNote.quantity = event.goodsIssueNote.quantity
+        console.log('ok');
+        check = false
+      }
+    });
+
+    if(check){
+      this.listInvoiceProduct.push(event)
+    }
+
+    console.log(this.listInvoiceProduct);
+
   }
 
 }
