@@ -19,14 +19,18 @@
                 <i class="fa fa-bell" style="font-size: 32px;"></i>
             </nz-badge>
             <nz-divider nzType="vertical"></nz-divider>
-            <!-- <nz-avatar nzIcon="user" [nzSrc]="avatar"></nz-avatar> -->
-
+            <nz-avatar [nzSrc]="avatar"></nz-avatar>
             <ul nz-menu nzMode="horizontal" class="pl-1">
-
-                <li nz-submenu nzPlacement="bottomLeft" [nzTitle]="fullname" style="padding-left: 5px;">
+                <li nz-submenu nzPlacement="bottomCenter" [nzTitle]="fullname">
                     <ul>
-                        <li nz-menu-item style="color: red;" (click)="logout()"> <i
-                                class="glyphicon glyphicon-log-out"></i> Đăng xuất</li>
+                        <li nz-menu-item>
+                            <a [routerLink]="['/home/profile']"> <span style="margin-right:10px"> <i
+                                        class="fa fa-user mr-2"></i></span>Tài khoản</a>
+                        </li>
+                        <li nz-menu-item style="color: red;" (click)="logout()">
+                            <span style="margin-right:10px"><i class="fa fa-sign-out-alt"></i></span> <span>Đăng
+                                xuất</span>
+                        </li>
                     </ul>
                 </li>
             </ul>

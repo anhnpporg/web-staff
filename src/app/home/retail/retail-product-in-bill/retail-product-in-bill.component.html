@@ -1,88 +1,95 @@
 <div class="Product__in__bill">
-    <table class="mb-3">
-        <tbody>
-            <tr>
-                <td>STT: {{index}}</td>
-                <td>{{Product.barcode}}</td>
-                <td>{{Product.name}}</td>
-                <td>
-                    Đường dùng: {{listRouteInAdministrations[0].name}}
-                </td>
-                <td colspan="2">
-                    <textarea rows="2" placeholder="Ghi chú" nz-input [(ngModel)]="inputValue"></textarea>
-                </td>
-                <td style="float: right;" role="button" (click)="showConfirm()">
-                    <i class="fa fa-times-circle"></i>
-                </td>
-            </tr>
-            <tr>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td>Số lượng: {{billQuantity}}</td>
-                <td>
+    <div class="p-2">
+        <table class="mb-3">
+            <tbody>
+                <tr>
+                    <td>
+                        <h4>{{index}}</h4>
+                    </td>
+                    <!-- <td>
+                        {{Product.barcode}}
+                    </td> -->
+                    <td><h3>{{Product.name}}</h3></td>
+                    <td>
+                        Đường dùng: {{listRouteInAdministrations[0].name}}
+                    </td>
+                    <td colspan="3">
+                        <textarea rows="2" placeholder="Ghi chú" nz-input [(ngModel)]="inputValue"></textarea>
+                    </td>
+                    <td style="float: right;" role="button" (click)="showConfirm()">
+                        <i class="fa fa-times-circle"></i>
+                    </td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td>
 
-                </td>
-                <td>Tổng tiền: {{unitPrice * billQuantity}} VNĐ
-                    <input type="hidden" value={{unitPrice * billQuantity}} #total>
-                </td>
-            </tr>
-            <!-- <tr>
-                <td></td>
-                <td colspan="2">
-                    <div *ngIf="listBatches.length > 1; else batchEqual0">
-                        <nz-select nzShowSearch nzAllowClear nzPlaceHolder="Select a person"
-                            [(ngModel)]="selectedbatchesValue" (ngModelChange)="selectBatches()">
-                            <nz-option *ngFor="let batches of listBatches"
-                                [nzLabel]="batches.batchBarcode + ' - Hết hạn: ' + (batches.expiryDate | date:'dd-MM-yyyy') + ' - Tồn kho: ' + inventory +' '+ inventoryUnit"
-                                [nzValue]="batches">
+                    </td>
+                    <td>Tổng tiền: {{unitPrice * billQuantity}} VNĐ
+                        <input type="hidden" value={{unitPrice * billQuantity}} #total>
+                    </td>
+                </tr>
+                <!-- <tr>
+                    <td></td>
+                    <td colspan="2">
+                        <div *ngIf="listBatches.length > 1; else batchEqual0">
+                            <nz-select nzShowSearch nzAllowClear nzPlaceHolder="Select a person"
+                                [(ngModel)]="selectedbatchesValue" (ngModelChange)="selectBatches()">
+                                <nz-option *ngFor="let batches of listBatches"
+                                    [nzLabel]="batches.batchBarcode + ' - Hết hạn: ' + (batches.expiryDate | date:'dd-MM-yyyy') + ' - Tồn kho: ' + inventory +' '+ inventoryUnit"
+                                    [nzValue]="batches">
+                                </nz-option>
+                            </nz-select>
+                        </div>
+                        <ng-template #batchEqual0>
+                            <div *ngIf="listBatches.length == 0; else batchEqual1">
+                                Không có lô hàng nào cho sản phẩm này <span style="color: #ffcc00;"><i
+                                        class="fa fa-exclamation-triangle"></i></span>
+                            </div>
+                        </ng-template>
+                        <ng-template #batchEqual1>
+                            <div *ngFor="let batches of listBatches">
+                                <input type="hidden" [(ngModel)]="selectedbatchesValue" [value]="batches">
+                                {{batches.batchBarcode + ' - Hết hạn: ' + (batches.expiryDate | date:'dd-MM-yyyy') +
+                                ' - Tồn kho: ' + inventory +' '+ inventoryUnit}}
+                            </div>
+                        </ng-template>
+                    </td>
+                    <td>
+                        <nz-select [(ngModel)]="unitPriceID" (ngModelChange)="chageUnitPrice()">
+                            <nz-option *ngFor="let item of listUnitProduct" [nzValue]="item.id" nzLabel={{item.unit}}>
                             </nz-option>
                         </nz-select>
-                    </div>
-                    <ng-template #batchEqual0>
-                        <div *ngIf="listBatches.length == 0; else batchEqual1">
-                            Không có lô hàng nào cho sản phẩm này <span style="color: #ffcc00;"><i
-                                    class="fa fa-exclamation-triangle"></i></span>
+                    </td>
+                    <td>Hàng tồn: {{inventory +' '+ inventoryUnit || 0}}</td>
+                    <td>Số lượng:
+                        <nz-input-number nzBorderless [(ngModel)]="billQuantity" (ngModelChange)="addQuantity($event)"
+                            [nzMin]="1" [nzMax]="inventory"></nz-input-number>
+                    </td>
+                </tr> -->
+                <tr app-retail-select-consignment-of-product-in-bill
+                    *ngFor="let item of billProduct.goodsIssueNote let i = index" [index]="i"
+                    (deleteBatches)="deleteConsignment($event)" [listUnitProduct]="listUnitProduct"
+                    (ChangeProductQuantity)="getProductGoodIssueNote($event)">
+                </tr>
+                <tr *ngIf="listBatches.length > billProduct.goodsIssueNote.length">
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td>
+                        <div *ngIf=" listBatches.length> 1">
+                            <div role="button" (click)="addConsignment()" class="w-100">
+                                <i class="fa fa-plus"></i>Thêm Lô
+                            </div>
                         </div>
-                    </ng-template>
-                    <ng-template #batchEqual1>
-                        <div *ngFor="let batches of listBatches">
-                            <input type="hidden" [(ngModel)]="selectedbatchesValue" [value]="batches">
-                            {{batches.batchBarcode + ' - Hết hạn: ' + (batches.expiryDate | date:'dd-MM-yyyy') +
-                            ' - Tồn kho: ' + inventory +' '+ inventoryUnit}}
-                        </div>
-                    </ng-template>
-                </td>
-                <td>
-                    <nz-select [(ngModel)]="unitPriceID" (ngModelChange)="chageUnitPrice()">
-                        <nz-option *ngFor="let item of listUnitProduct" [nzValue]="item.id" nzLabel={{item.unit}}>
-                        </nz-option>
-                    </nz-select>
-                </td>
-                <td>Hàng tồn: {{inventory +' '+ inventoryUnit || 0}}</td>
-                <td>Số lượng:
-                    <nz-input-number nzBorderless [(ngModel)]="billQuantity" (ngModelChange)="addQuantity($event)"
-                        [nzMin]="1" [nzMax]="inventory"></nz-input-number>
-                </td>
-            </tr> -->
-            <tr app-retail-select-consignment-of-product-in-bill *ngFor="let item of billProduct.goodsIssueNote let i = index"
-                [index]="i" (deleteBatches)="deleteConsignment($event)" [listUnitProduct]="listUnitProduct"
-                (ChangeProductQuantity)="getProductGoodIssueNote($event)" >
-            </tr>
-            <tr *ngIf="listBatches.length > billProduct.goodsIssueNote.length">
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td>
-                    <div *ngIf=" listBatches.length> 1">
-                        <div role="button" (click)="addConsignment()" class="w-100">
-                            <i class="fa fa-plus"></i>Thêm Lô
-                        </div>
-                    </div>
-                </td>
-            </tr>
-        </tbody>
-    </table>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
 </div>
