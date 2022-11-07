@@ -15,6 +15,7 @@ import { NzModalModule } from 'ng-zorro-antd/modal';
 import { NzSpinModule } from 'ng-zorro-antd/spin';
 import { NzMenuModule } from 'ng-zorro-antd/menu';
 import { NzTagModule } from 'ng-zorro-antd/tag';
+import { NzTabsModule } from 'ng-zorro-antd/tabs';
 
 @NgModule({
   declarations: [],
@@ -34,7 +35,8 @@ import { NzTagModule } from 'ng-zorro-antd/tag';
     NzModalModule,
     NzSpinModule,
     NzMenuModule,
-    NzTagModule
+    NzTagModule,
+    NzTabsModule
     
   ]
 })

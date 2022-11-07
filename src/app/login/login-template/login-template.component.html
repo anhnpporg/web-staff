@@ -1,12 +1,28 @@
-<div class="form-group">
-    <label for="">Tài khoản</label>
-    <input type="text" class="form-control" placeholder="" [(ngModel)]="username">
-</div>
-<div class="form-group">
-    <label for="">Tài khoản</label>
-    <input type="email" class="form-control" placeholder="" [(ngModel)]="password">
-</div>
+<div class="main">
 
-<div class="form-group">
-    <button class="btn btn-success" (click)="login()">Đăng nhập</button>
+    <div>
+        <div>
+            <h4 class="text-center">
+                <img src="./../../../assets/img/logo.png" alt="logo" width="20px">
+                Web nhân viên nhà thuốc Út Nhàn
+            </h4>
+        </div>
+        <div class="form ">
+            <div class="text-center">
+                <h4>Đăng nhập</h4>
+                <p class="small">Nhập tên người dùng và mật khẩu của bạn để đăng nhập</p>
+            </div>
+            <div class="form-group">
+                <label for="">Tài khoản</label>
+                <input type="text" class="form-control" placeholder="" [(ngModel)]="username">
+            </div>
+            <div class="form-group">
+                <label for="">Mật khẩu</label>
+                <input type="password" class="form-control" placeholder="" [(ngModel)]="password">
+            </div>
+            <div class="form-group login__button">
+                <button class="btn btn-primary w-100" (click)="login()">Đăng nhập</button>
+            </div>
+        </div>
+    </div>
 </div>

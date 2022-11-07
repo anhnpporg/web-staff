@@ -28,4 +28,12 @@ export class UserService {
     return this.httpClient.get(DOMAIN + 'user-management/auth/user/profile', { headers: this.headers })
   }
 
+  updateProfile(data: FormData): Observable<any> {
+    return this.httpClient.put(DOMAIN + 'user-management/staffs/profile', data, { headers: this.headers })
+  }
+
+  changePassword(data: FormData): Observable<any> {
+    return this.httpClient.put(DOMAIN + 'user-management/accounts/change-password', data, { headers: this.headers })
+  }
+
 }

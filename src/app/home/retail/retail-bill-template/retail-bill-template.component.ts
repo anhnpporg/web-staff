@@ -16,7 +16,7 @@ export class RetailBillTemplateComponent implements OnInit {
 
   ngOnInit(): void {
     // console.log(this.printBill);
-    console.log(localStorage.getItem(PROFILE));
+    // console.log(localStorage.getItem(PROFILE));
     
 
   }
