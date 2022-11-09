@@ -40,7 +40,8 @@ export class RetailProductInBillComponent implements OnInit {
 
   constructor(
     private modal: NzModalService,
-    private notification: NzNotificationService
+    private notification: NzNotificationService,
+    private productService: ProductService
   ) { }
 
   ngOnInit(): void {
@@ -69,26 +70,6 @@ export class RetailProductInBillComponent implements OnInit {
 
   }
 
-  chageUnitPrice() {
-
-    this.listInventory.forEach(element => {
-      if (element.id == this.unitPriceID) {
-        this.inventory = element.currentQuantity
-        this.inventoryUnit = element.unit
-        this.inventoryUnitID = element
-      }
-    });
-
-    this.listUnitProduct.forEach(element => {
-      if (element.id == this.unitPriceID) {
-        this.unitPrice = element.price
-      }
-    });
-    console.log(this.inventoryUnitID);
-
-    // this.addQuantity(this.temp)
-  }
-
   getProductGoodIssueNote(event: any) {
 
     var check = true
@@ -114,12 +95,23 @@ export class RetailProductInBillComponent implements OnInit {
       this.billProduct.goodsIssueNote[event.index].unit = event.info.unit
     }
     this.invoiceInfoProduct.emit(this.billProduct)
-    console.log(this.billProduct);
+    // console.log(this.billProduct);
+
+
+    this.billProduct.goodsIssueNote.forEach((element: any) => {
+      this.totalPrice = 0 
+      // console.log(element);
+      
+      this.productService.getProductUnitbyUnitID(element.unit).subscribe((result) => {
+        // console.log(result);
+        
+        this.totalPrice += result.price * element.quantity
+        // console.log(this.totalPrice);
+        
+      })
+    });
   }
 
-  addQuantity(event: any) {
-
-  }
 
   deleteProduct(id: number) {
     this.DeleteProduct.emit(id)

@@ -15,25 +15,13 @@ export class InputElementComponent implements OnInit {
   isVisibleBatches = false;
   batche: any
   batchesList: any
-  addBatchsList: any[] = [
-    {
-      barcode: '123123',
-      quantity: 10
-    },
-    {
-      barcode: '123123',
-      quantity: 10
-    },
-    {
-      barcode: '123123',
-      quantity: 10
-    }
-  ]
+  addBatchsList: any[] = []
 
   constructor(
     private modal: NzModalService
   ) { }
   ngOnInit(): void {
+    
   }
 
   showModalBatches(): void {
