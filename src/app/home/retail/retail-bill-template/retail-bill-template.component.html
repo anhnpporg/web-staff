@@ -23,12 +23,12 @@
     </div>
     <section class="text-center">
         <div class="d-flex justify-content-between">
-            <div>Thu ngân: </div>
-            <div>Ngày: 10/25/2022</div>
+            <div>Thu ngân: {{staffProfile.fullname}}</div>
+            <div>Ngày: {{time | date:'dd/MM/yyyy'}}</div>
         </div>
         <div class="d-flex justify-content-between">
             <!-- <div>POS: SG123131</div> -->
-            <div>Giờ: 12:30</div>
+            <div>Giờ: {{time | date:'hh:mm'}}</div>
         </div>
         <table class="table">
             <thead>
@@ -40,52 +40,11 @@
                     <th scope="col">Thành tiền</th>
                 </tr>
             </thead>
-            <tbody>
-                <!-- Thông tin hoá đơn -->
-                <tr>
-                    <td>Tên</td>
-                    <td>6 viên</td>
-                    <td>Đơn giá</td>
-                    <td>Khuyến mãi</td>
-                    <td>6000</td>
-                </tr>
-                <tr>
-                    <td>Lô: 22360</td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td>Ngày hết hạn: 25/03/2025</td>
-                </tr>
-
-                <tr>
-                    <td>Tên</td>
-                    <td>6 viên</td>
-                    <td>Đơn giá</td>
-                    <td>Khuyến mãi</td>
-                    <td>6000</td>
-                </tr>
-                <tr>
-                    <td>Lô: 22360</td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td>Ngày hết hạn: 25/03/2025</td>
-                </tr>
-                <tr>
-                    <td>Tên</td>
-                    <td>6 viên</td>
-                    <td>Đơn giá</td>
-                    <td>Khuyến mãi</td>
-                    <td>6000</td>
-                </tr>
-                <tr>
-                    <td>Lô: 22360</td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td>Ngày hết hạn: 25/03/2025</td>
-                </tr>
+            <tbody *ngIf="printBill">
+                <app-retail-bill-template-product *ngFor="let item of printBill.product" [productInBill]="item">
+                </app-retail-bill-template-product>
             </tbody>
+
         </table>
     </section>
     <div style="margin: auto;">

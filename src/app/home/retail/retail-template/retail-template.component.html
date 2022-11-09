@@ -25,12 +25,16 @@
                     <nz-autocomplete [nzDataSource]="listProduct" nzBackfill #auto></nz-autocomplete>
                     <nz-divider></nz-divider>
                     <div>
-                        <div class="overflow-auto" style="height: 700px;">
+                        <div class="overflow-auto" style="height: 600px;">
                             <app-retail-product-in-bill *ngFor="let item of listInBill let i = index" [index]="i + 1"
-                                [Product]="item" (quantityOfProduct)="quantityProduct($event)" (invoiceInfoProduct)="addInvoice($event)"
-                                (DeleteProduct)="deleteProductInBill($event)">
+                                [Product]="item" (quantityOfProduct)="quantityProduct($event)"
+                                (invoiceInfoProduct)="addInvoice($event)" (DeleteProduct)="deleteProductInBill($event)">
                             </app-retail-product-in-bill>
                         </div>
+                        <!-- <nz-divider></nz-divider>
+                        <div>
+                            <h3>Tổng tiền: </h3>
+                        </div> -->
                     </div>
                 </div>
             </div>

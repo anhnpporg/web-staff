@@ -36,4 +36,8 @@ export class UserService {
     return this.httpClient.put(DOMAIN + 'user-management/accounts/change-password', data, { headers: this.headers })
   }
 
+  getCustomerByID(id: number): Observable<any> {
+    return this.httpClient.get(DOMAIN + `user-management/customers/${id}`, { headers: this.headers })
+  }
+
 }

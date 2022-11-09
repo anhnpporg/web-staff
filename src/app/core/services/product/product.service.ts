@@ -43,7 +43,7 @@ export class ProductService {
 
   //batches
   getBatchesByProductID(id: string): Observable<any> {
-    return this.httpClient.get(DOMAIN + 'batch-management/products/13/batches', { headers: this.headers })
+    return this.httpClient.get(DOMAIN + `batch-management/products/${id}/batches`, { headers: this.headers })
   }
 
   getProductByBatchBarcode(barcode: string): Observable<any> {
@@ -53,4 +53,13 @@ export class ProductService {
   getInvetoryByUnitID(id: number): Observable<any> {
     return this.httpClient.get(DOMAIN + `batch-management/unit/${id}/inventory`, { headers: this.headers })
   }
+
+  getProductUnitbyUnitID(id: string): Observable<any> {
+    return this.httpClient.get(DOMAIN + `product-units-management/product-units/${id}`, { headers: this.headers })
+  }
+  getBatchByBatchID(id: string): Observable<any> {
+    return this.httpClient.get(DOMAIN + `batch-management/batches/${id}`, { headers: this.headers })
+  }
+
+
 }

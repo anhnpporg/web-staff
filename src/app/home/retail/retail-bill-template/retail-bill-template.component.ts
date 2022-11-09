@@ -1,3 +1,4 @@
+import { UserService } from './../../../core/services/user/user.service';
 import { PROFILE } from './../../../core/utils/AppConfig';
 import { Component, Input, OnInit } from '@angular/core';
 
@@ -10,15 +11,28 @@ export class RetailBillTemplateComponent implements OnInit {
 
   @Input() listProductInBill: any[] = []
   @Input() printBill: any
-  // staffName = 
+  staffProfile: any
+  customerInfo: any
+  time = Date.now()
 
-  constructor() { }
+  constructor(
+    private userService: UserService
+  ) { }
 
   ngOnInit(): void {
-    // console.log(this.printBill);
-    // console.log(localStorage.getItem(PROFILE));
-    
+    this.staffProfile = JSON.parse(localStorage.getItem(PROFILE) || '{}')
+  }
 
+
+  clickPrintBill() {
+    console.log(this.printBill);
+    
+    if (this.printBill) {
+      this.userService.getCustomerByID(this.printBill.customerId).subscribe((result) => {
+        this.customerInfo = result
+        console.log(this.customerInfo);
+      })
+    }
   }
 
 }

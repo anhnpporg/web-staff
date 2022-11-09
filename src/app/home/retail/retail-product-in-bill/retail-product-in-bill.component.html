@@ -9,7 +9,9 @@
                     <!-- <td>
                         {{Product.barcode}}
                     </td> -->
-                    <td><h3>{{Product.name}}</h3></td>
+                    <td>
+                        <h3>{{Product.name}}</h3>
+                    </td>
                     <td>
                         Đường dùng: {{listRouteInAdministrations[0].name}}
                     </td>
@@ -28,48 +30,10 @@
                     <td>
 
                     </td>
-                    <td>Tổng tiền: {{unitPrice * billQuantity}} VNĐ
-                        <input type="hidden" value={{unitPrice * billQuantity}} #total>
+                    <td>Tổng tiền: {{totalPrice}} VNĐ
+                        <input type="hidden" value={{totalPrice}} #total>
                     </td>
                 </tr>
-                <!-- <tr>
-                    <td></td>
-                    <td colspan="2">
-                        <div *ngIf="listBatches.length > 1; else batchEqual0">
-                            <nz-select nzShowSearch nzAllowClear nzPlaceHolder="Select a person"
-                                [(ngModel)]="selectedbatchesValue" (ngModelChange)="selectBatches()">
-                                <nz-option *ngFor="let batches of listBatches"
-                                    [nzLabel]="batches.batchBarcode + ' - Hết hạn: ' + (batches.expiryDate | date:'dd-MM-yyyy') + ' - Tồn kho: ' + inventory +' '+ inventoryUnit"
-                                    [nzValue]="batches">
-                                </nz-option>
-                            </nz-select>
-                        </div>
-                        <ng-template #batchEqual0>
-                            <div *ngIf="listBatches.length == 0; else batchEqual1">
-                                Không có lô hàng nào cho sản phẩm này <span style="color: #ffcc00;"><i
-                                        class="fa fa-exclamation-triangle"></i></span>
-                            </div>
-                        </ng-template>
-                        <ng-template #batchEqual1>
-                            <div *ngFor="let batches of listBatches">
-                                <input type="hidden" [(ngModel)]="selectedbatchesValue" [value]="batches">
-                                {{batches.batchBarcode + ' - Hết hạn: ' + (batches.expiryDate | date:'dd-MM-yyyy') +
-                                ' - Tồn kho: ' + inventory +' '+ inventoryUnit}}
-                            </div>
-                        </ng-template>
-                    </td>
-                    <td>
-                        <nz-select [(ngModel)]="unitPriceID" (ngModelChange)="chageUnitPrice()">
-                            <nz-option *ngFor="let item of listUnitProduct" [nzValue]="item.id" nzLabel={{item.unit}}>
-                            </nz-option>
-                        </nz-select>
-                    </td>
-                    <td>Hàng tồn: {{inventory +' '+ inventoryUnit || 0}}</td>
-                    <td>Số lượng:
-                        <nz-input-number nzBorderless [(ngModel)]="billQuantity" (ngModelChange)="addQuantity($event)"
-                            [nzMin]="1" [nzMax]="inventory"></nz-input-number>
-                    </td>
-                </tr> -->
                 <tr app-retail-select-consignment-of-product-in-bill
                     *ngFor="let item of billProduct.goodsIssueNote let i = index" [index]="i"
                     (deleteBatches)="deleteConsignment($event)" [listUnitProduct]="listUnitProduct"

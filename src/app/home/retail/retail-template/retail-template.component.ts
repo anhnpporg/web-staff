@@ -17,6 +17,7 @@ export class RetailTemplateComponent implements OnInit {
   totalBill: number = 0
   printBillList: any[] = []
   listInvoiceProduct: any[] = []
+  listgoodsIssueNote: any[] = []
 
   constructor(
     private product: ProductService,
@@ -150,6 +151,9 @@ export class RetailTemplateComponent implements OnInit {
         }
       }
     });
+
+    console.log(this.listInBill);
+    
   }
   quantityProduct(event: any) {
     console.log(event);
@@ -216,22 +220,43 @@ export class RetailTemplateComponent implements OnInit {
 
   addInvoice(event: any) {
     console.log(event);
-    
     var check = true
-
-    // this.listInvoiceProduct.filter(item => item.goodsIssueNote)
 
     this.listInvoiceProduct.forEach(element => {
       if (element.productId == event.productId) {
         element.goodsIssueNote.quantity = event.goodsIssueNote.quantity
-        console.log('ok');
         check = false
       }
     });
 
-    if(check){
+    if (check) {
       this.listInvoiceProduct.push(event)
     }
+
+
+    this.totalBill == 0
+    event.goodsIssueNote.forEach((element: any) => {
+      this.product.getProductUnitbyUnitID(element.unit).subscribe((result) => {
+        this.product.getBatchByBatchID(element.batchId).subscribe((resultBatch) => {
+          this.listgoodsIssueNote.push({
+            quantity: element.quantity,
+            batches: resultBatch,
+            unit: result
+          })
+        })
+      })
+    });
+
+    this.listgoodsIssueNote.forEach(element => {
+      console.log(element.unit.price);
+      console.log(element.quantity);
+      
+      
+      this.totalBill = (element.quantity) * element.unit.price
+      console.log(this.totalBill);
+    });
+
+    
 
     console.log(this.listInvoiceProduct);
 
