@@ -4,7 +4,8 @@ import { Router } from '@angular/router';
 import { InvoiceInterface } from './../../../core/utils/App.interface';
 import { UserService } from './../../../core/services/user/user.service';
 import { ProductService } from './../../../core/services/product/product.service';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ElementRef, ViewChild } from '@angular/core';
+import { NgxPrintDirective } from 'ngx-print';
 
 @Component({
   selector: 'app-retail-customer-in-bill',
@@ -12,6 +13,8 @@ import { Component, Input, OnInit } from '@angular/core';
   styleUrls: ['./retail-customer-in-bill.component.css']
 })
 export class RetailCustomerInBillComponent implements OnInit {
+
+  @ViewChild('printBtn') printBtn: ElementRef<HTMLElement> | undefined;
 
   selectedValue: any = ''
   phoneNumber: string = ''
@@ -67,7 +70,7 @@ export class RetailCustomerInBillComponent implements OnInit {
       customer: null
     }
     var check = true
-    console.log(this.InvoiceProduct);
+    console.log(this.invoice);
 
     if (this.invoice.customerId == undefined) {
       if (this.phoneNumber == '' && this.customerName == '') {
@@ -103,29 +106,33 @@ export class RetailCustomerInBillComponent implements OnInit {
         nzTitle: 'Bán hàng',
         nzContent: 'xuất hóa đơn',
         nzOnOk: () => {
-          this.productservice.retailInvoice(this.invoice).subscribe((result) => {
-            console.log(result);
-            this.notification.create(
-              'success',
-              result.message,
-              ''
-            );
-            let currentUrl = this.router.url;
-            this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
-              this.router.navigate([currentUrl]);
-            });
+          let print = this.printBtn?.nativeElement
+          print?.click();
+          // this.productservice.retailInvoice(this.invoice).subscribe((result) => {
+          //   console.log(result);
+          //   this.notification.create(
+          //     'success',
+          //     result.message,
+          //     ''
+          //   );
+          //   let currentUrl = this.router.url;
+          //   this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
+          //     this.router.navigate([currentUrl]);
+          //   });
 
-          })
+          // })
         }
       });
     }
+
+    console.log(this.printBill.product);
 
 
 
   }
 
   searchcustomer(value: string) {
-    console.log('search:' + value);
+    // console.log('search:' + value);
 
     if (value == '') {
       value = '0'
@@ -150,13 +157,8 @@ export class RetailCustomerInBillComponent implements OnInit {
     const a = document.getElementById('side__bar__bill');
     if (a != null) {
       a.style.display = 'block'
-      console.log(a);
-
     }
   }
-
-
-
 
   inputValue?: string;
   options: string[] = [];

@@ -15,6 +15,7 @@ import { InputElementComponent } from './input/input-element/input-element.compo
 import { RetailSelectConsignmentOfProductInBillComponent } from './retail/retail-select-consignment-of-product-in-bill/retail-select-consignment-of-product-in-bill.component';
 import { ProfileTemplateComponent } from './profile/profile-template/profile-template.component';
 import { ProfileChagePasswordComponent } from './profile/profile-chage-password/profile-chage-password.component';
+import { RetailBillTemplateProductComponent } from './retail/retail-bill-template-product/retail-bill-template-product.component';
 
 const homeRoute: Routes = [
   {
@@ -39,7 +40,8 @@ const homeRoute: Routes = [
     InputElementComponent,
     RetailSelectConsignmentOfProductInBillComponent,
     ProfileTemplateComponent,
-    ProfileChagePasswordComponent
+    ProfileChagePasswordComponent,
+    RetailBillTemplateProductComponent
   ],
   imports: [
     NgxPrintModule,

@@ -16,7 +16,7 @@ export class RetailSelectConsignmentOfProductInBillComponent implements OnInit {
   inventory: number = 0
   inventoryUnit: string = ''
   unitPriceID: any
-  ProductOfBatchQuantity: number = 1
+  ProductOfBatchQuantity: number = 0
   selectedValue: any
   demoValue: number = 0
   selectedbatchesValue: any
@@ -55,13 +55,11 @@ export class RetailSelectConsignmentOfProductInBillComponent implements OnInit {
   }
 
   chageProductInBillQuantity() {
-    var tempQuantity = this.ProductOfBatchQuantity
-
     this.ChangeProductQuantity.emit({
       index: this.index,
       unitPrice: this.unitPriceID.price,
       info: {
-        quantity: tempQuantity,
+        quantity: this.ProductOfBatchQuantity,
         unit: this.unitPriceID.id,
         batchId: this.selectedbatchesValue
       }
