@@ -1,3 +1,5 @@
+import { StoreModule } from '@ngrx/store';
+
 import { RetailTemplateComponent } from './retail/retail-template/retail-template.component';
 import { AntdModule } from './../core/antd/antd.module';
 import { HomeTemplateComponent } from './home-template/home-template.component';
@@ -16,6 +18,7 @@ import { RetailSelectConsignmentOfProductInBillComponent } from './retail/retail
 import { ProfileTemplateComponent } from './profile/profile-template/profile-template.component';
 import { ProfileChagePasswordComponent } from './profile/profile-chage-password/profile-chage-password.component';
 import { RetailBillTemplateProductComponent } from './retail/retail-bill-template-product/retail-bill-template-product.component';
+import counterReducer, { name as counterFeatureKey } from "./../core/store/store.slice";
 
 const homeRoute: Routes = [
   {
@@ -41,7 +44,8 @@ const homeRoute: Routes = [
     RetailSelectConsignmentOfProductInBillComponent,
     ProfileTemplateComponent,
     ProfileChagePasswordComponent,
-    RetailBillTemplateProductComponent
+    RetailBillTemplateProductComponent,
+
   ],
   imports: [
     NgxPrintModule,
@@ -49,8 +53,8 @@ const homeRoute: Routes = [
     RouterModule.forRoot(homeRoute),
     AntdModule,
     FormsModule,
-    ReactiveFormsModule
-
+    ReactiveFormsModule,
+    StoreModule.forFeature(counterFeatureKey, counterReducer)
   ]
 })
 export class HomeModule { }
