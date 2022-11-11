@@ -1,15 +1,18 @@
-import { InvoiceInterface } from './../../../core/utils/App.interface';
+import { createSelector, Store } from '@ngrx/store';
 import { ProductService } from './../../../core/services/product/product.service';
-import { Component, ElementRef, OnInit, TemplateRef, ViewChild, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
-import { NzModalService } from 'ng-zorro-antd/modal';
-
+import * as counterSlice from "./../../../core/store/store.slice";
 @Component({
   selector: 'app-retail-template',
   templateUrl: './retail-template.component.html',
   styleUrls: ['./retail-template.component.css']
 })
 export class RetailTemplateComponent implements OnInit {
+
+  counter$ = this.store.select(
+    createSelector(counterSlice.selectFeature, (state) => state.ListProductInbill)
+  )
 
   selectedValue: string = 'test';
   listProduct: any[] = [];
@@ -21,10 +24,13 @@ export class RetailTemplateComponent implements OnInit {
 
   constructor(
     private product: ProductService,
-    private notification: NzNotificationService
-  ) { }
+    private notification: NzNotificationService,
+    private readonly store: Store<{}>
+  ) {
+  }
 
   ngOnInit(): void {
+
   }
 
 
@@ -40,11 +46,8 @@ export class RetailTemplateComponent implements OnInit {
             this.product.getProductByID(resultBatch.data.product.id).subscribe((resultProductbyBatch) => {
               var productOBJ = resultProductbyBatch
               console.log(productOBJ);
-
-
               productOBJ.batches = [resultBatch.data]
               var check = true
-
               this.listInBill.forEach(element => {
                 if (element.batches.length == 1) {
                   if (element.batches[0].batchBarcode == productOBJ.batches[0].batchBarcode) {
@@ -59,6 +62,14 @@ export class RetailTemplateComponent implements OnInit {
               });
               if (check == true) {
                 this.listInBill.push(productOBJ)
+                let listBatchofProduct: any[] = []
+                productOBJ.batches.forEach((element: any) => {
+                  listBatchofProduct.push(element.id)
+                });
+                this.store.dispatch(counterSlice.addProducttoListBill({
+                  productId: productOBJ.id,
+                  batchid: listBatchofProduct
+                }))
 
                 // this.listInvoiceProduct.push({
                 //   productId: productOBJ.id,
@@ -90,7 +101,7 @@ export class RetailTemplateComponent implements OnInit {
           } else {
             this.notification.create(
               'warning',
-              'Thuốc đã tồn tài trong hóa đơn',
+              'Thuốc đã tồn tạii trong hóa đơn',
               ''
             );
           }
@@ -115,6 +126,14 @@ export class RetailTemplateComponent implements OnInit {
             console.log('ok');
             this.listInBill.push(element)
             this.totalBill += element.productUnits[0].price
+            let listBatchofProduct: any[] = []
+            element.batches.forEach((element: any) => {
+              listBatchofProduct.push(element.id)
+            });
+            this.store.dispatch(counterSlice.addProducttoListBill({
+              productId: element.id,
+              batchid: listBatchofProduct
+            }))
 
             // this.listInvoiceProduct.push({
             //   productId: element.id,
@@ -136,6 +155,14 @@ export class RetailTemplateComponent implements OnInit {
         } else {
 
           this.listInBill.push(element);
+          let listBatchofProduct: any[] = []
+          element.batches.forEach((element: any) => {
+            listBatchofProduct.push(element.id)
+          });
+          this.store.dispatch(counterSlice.addProducttoListBill({
+            productId: element.id,
+            batchid: listBatchofProduct
+          }))
           this.totalBill += element.productUnits[0].price
 
           // this.listInvoiceProduct.push({
@@ -153,7 +180,7 @@ export class RetailTemplateComponent implements OnInit {
     });
 
     console.log(this.listInBill);
-    
+
   }
   quantityProduct(event: any) {
     console.log(event);
@@ -250,13 +277,13 @@ export class RetailTemplateComponent implements OnInit {
     this.listgoodsIssueNote.forEach(element => {
       console.log(element.unit.price);
       console.log(element.quantity);
-      
-      
+
+
       this.totalBill = (element.quantity) * element.unit.price
       console.log(this.totalBill);
     });
 
-    
+
 
     console.log(this.listInvoiceProduct);
 

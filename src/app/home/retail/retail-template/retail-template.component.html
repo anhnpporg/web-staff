@@ -1,7 +1,9 @@
 <div class="container-fluid">
+
     <div class="row mt-5">
         <div class="col-9">
             <div class="p-3" id="customer__in__bill">
+                <!-- <app-test-reducer></app-test-reducer> -->
                 <div class="example-input">
                     <div class="d-flex justify-content-md-between align-items-center">
                         <nz-select nzShowSearch nzAllowClear nzPlaceHolder="Thêm Thuốc vào hóa đơn"
@@ -19,6 +21,7 @@
                             (nzOnOk)="handleOk()" [nzWidth]="1000">
                             <ng-container *nzModalContent>
                                 <app-example-bill></app-example-bill>
+
                             </ng-container>
                         </nz-modal>
                     </div>
@@ -31,16 +34,12 @@
                                 (invoiceInfoProduct)="addInvoice($event)" (DeleteProduct)="deleteProductInBill($event)">
                             </app-retail-product-in-bill>
                         </div>
-                        <!-- <nz-divider></nz-divider>
-                        <div>
-                            <h3>Tổng tiền: </h3>
-                        </div> -->
                     </div>
                 </div>
             </div>
         </div>
         <div class="col-3">
-            <div class="p-3 mb-3" id="customer__in__bill">
+            <div class="p-3 mb-3" id="customer__in__bill" style="position: relative;">
                 <app-retail-customer-in-bill [totalBill]="totalBill" [TotalProductInBill]="listInBill"
                     [InvoiceProduct]="listInvoiceProduct"></app-retail-customer-in-bill>
             </div>

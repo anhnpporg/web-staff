@@ -11,6 +11,7 @@ import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { NZ_I18N } from 'ng-zorro-antd/i18n';
 import { vi_VN } from 'ng-zorro-antd/i18n';
+import { StoreModule } from '@ngrx/store';
 
 
 const routes: Routes = [
@@ -32,6 +33,7 @@ const routes: Routes = [
     LoginModule,
     HomeModule,
     RouterModule.forRoot(routes),
+    StoreModule.forRoot({}),
   ],
   providers: [
     { provide: NZ_I18N, useValue: vi_VN },
