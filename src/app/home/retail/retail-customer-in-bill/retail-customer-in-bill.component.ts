@@ -36,6 +36,8 @@ export class RetailCustomerInBillComponent implements OnInit {
     customer: null
   }
 
+ 
+
 
 
 

@@ -9,8 +9,8 @@
                         <nz-select nzShowSearch nzAllowClear nzPlaceHolder="Thêm Thuốc vào hóa đơn"
                             [(ngModel)]="selectedValue" style="width: 94%;" (ngModelChange)="addToListBill()"
                             (nzOnSearch)="searchProduct($event)">
-                            <nz-option *ngFor="let item of listProduct" [nzLabel]="item.name + ' - ' + item.barcode"
-                                nzValue={{item.id}}>
+                            <nz-option *ngFor="let item of listProduct"
+                                [nzLabel]="'Tên'+item.name + ' - ' + item.barcode" nzValue={{item.id}}>
                             </nz-option>
                         </nz-select>
                         <i class="fa fa-barcode" role="button" style="font-size: 20px;"></i>

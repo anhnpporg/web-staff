@@ -43,7 +43,7 @@ export class ProductService {
 
   //batches
   getBatchesByProductID(id: string): Observable<any> {
-    return this.httpClient.get(DOMAIN + `batch-management/products/${id}/batches`, { headers: this.headers })
+    return this.httpClient.get(DOMAIN + `product-management/products/${id}/batches`, { headers: this.headers })
   }
 
   getProductByBatchBarcode(barcode: string): Observable<any> {
@@ -59,6 +59,26 @@ export class ProductService {
   }
   getBatchByBatchID(id: string): Observable<any> {
     return this.httpClient.get(DOMAIN + `batch-management/batches/${id}`, { headers: this.headers })
+  }
+
+  getListInvoicebyCustomerID(id: number): Observable<any> {
+    return this.httpClient.get(DOMAIN + `invoice-management/customers/${id}/invoices`, { headers: this.headers })
+  }
+
+  getInvoiceDetailByInvoiceID(id: number): Observable<any> {
+    return this.httpClient.get(DOMAIN + `invoice-management/invoices/${id}/invoice-detail`, { headers: this.headers })
+  }
+
+  getBatchesByBatchesID(id: number): Observable<any> {
+    return this.httpClient.get(DOMAIN + `product-management/products/${id}`, { headers: this.headers })
+  }
+
+  getListSuppliers(): Observable<any> {
+    return this.httpClient.get(DOMAIN + `suppliers-management/suppliers`, { headers: this.headers })
+  }
+
+  PostGoodReceiptNoteManager(data: any): Observable<any> {
+    return this.httpClient.post(DOMAIN + 'goods-receipt-note-management/goods-receipt-notes', data, { headers: this.headers })
   }
 
 

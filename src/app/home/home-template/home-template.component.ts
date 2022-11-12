@@ -21,9 +21,9 @@ export class HomeTemplateComponent implements OnInit {
   ngOnInit(): void {
     this.user.getProfile().subscribe((result) => {
       // console.log(result);
-      localStorage.setItem(PROFILE, JSON.stringify(result))
-      this.avatar = result.avatar
-      this.fullname = result.fullname
+      localStorage.setItem(PROFILE, JSON.stringify(result.data))
+      this.avatar = result.data.avatar
+      this.fullname = result.data.fullname
     })
   }
 

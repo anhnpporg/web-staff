@@ -19,6 +19,9 @@ import { ProfileTemplateComponent } from './profile/profile-template/profile-tem
 import { ProfileChagePasswordComponent } from './profile/profile-chage-password/profile-chage-password.component';
 import { RetailBillTemplateProductComponent } from './retail/retail-bill-template-product/retail-bill-template-product.component';
 import counterReducer, { name as counterFeatureKey } from "./../core/store/store.slice";
+import { RetailCustomerHistoryInvoiceComponent } from './retail/retail-customer-in-bill/retail-customer-history-invoice/retail-customer-history-invoice.component';
+import { RetailCustomerHistoryInvoiceDetailComponent } from './retail/retail-customer-in-bill/retail-customer-history-invoice/retail-customer-history-invoice-detail/retail-customer-history-invoice-detail.component';
+import { InputInfoSupplierComponent } from './input/input-info-supplier/input-info-supplier.component';
 
 const homeRoute: Routes = [
   {
@@ -45,6 +48,9 @@ const homeRoute: Routes = [
     ProfileTemplateComponent,
     ProfileChagePasswordComponent,
     RetailBillTemplateProductComponent,
+    RetailCustomerHistoryInvoiceComponent,
+    RetailCustomerHistoryInvoiceDetailComponent,
+    InputInfoSupplierComponent,
 
   ],
   imports: [
