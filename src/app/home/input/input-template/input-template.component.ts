@@ -1,5 +1,8 @@
+import { goodsReceiptNoteInterface } from './../input-element/input-element.model';
+import { Store, createSelector } from '@ngrx/store';
 import { ProductService } from './../../../core/services/product/product.service';
 import { Component, OnInit } from '@angular/core';
+import * as counterSlice from "./../../../core/store/store.slice";
 
 @Component({
   selector: 'app-input-template',
@@ -8,12 +11,25 @@ import { Component, OnInit } from '@angular/core';
 })
 export class InputTemplateComponent implements OnInit {
 
+  goodsReceiptNote: goodsReceiptNoteInterface = {
+    goodsReceiptNoteTypeId: 1,
+    invoiceId: null,
+    supplierId: null,
+    batches: [],
+    supplier: null
+  }
+
   constructor(
-    private product: ProductService
+    private product: ProductService,
+    private readonly store: Store<{}>
   ) { }
 
   ngOnInit(): void {
   }
+
+  // counter$ = this.store.select(
+  //   createSelector(counterSlice.selectFeature, (state) => state.ListInputProduct)
+  // )
 
   inputValue: any
   options: any[] = [];
@@ -24,10 +40,16 @@ export class InputTemplateComponent implements OnInit {
       this.options = result.items
     })
   }
-
   onSelect(event: any, value: any) {
     if (event.isUserInput == true) {
       this.listProductInput.push(value)
+      // this.store.select(counterSlice.)
+      this.store.dispatch(counterSlice.addProductToListInput({
+        productId: value.id,
+        batchesId: []
+      }))
+      this.store.dispatch(counterSlice.addgoodsReceiptNote(this.goodsReceiptNote))
+
     }
   }
 }

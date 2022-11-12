@@ -109,7 +109,7 @@ export class RetailTemplateComponent implements OnInit {
 
       } else {
         this.listProduct = result.items
-        // console.log(result.items);
+        console.log(this.listProduct);
       }
     })
   }
