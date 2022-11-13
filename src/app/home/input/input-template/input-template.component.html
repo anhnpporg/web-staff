@@ -3,7 +3,23 @@
         <div class="col-9">
             <div class="p-3" id="customer__in__bill">
                 <div class="example-input">
-                    <input placeholder="input here" nz-input [(ngModel)]="inputValue" [nzAutocomplete]="auto"
+
+                    <nz-select nzShowSearch nzAllowClear nzPlaceHolder="chọn nhà cung cấp" style="width: 90%;"
+                        [(ngModel)]="inputValue" (nzOnSearch)="onInput($event)" (ngModelChange)="onSelect($event)">
+                        <nz-option *ngFor="let option of options let i = index" [nzValue]="option"
+                            [nzLabel]="option.name + ' - ' + option.id">
+                        </nz-option>
+                    </nz-select>
+
+                    <!-- <nz-select nzShowSearch nzAllowClear nzPlaceHolder="Thêm Thuốc vào hóa đơn"
+                    [(ngModel)]="selectedValue" style="width: 94%;" (ngModelChange)="addToListBill()"
+                    (nzOnSearch)="searchProduct($event)">
+                    <nz-option *ngFor="let item of listProduct"
+                        [nzLabel]="'Tên'+item.name + ' - ' + item.barcode" nzValue={{item.id}}>
+                    </nz-option>
+                </nz-select> -->
+
+                    <!-- <input placeholder="input here" nz-input [(ngModel)]="inputValue" [nzAutocomplete]="auto"
                         (ngModelChange)="onInput()" />
                     <nz-autocomplete #auto>
                         <nz-auto-option *ngFor="let option of options" [nzValue]="option" [nzLabel]="option.name"
@@ -11,7 +27,7 @@
                             {{ option.name }} - {{option.barcode}}
                         </nz-auto-option>
                         <option></option>
-                    </nz-autocomplete>
+                    </nz-autocomplete> -->
                 </div>
                 <nz-divider></nz-divider>
                 <div>

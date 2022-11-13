@@ -30,9 +30,7 @@
                     <td>
 
                     </td>
-                    <td>Tổng tiền: {{totalPrice}} VNĐ
-                        <input type="hidden" value={{totalPrice}} #total>
-                    </td>
+                    <td>Tổng tiền: {{totalPrice | currency:'VND'}}</td>
                 </tr>
                 <tr app-retail-select-consignment-of-product-in-bill
                     *ngFor="let item of billProduct.goodsIssueNote let i = index" [index]="i"

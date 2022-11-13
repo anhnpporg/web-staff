@@ -119,6 +119,12 @@ export class InputElementComponent implements OnInit {
 
       if (this.goodsReceiptNote) {
         this.store.dispatch(counterSlice.addgoodsReceiptNote({ ...this.goodsReceiptNote, batches: this.listBatches }))
+
+
+        this.quantityBatch = 0
+        this.selectUnitProductPrice = 0
+        this.totalPrice = 0
+        
       }
 
     } else {
@@ -158,6 +164,11 @@ export class InputElementComponent implements OnInit {
     this.listBatches = [...this.listBatches, this.batchs]
     this.store.dispatch(counterSlice.addgoodsReceiptNote({ ...this.goodsReceiptNote, batches: this.listBatches }))
 
+    this.quantityBatch = 0
+    this.selectUnitProductPrice = 0
+    this.totalPrice = 0
+    this.manufacturingDate = ''
+    this.expiryDate = ''
   }
 
   handleCancelNewBatch(): void {

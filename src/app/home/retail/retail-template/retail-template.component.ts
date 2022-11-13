@@ -1,3 +1,5 @@
+import { Observable } from 'rxjs';
+import { invoiceInterface } from './../retail.model';
 import { createSelector, Store } from '@ngrx/store';
 import { ProductService } from './../../../core/services/product/product.service';
 import { Component, OnInit } from '@angular/core';
@@ -10,17 +12,25 @@ import * as counterSlice from "./../../../core/store/store.slice";
 })
 export class RetailTemplateComponent implements OnInit {
 
-  counter$ = this.store.select(
-    createSelector(counterSlice.selectFeature, (state) => state.ListProductInbill)
-  )
-
-  selectedValue: string = 'test';
+  selectedValue: any
   listProduct: any[] = [];
   listInBill: any[] = []
   totalBill: number = 0
   printBillList: any[] = []
   listInvoiceProduct: any[] = []
   listgoodsIssueNote: any[] = []
+
+
+  listInBill$: Observable<any> | undefined
+
+  invoice: invoiceInterface = {
+    customerId: null,
+    product: [],
+    customer: null
+  }
+  // invoice$: Observable<any> | undefined
+  // listProductInvoice:
+
 
   constructor(
     private product: ProductService,
@@ -30,6 +40,13 @@ export class RetailTemplateComponent implements OnInit {
   }
 
   ngOnInit(): void {
+
+    this.listInBill$ = this.store.select(
+      createSelector(counterSlice.selectFeature, (state) => state.ListProductInbill)
+    )
+    this.listInBill$.subscribe((result) => {
+      this.listInBill = result
+    })
 
   }
 
@@ -109,77 +126,91 @@ export class RetailTemplateComponent implements OnInit {
 
       } else {
         this.listProduct = result.items
-        console.log(this.listProduct);
       }
     })
   }
 
   addToListBill() {
-    this.listProduct.forEach(element => {
-      if (element.id == this.selectedValue) {
-        if (this.listInBill.length > 0) {
+    // this.listProduct.forEach(element => {
+    //   if (element.id == this.selectedValue) {
+    //     if (this.listInBill.length > 0) {
 
-          const result = this.listInBill.filter(bill => bill.id == this.selectedValue);
-          console.log(result);
+    //       const result = this.listInBill.filter(bill => bill.id == this.selectedValue);
+    //       console.log(result);
 
-          if (result.length <= 0) {
-            console.log('ok');
-            this.listInBill.push(element)
-            this.totalBill += element.productUnits[0].price
-            let listBatchofProduct: any[] = []
-            element.batches.forEach((element: any) => {
-              listBatchofProduct.push(element.id)
-            });
-            this.store.dispatch(counterSlice.addProducttoListBill({
-              productId: element.id,
-              batchid: listBatchofProduct
-            }))
+    //       if (result.length <= 0) {
+    //         console.log('ok');
+    //         this.listInBill.push(element)
 
-            // this.listInvoiceProduct.push({
-            //   productId: element.id,
-            //   goodsIssueNote: {
-            //     quantity: 1,
-            //     unit: element.productUnits[0].id
-            //   }
-            // })
+    //         this.totalBill += element.productUnits[0].price
+    //         let listBatchofProduct: any[] = []
+    //         element.batches.forEach((element: any) => {
+    //           listBatchofProduct.push(element.id)
+
+    //           // this.invoice.product = [...this.invoice, this.invoice.product = ]
+
+    //         });
+    //         // this.store.dispatch(counterSlice.addProducttoListBill())
 
 
-            this.selectedValue = ''
-          } else {
-            this.notification.create(
-              'warning',
-              'Thuốc đã tồn tài trong hóa đơn',
-              ''
-            );
-          }
-        } else {
+    //         this.selectedValue = ''
+    //       } else {
+    //         this.notification.create(
+    //           'warning',
+    //           'Thuốc đã tồn tài trong hóa đơn',
+    //           ''
+    //         );
+    //       }
+    //     } else {
 
-          this.listInBill.push(element);
-          let listBatchofProduct: any[] = []
-          element.batches.forEach((element: any) => {
-            listBatchofProduct.push(element.id)
-          });
-          this.store.dispatch(counterSlice.addProducttoListBill({
-            productId: element.id,
-            batchid: listBatchofProduct
-          }))
-          this.totalBill += element.productUnits[0].price
+    //       this.listInBill.push(element);
+    //       let listBatchofProduct: any[] = []
+    //       element.batches.forEach((element: any) => {
+    //         listBatchofProduct.push(element.id)
+    //       });
+    //       this.store.dispatch(counterSlice.addProducttoListBill({
+    //         productId: element.id,
+    //         batchid: listBatchofProduct
+    //       }))
+    //       this.totalBill += element.productUnits[0].price
 
-          // this.listInvoiceProduct.push({
-          //   productId: element.id,
-          //   goodsIssueNote: {
-          //     quantity: 1,
-          //     unit: element.productUnits[0].id
-          //   }
-          // })
+    //       this.selectedValue = ''
 
-          this.selectedValue = ''
+    //     }
+    //   }
+    // });
+    // console.log(this.listInBill);
 
+    if (this.listInBill.length > 0) {
+      let selectProduct: any
+      let checkExistProduct = true
+      for (let i = 0; i < this.listInBill.length; i++) {
+        if (this.listInBill[i].id == this.selectedValue) {
+          checkExistProduct = false;
+          break
         }
       }
-    });
 
-    console.log(this.listInBill);
+      if (checkExistProduct) {
+        this.product.getProductByID(this.selectedValue).subscribe((result) => {
+          let newdata = result.data
+          this.store.dispatch(counterSlice.addProducttoListBill(newdata))
+        })
+
+      } else {
+        this.notification.create(
+          'error',
+          'Sản phẩm đã tồn tại',
+          ''
+        )
+      }
+    } else {
+      this.product.getProductByID(this.selectedValue).subscribe((result) => {
+        let newdata = result.data
+        this.store.dispatch(counterSlice.addProducttoListBill(newdata))
+      })
+
+    }
 
   }
   quantityProduct(event: any) {

@@ -27,29 +27,24 @@ export class InputTemplateComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  // counter$ = this.store.select(
-  //   createSelector(counterSlice.selectFeature, (state) => state.ListInputProduct)
-  // )
-
-  inputValue: any
+  inputValue: string = ''
   options: any[] = [];
   listProductInput: any[] = []
 
-  onInput(): void {
-    this.product.getAllProduct(this.inputValue).subscribe((result) => {
+  onInput(event: any): void {
+    console.log(event);
+
+    this.product.getAllProduct(event).subscribe((result) => {
+      console.log(result.items);
+
       this.options = result.items
     })
   }
-  onSelect(event: any, value: any) {
-    if (event.isUserInput == true) {
-      this.listProductInput.push(value)
-      // this.store.select(counterSlice.)
-      this.store.dispatch(counterSlice.addProductToListInput({
-        productId: value.id,
-        batchesId: []
-      }))
-      this.store.dispatch(counterSlice.addgoodsReceiptNote(this.goodsReceiptNote))
+  onSelect(event: any) {
+    console.log(event);
+    this.listProductInput = [event]
 
-    }
+    this.store.dispatch(counterSlice.addgoodsReceiptNote(this.goodsReceiptNote))
+
   }
 }
