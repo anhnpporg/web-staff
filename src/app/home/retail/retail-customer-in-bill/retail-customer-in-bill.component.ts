@@ -1,3 +1,5 @@
+import { product } from './../retail.model';
+import { Observable } from 'rxjs';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
 import { Router } from '@angular/router';
@@ -6,6 +8,8 @@ import { UserService } from './../../../core/services/user/user.service';
 import { ProductService } from './../../../core/services/product/product.service';
 import { Component, Input, OnInit, ElementRef, ViewChild } from '@angular/core';
 import { NgxPrintDirective } from 'ngx-print';
+import { createSelector, Store } from '@ngrx/store';
+import * as counterSlice from "./../../../core/store/store.slice";
 
 @Component({
   selector: 'app-retail-customer-in-bill',
@@ -36,9 +40,9 @@ export class RetailCustomerInBillComponent implements OnInit {
     customer: null
   }
 
- 
-
-
+  invoiceRedux$: Observable<any> | undefined
+  invoiceRedux: any
+  totalBillPrice: number = 0
 
 
   constructor(
@@ -46,10 +50,28 @@ export class RetailCustomerInBillComponent implements OnInit {
     private productservice: ProductService,
     private router: Router,
     private modal: NzModalService,
-    private notification: NzNotificationService
+    private notification: NzNotificationService,
+    private store: Store<{}>
   ) { }
 
   ngOnInit(): void {
+    this.invoiceRedux$ = this.store.select(
+      createSelector(counterSlice.selectFeature, (state) => state.invoice)
+    )
+    this.invoiceRedux$.subscribe((result) => {
+      this.invoiceRedux = result
+      this.totalBillPrice = 0
+      for (let i = 0; i < this.invoiceRedux.product.length; i++) {
+        for (let j = 0; j < this.invoiceRedux.product[i].goodsIssueNote.length; j++) {
+          this.productservice.getProductUnitbyUnitID(this.invoiceRedux.product[i].goodsIssueNote[j].unit).subscribe((result) => {
+            this.totalBillPrice += (this.invoiceRedux.product[i].goodsIssueNote[j].quantity * result.data.price)
+          })
+        }
+      }
+
+
+
+    })
   }
 
   showInvoiceHistory() {
@@ -66,68 +88,98 @@ export class RetailCustomerInBillComponent implements OnInit {
   }
 
   createInvoice() {
-    this.invoice = {
-      customerId: this.selectedValue.id,
-      product: this.InvoiceProduct,
-      customer: null
-    }
-    var check = true
-    console.log(this.invoice);
 
-    if (this.invoice.customerId == undefined) {
-      if (this.phoneNumber == '' && this.customerName == '') {
-        check = false
-        this.notification.create(
-          'error',
-          'Thiếu thông tin',
-          'Vui lòng chọn thông tin khách hàng'
-        );
-      } else {
-        this.invoice = {
-          customerId: null,
-          product: this.InvoiceProduct,
-          customer: {
-            phoneNumber: this.phoneNumber,
-            fullName: this.customerName
-          }
-        }
+    this.confirmModal = this.modal.confirm({
+      nzTitle: 'Bán hàng',
+      nzContent: 'xuất hóa đơn',
+      nzOnOk: () => {
+        // let print = this.printBtn?.nativeElement
+        // print?.click();
+        console.log(this.invoiceRedux);
+        
+        this.productservice.retailInvoice(this.invoiceRedux).subscribe((result) => {
+          console.log(result);
+          this.notification.create(
+            'success',
+            result.message,
+            ''
+          );
+          let currentUrl = this.router.url;
+          this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
+            this.router.navigate([currentUrl]);
+          });
+
+        })
       }
-    }
-    if (this.invoice.product.length <= 0) {
-      check = false
-      this.notification.create(
-        'error',
-        'Thiếu thông tin',
-        'Vui lòng chọn thuốc'
-      );
-    }
-    if (check) {
-      this.printBill = this.invoice
-      console.log(this.invoice);
-      this.confirmModal = this.modal.confirm({
-        nzTitle: 'Bán hàng',
-        nzContent: 'xuất hóa đơn',
-        nzOnOk: () => {
-          let print = this.printBtn?.nativeElement
-          print?.click();
-          // this.productservice.retailInvoice(this.invoice).subscribe((result) => {
-          //   console.log(result);
-          //   this.notification.create(
-          //     'success',
-          //     result.message,
-          //     ''
-          //   );
-          //   let currentUrl = this.router.url;
-          //   this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
-          //     this.router.navigate([currentUrl]);
-          //   });
+    });
 
-          // })
-        }
-      });
-    }
 
-    console.log(this.printBill.product);
+    // this.invoice = {
+    //   customerId: this.selectedValue.id,
+    //   product: this.InvoiceProduct,
+    //   customer: null
+    // }
+    // var check = true
+    // console.log(this.invoice);
+
+    // if (this.invoice.customerId == undefined) {
+    //   if (this.phoneNumber == '' && this.customerName == '') {
+    //     check = false
+    //     this.notification.create(
+    //       'error',
+    //       'Thiếu thông tin',
+    //       'Vui lòng chọn thông tin khách hàng'
+    //     );
+    //   } else {
+    //     this.invoice = {
+    //       customerId: null,
+    //       product: this.InvoiceProduct,
+    //       customer: {
+    //         phoneNumber: this.phoneNumber,
+    //         fullName: this.customerName
+    //       }
+    //     }
+    //   }
+    // }
+    // if (this.invoice.product.length <= 0) {
+    //   check = false
+    //   this.notification.create(
+    //     'error',
+    //     'Thiếu thông tin',
+    //     'Vui lòng chọn thuốc'
+    //   );
+    // }
+    // if (check) {
+
+
+
+
+    //   this.printBill = this.invoice
+    //   console.log(this.invoice);
+    //   this.confirmModal = this.modal.confirm({
+    //     nzTitle: 'Bán hàng',
+    //     nzContent: 'xuất hóa đơn',
+    //     nzOnOk: () => {
+    //       let print = this.printBtn?.nativeElement
+    //       print?.click();
+    //       // this.productservice.retailInvoice(this.invoice).subscribe((result) => {
+    //       //   console.log(result);
+    //       //   this.notification.create(
+    //       //     'success',
+    //       //     result.message,
+    //       //     ''
+    //       //   );
+    //       //   let currentUrl = this.router.url;
+    //       //   this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
+    //       //     this.router.navigate([currentUrl]);
+    //       //   });
+
+    //       // })
+    //     }
+    //   });
+    // }
+
+    // console.log(this.printBill.product);
 
 
 
@@ -147,12 +199,23 @@ export class RetailCustomerInBillComponent implements OnInit {
         this.phoneNumber = value
       }
     })
+
+
+
+
   }
 
   addcustomer() {
     this.phoneNumber = this.selectedValue.phoneNumber
     this.customerName = this.selectedValue.fullName
     this.customerInfo = this.selectedValue
+
+    console.log(this.invoiceRedux);
+
+    this.invoiceRedux = { ...this.invoiceRedux, customerId: this.customerInfo.id, customer: null }
+
+    this.store.dispatch(counterSlice.addCustomer(this.invoiceRedux))
+
   }
 
   openBill() {
@@ -180,8 +243,16 @@ export class RetailCustomerInBillComponent implements OnInit {
   handleOkAddNewCustomer(): void {
 
     console.log('Button ok clicked!');
-
     this.isVisibleNewCustomer = false;
+
+    this.invoiceRedux = {
+      ...this.invoiceRedux, customerId: null, customer: {
+        phoneNumber: this.phoneNumber,
+        fullName: this.customerName
+      }
+    }
+    this.store.dispatch(counterSlice.addCustomer(this.invoiceRedux))
+
   }
 
   handleCancelAddNewCustomer(): void {

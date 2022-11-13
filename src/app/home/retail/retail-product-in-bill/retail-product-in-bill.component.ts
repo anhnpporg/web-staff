@@ -1,9 +1,14 @@
+import { Observable } from 'rxjs';
+import { product } from './../retail.model';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { Product } from './../../../core/utils/App.interface';
 import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
 import { ProductService } from './../../../core/services/product/product.service';
 import { Component, Input, OnInit } from '@angular/core';
 import { Output, EventEmitter } from '@angular/core';
+import { goodsIssueNote } from '../retail.model';
+import * as counterSlice from "./../../../core/store/store.slice";
+import { Store, createSelector } from '@ngrx/store';
 
 @Component({
   selector: 'app-retail-product-in-bill',
@@ -38,10 +43,17 @@ export class RetailProductInBillComponent implements OnInit {
   lastUnitPrice: number = 0
   totalPrice: number = 0
 
+
+  ListgoodsIssueNote: goodsIssueNote[] = []
+  ListProduct: product[] = []
+
+  invoice$: Observable<any> | undefined
+
   constructor(
     private modal: NzModalService,
     private notification: NzNotificationService,
-    private productService: ProductService
+    private productService: ProductService,
+    private store: Store<{}>
   ) { }
 
   ngOnInit(): void {
@@ -68,50 +80,42 @@ export class RetailProductInBillComponent implements OnInit {
       }]
     }
 
+    this.invoice$ = this.store.select(
+      createSelector(counterSlice.selectFeature, (state) => state.invoice)
+    )
+
+    this.totalPrice = 0
+    this.invoice$.subscribe((result) => {
+      this.ListProduct = result.product
+      for (let i = 0; i < result.product.length; i++) {
+        const element = result.product[i];
+        if (this.Product.id == element.productId) {
+          this.ListgoodsIssueNote = element.goodsIssueNote
+        }
+      }
+    })
+
+    for (let i = 0; i < this.ListgoodsIssueNote.length; i++) {
+      const element = this.ListgoodsIssueNote[i];
+      this.productService.getProductUnitbyUnitID(this.ListgoodsIssueNote[i].unit + '').subscribe((result) => {
+        this.totalPrice += (element.quantity * result.data.price)
+      })
+    }
+
+    console.log(this.ListProduct);
+    console.log(this.ListgoodsIssueNote);
   }
 
   getProductGoodIssueNote(event: any) {
-
-    var check = true
-    if (this.billProduct.goodsIssueNote[event.index].batchId == '') {
-      this.billProduct.goodsIssueNote.forEach((element: any) => {
-        if (element.batchId == event.info.batchId) {
-          check = false
-          this.notification.create(
-            'error',
-            'Lô thuốc này đã được chọn',
-            'Bạn vui lòng chọn lô thuốc khác'
-          );
-        }
-      });
-      if (check) {
-        this.billProduct.goodsIssueNote[event.index].batchId = event.info.batchId
-      }
-    }
-    if (this.billProduct.goodsIssueNote[event.index].batchId == event.info.batchId && this.billProduct.goodsIssueNote[event.index].unit == event.info.unit) {
-      this.billProduct.goodsIssueNote[event.index].quantity = event.info.quantity
-    } else if (this.billProduct.goodsIssueNote[event.index].batchId == event.info.batchId && this.billProduct.goodsIssueNote[event.index].unit != event.info.unit) {
-      this.billProduct.goodsIssueNote[event.index].quantity = event.info.quantity
-      this.billProduct.goodsIssueNote[event.index].unit = event.info.unit
-    }
-    this.invoiceInfoProduct.emit(this.billProduct)
-    // console.log(this.billProduct);
-
-
-    this.billProduct.goodsIssueNote.forEach((element: any) => {
-      this.totalPrice = 0 
-      // console.log(element);
-      
-      this.productService.getProductUnitbyUnitID(element.unit).subscribe((result) => {
-        // console.log(result);
-        
-        this.totalPrice += result.price * element.quantity
-        // console.log(this.totalPrice);
-        
+    this.totalPrice = 0
+    for (let i = 0; i < this.ListgoodsIssueNote.length; i++) {
+      const element = this.ListgoodsIssueNote[i];
+      this.productService.getProductUnitbyUnitID(this.ListgoodsIssueNote[i].unit + '').subscribe((result) => {
+        this.totalPrice += (element.quantity * result.data.price)
+        console.log(this.totalPrice);
       })
-    });
+    }
   }
-
 
   deleteProduct(id: number) {
     this.DeleteProduct.emit(id)
@@ -152,6 +156,44 @@ export class RetailProductInBillComponent implements OnInit {
         batchId: ''
       })
     }
+
+
+    let checkExist = this.listBatches.filter((batch: any): any => {
+      for (let i = 0; i < this.ListgoodsIssueNote.length; i++) {
+        const element = this.ListgoodsIssueNote[i];
+        return batch.id != element.batchId
+      }
+    })
+    console.log(checkExist);
+
+    this.ListgoodsIssueNote = [...this.ListgoodsIssueNote, {
+      quantity: 1,
+      unit: checkExist[0].currentQuantity[0].id,
+      batchId: checkExist[this.ListgoodsIssueNote.length].id
+    }]
+
+    console.log(this.ListgoodsIssueNote);
+    
+    this.store.dispatch(counterSlice.addBatchesToProductinBill({
+      productId: this.Product.id,
+      listBatches: this.ListgoodsIssueNote
+    }))
+
+    // product
+
+    console.log(this.ListgoodsIssueNote);
+
+
+    // this.ListgoodsIssueNote.push({
+    //   quantity: 1,
+    //   unit: this.unitPriceID,
+    //   batchId: this.selectedbatchesValue.id
+    // })
+    // this.store.dispatch(counterSlice.addBatchesToProductinBill({
+    //   productId: this.Product.id,
+    //   listBatches: this.ListgoodsIssueNote
+    // }))
+
   }
 
   deleteConsignment(index: any) {

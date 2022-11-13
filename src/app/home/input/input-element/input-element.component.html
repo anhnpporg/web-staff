@@ -15,7 +15,7 @@
 
     <td [colSpan]="2">
         <span role="button" (click)="showModalBatches()">chọn Lô</span>
-        <nz-modal [(nzVisible)]="isVisibleBatches" nzTitle="Tạo lô mới" (nzOnCancel)="handleCancelBatches()"
+        <nz-modal [(nzVisible)]="isVisibleBatches" nzTitle="Chọn Lô" (nzOnCancel)="handleCancelBatches()"
             (nzOnOk)="handleOkBatches()">
             <ng-container *nzModalContent>
                 <div class="form-group">
@@ -49,7 +49,7 @@
     </td>
     <td [colSpan]="4">
         <nz-tag [nzColor]="'green'" *ngFor="let item of goodsReceiptNote.batches, let i = index">
-            <span style="margin: 5px 10px 5px 5px;">{{item.batchId}} - {{item.quantity}}</span>
+            <span style="margin: 5px 10px 5px 5px;">{{'Lô: '+item.batchId}} - {{'Số lượng: '+item.quantity}}</span>
             <i class="fa fa-times" role="button" (click)="deleteSelectBatches(i)"></i>
         </nz-tag>
     </td>

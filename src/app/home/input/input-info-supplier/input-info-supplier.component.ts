@@ -1,3 +1,4 @@
+import { Router } from '@angular/router';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { goodsReceiptNoteInterface } from './../input-element/input-element.model';
 import { ProductService } from './../../../core/services/product/product.service';
@@ -24,7 +25,8 @@ export class InputInfoSupplierComponent implements OnInit {
   constructor(
     private productService: ProductService,
     private store: Store<{}>,
-    private notification: NzNotificationService
+    private notification: NzNotificationService,
+    private router: Router
   ) { }
 
 
@@ -82,6 +84,13 @@ export class InputInfoSupplierComponent implements OnInit {
     )
     this.goodsReceiptNote$.subscribe((result) => {
       this.productService.PostGoodReceiptNoteManager([result]).subscribe((resultInput) => {
+        if (resultInput) {
+          let currentUrl = this.router.url;
+          this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
+            this.router.navigate([currentUrl]);
+            console.log(currentUrl);
+          });
+        }
         this.notification.create(
           'success',
           resultInput.message,
