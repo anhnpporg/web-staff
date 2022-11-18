@@ -34,7 +34,7 @@ export class InputTemplateComponent implements OnInit {
   onInput(event: any): void {
     console.log(event);
 
-    this.product.getAllProduct(event).subscribe((result) => {
+    this.product.searchProduct(event).subscribe((result) => {
       console.log(result.items);
 
       this.options = result.items

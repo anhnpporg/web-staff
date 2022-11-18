@@ -32,7 +32,7 @@ export class ProductService {
     return this.httpClient.get(DOMAIN + `product-management/products/${id}`, { headers: this.headers })
   }
 
-  getAllProduct(search: string): Observable<any> {
+  searchProduct(search: string): Observable<any> {
     return this.httpClient.get(DOMAIN + `product-management/products/filter?searchValue=${search}&pageSize=5`, { headers: this.headers })
   }
 

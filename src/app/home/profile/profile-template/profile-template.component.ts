@@ -24,7 +24,7 @@ export class ProfileTemplateComponent implements OnInit {
     this.profile = JSON.parse(this.tempProfile)
     this.userService.getProfile().subscribe((result) => {
       console.log(result);
-      this.profile = result
+      this.profile = result.data
       this.phoneNumber = this.profile.phoneNumber
       this.emailAddressRecovery = this.profile.email
     })

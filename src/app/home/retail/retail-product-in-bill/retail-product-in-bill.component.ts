@@ -1,14 +1,10 @@
-import { Observable } from 'rxjs';
-import { product } from './../retail.model';
-import { NzNotificationService } from 'ng-zorro-antd/notification';
-import { Product } from './../../../core/utils/App.interface';
-import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
-import { ProductService } from './../../../core/services/product/product.service';
-import { Component, Input, OnInit } from '@angular/core';
-import { Output, EventEmitter } from '@angular/core';
-import { goodsIssueNote } from '../retail.model';
+import {Component, Input, OnInit} from '@angular/core';
+import {NzModalRef, NzModalService} from "ng-zorro-antd/modal";
+import {Store} from "@ngrx/store";
 import * as counterSlice from "./../../../core/store/store.slice";
-import { Store, createSelector } from '@ngrx/store';
+import {goodsIssueNote} from "../retail.model";
+import {NzNotificationService} from "ng-zorro-antd/notification";
+
 
 @Component({
   selector: 'app-retail-product-in-bill',
@@ -18,189 +14,123 @@ import { Store, createSelector } from '@ngrx/store';
 export class RetailProductInBillComponent implements OnInit {
 
 
-  @Input() Product: any
-  @Input() index: number = 1
-  @Output() quantityOfProduct = new EventEmitter<{}>();
-  @Output() DeleteProduct = new EventEmitter<{}>();
-  @Output() invoiceInfoProduct = new EventEmitter<{}>();
-
-  selectedbatchesValue: any
-  // demoValue: number = 1
-  billQuantity: number = 1
-  inputValue: string = ''
-  listRouteInAdministrations: any = []
-  listUnitProduct: any[] = []
-  listBatches: any[] = []
-  unitPriceID: number = 1
-  unitPrice: number = 0
+  @Input() productInbill: any
+  @Input() index: number = 0
   confirmModal?: NzModalRef
-  billProduct: any
-  temp: number = 1
-  inventory: number = 0
-  inventoryUnit: string = ''
-  inventoryUnitID: any
-  listInventory: any[] = []
-  lastUnitPrice: number = 0
-  totalPrice: number = 0
+
+// batches
+  isVisibleAddBatch: boolean = false
+  ListBatchesOfProductInBill: any[] = [] // danh sách lô hàng của sản phẩm được chọn
+  ListUnitOfBatches: any[] = [] // danh sách đơn vị của lô hàng được chọn
+  MaxBatchQuantity: number = 0
+
+  goodsIssueNote: goodsIssueNote = {
+    quantity: 1,
+    unit: 0,
+    batchId: 0
+  }
 
 
-  ListgoodsIssueNote: goodsIssueNote[] = []
-  ListProduct: product[] = []
-
-  invoice$: Observable<any> | undefined
+  noteInput: string = ''
 
   constructor(
     private modal: NzModalService,
-    private notification: NzNotificationService,
-    private productService: ProductService,
-    private store: Store<{}>
-  ) { }
+    private store: Store<{}>,
+    private notification: NzNotificationService
+  ) {
+  }
 
   ngOnInit(): void {
-
-    this.listRouteInAdministrations.push(this.Product.routeOfAdministration)
-    this.listUnitProduct = this.Product.productUnits
-    this.inventory = this.Product.batches[0].currentQuantity[0].currentQuantity
-    this.inventoryUnit = this.Product.batches[0].currentQuantity[0].unit
-    this.listInventory = this.Product.batches[0].currentQuantity
-
-    this.unitPriceID = this.listUnitProduct[0].id
-    this.unitPrice = this.listUnitProduct[0].price
-    this.listBatches = this.Product.batches
-    this.selectedbatchesValue = this.listBatches[0]
-    this.lastUnitPrice = this.unitPrice
-    this.inventoryUnitID = this.Product.batches[0].currentQuantity[0]
-
-    this.billProduct = {
-      productId: this.Product.id,
-      goodsIssueNote: [{
-        quantity: 0,
-        unit: this.unitPriceID,
-        batchId: this.listBatches[0].id
-      }]
+    if (this.productInbill.listBatches.length == 0) {
+      this.isVisibleAddBatch = true
     }
 
-    this.invoice$ = this.store.select(
-      createSelector(counterSlice.selectFeature, (state) => state.invoice)
-    )
-
-    this.totalPrice = 0
-    this.invoice$.subscribe((result) => {
-      this.ListProduct = result.product
-      for (let i = 0; i < result.product.length; i++) {
-        const element = result.product[i];
-        if (this.Product.id == element.productId) {
-          this.ListgoodsIssueNote = element.goodsIssueNote
+    // danh sách lô hàng của sản phẩm
+    this.ListBatchesOfProductInBill = this.productInbill.product.batches
+    this.goodsIssueNote.batchId = this.ListBatchesOfProductInBill[0].id
+    if (this.goodsIssueNote.batchId != 0) {
+      for (let i = 0; i < this.ListBatchesOfProductInBill.length; i++) {
+        if (this.ListBatchesOfProductInBill[i].id == this.goodsIssueNote.batchId) {
+          this.ListUnitOfBatches = this.ListBatchesOfProductInBill[i].currentQuantity
+          this.goodsIssueNote.unit = this.ListUnitOfBatches[0].id
+          for (let i = 0; i < this.ListUnitOfBatches.length; i++) {
+            if (this.ListUnitOfBatches[i].id == this.goodsIssueNote.unit) {
+              this.MaxBatchQuantity = this.ListUnitOfBatches[i].currentQuantity
+            }
+          }
         }
       }
-    })
-
-    for (let i = 0; i < this.ListgoodsIssueNote.length; i++) {
-      const element = this.ListgoodsIssueNote[i];
-      this.productService.getProductUnitbyUnitID(this.ListgoodsIssueNote[i].unit + '').subscribe((result) => {
-        this.totalPrice += (element.quantity * result.data.price)
-      })
-    }
-
-    console.log(this.ListProduct);
-    console.log(this.ListgoodsIssueNote);
-  }
-
-  getProductGoodIssueNote(event: any) {
-    this.totalPrice = 0
-    for (let i = 0; i < this.ListgoodsIssueNote.length; i++) {
-      const element = this.ListgoodsIssueNote[i];
-      this.productService.getProductUnitbyUnitID(this.ListgoodsIssueNote[i].unit + '').subscribe((result) => {
-        this.totalPrice += (element.quantity * result.data.price)
-        console.log(this.totalPrice);
-      })
     }
   }
 
-  deleteProduct(id: number) {
-    this.DeleteProduct.emit(id)
+  selectBatchIDChanged() {
+    if (this.goodsIssueNote.batchId != 0) {
+      for (let i = 0; i < this.ListBatchesOfProductInBill.length; i++) {
+        if (this.ListBatchesOfProductInBill[i].id == this.goodsIssueNote.batchId) {
+          this.ListUnitOfBatches = this.ListBatchesOfProductInBill[i].currentQuantity
+          this.goodsIssueNote.unit = this.ListUnitOfBatches[0].id
+        }
+      }
+    }
   }
 
-  showConfirm(): void {
+  changeUnit() {
+    for (let i = 0; i < this.ListUnitOfBatches.length; i++) {
+      if (this.ListUnitOfBatches[i].id == this.goodsIssueNote.unit) {
+        this.MaxBatchQuantity = this.ListUnitOfBatches[i].quantity
+      }
+    }
+  }
+
+
+  showConfirmDeleteProductInBill() {
     this.confirmModal = this.modal.confirm({
-      nzTitle: 'Xóa thuốc',
-      nzContent: 'Bạn muốn xóa thuốc ra khỏi danh sách?',
+      nzTitle: 'Bạn có muốn xóa sản phẩm này?',
+      nzContent: 'khi bấm vào nút ok sản phẩm sẽ được xóa khỏi danh sách',
       nzOnOk: () => {
-        this.deleteProduct(this.Product.id)
+        this.store.dispatch(counterSlice.deleteProductInBill(this.productInbill.product.id))
       }
     });
   }
 
-  isVisible = false;
 
-  showModal(): void {
-    this.isVisible = true;
-  }
+  handleOkAddBatch() {
+    this.isVisibleAddBatch = false
+    console.log(this.goodsIssueNote)
+    let checkExistbatch = true
+    let tempListbatches = [...this.productInbill.listBatches]
 
-  handleOk(): void {
-    console.log('Button ok clicked!');
-    this.isVisible = false;
-  }
+    this.productInbill.listBatches.forEach((element: any, index: number) => {
+      if (element.batchId === this.goodsIssueNote.batchId) {
+        checkExistbatch = false
+      }
+    })
 
-  handleCancel(): void {
-    console.log('Button cancel clicked!');
-    this.isVisible = false;
-  }
-
-  addConsignment() {
-    let a = this.billProduct.goodsIssueNote.length + 1
-    if (a <= this.listBatches.length) {
-      this.billProduct.goodsIssueNote.push({
-        quantity: 0,
-        unit: this.unitPriceID,
-        batchId: ''
-      })
+    if (checkExistbatch) {
+      console.log(checkExistbatch)
+      tempListbatches = [...this.productInbill.listBatches, this.goodsIssueNote]
+    } else {
+      this.notification.create(
+        'error',
+        'Lô đã tồn tại',
+        'Vui lòng chọn lô khác'
+      )
     }
 
 
-    let checkExist = this.listBatches.filter((batch: any): any => {
-      for (let i = 0; i < this.ListgoodsIssueNote.length; i++) {
-        const element = this.ListgoodsIssueNote[i];
-        return batch.id != element.batchId
-      }
-    })
-    console.log(checkExist);
-
-    this.ListgoodsIssueNote = [...this.ListgoodsIssueNote, {
-      quantity: 1,
-      unit: checkExist[0].currentQuantity[0].id,
-      batchId: checkExist[this.ListgoodsIssueNote.length].id
-    }]
-
-    console.log(this.ListgoodsIssueNote);
-    
     this.store.dispatch(counterSlice.addBatchesToProductinBill({
-      productId: this.Product.id,
-      listBatches: this.ListgoodsIssueNote
+      product: this.productInbill.product,
+      listBatches: tempListbatches
     }))
 
-    // product
-
-    console.log(this.ListgoodsIssueNote);
-
-
-    // this.ListgoodsIssueNote.push({
-    //   quantity: 1,
-    //   unit: this.unitPriceID,
-    //   batchId: this.selectedbatchesValue.id
-    // })
-    // this.store.dispatch(counterSlice.addBatchesToProductinBill({
-    //   productId: this.Product.id,
-    //   listBatches: this.ListgoodsIssueNote
-    // }))
-
   }
 
-  deleteConsignment(index: any) {
-    this.billProduct.goodsIssueNote.splice(index, 1)
+  showAddBatchModal() {
+    this.isVisibleAddBatch = true
   }
 
-  selectBatches() {
-    console.log(this.selectedbatchesValue);
+  handleCancelAddbatch() {
+    this.isVisibleAddBatch = false
   }
+
 }
