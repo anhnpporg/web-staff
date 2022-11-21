@@ -7,14 +7,18 @@
         <div class="example-input">
           <div class="d-flex justify-content-md-between align-items-center">
             <nz-select nzShowSearch nzAllowClear nzPlaceHolder="Thêm Thuốc vào hóa đơn"
-                       [(ngModel)]="searchValue" style="width: 94%;" (ngModelChange)="addToListBill()"
-                       (nzOnSearch)="searchProduct($event)">
+                       [(ngModel)]="searchValue" style="width: 90%;" (ngModelChange)="addToListBill()"
+                       (nzOnSearch)="searchProduct($event)" >
               <nz-option *ngFor="let item of listSearchProduct"
                          [nzLabel]="'Tên '+item.name + ' - vị trí: ' + item.shelf.name" nzValue={{item.id}}>
               </nz-option>
             </nz-select>
-            <i class="fa fa-barcode" role="button" style="font-size: 20px;"></i>
-            <i class="fa fa-clipboard-list" role="button" style="font-size: 20px;" nz-button></i>
+<!--            <i class="fa fa-barcode" role="button" style="font-size: 20px;"></i>-->
+<!--            <i class="fa fa-clipboard-list" role="button" style="font-size: 20px;" nz-button></i>-->
+            <div>
+              <label>Xuất hỏng: <nz-switch [(ngModel)]="switchValue"></nz-switch></label>
+
+            </div>
           </div>
           <nz-divider></nz-divider>
           <div>
@@ -28,7 +32,14 @@
     </div>
     <div class="col-3">
       <div class="customer__in__bill p-3 mb-3" style="position: relative;">
+        <div *ngIf="switchValue == false; else brokenProduct">
+          <app-retail-customer-in-bill></app-retail-customer-in-bill>
+        </div>
       </div>
+
+      <ng-template #brokenProduct>
+        <app-broken-product></app-broken-product>
+      </ng-template>
     </div>
   </div>
 </div>

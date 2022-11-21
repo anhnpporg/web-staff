@@ -14,6 +14,8 @@ import {log} from "ng-zorro-antd/core/logger";
 })
 export class RetailTemplateComponent implements OnInit {
 
+  switchValue = false;
+
   // tìm kiếm sản phẩm
   searchValue: any
   listSearchProduct: any[] = [];
@@ -25,6 +27,7 @@ export class RetailTemplateComponent implements OnInit {
   isVisibleAddBatch: boolean = false; // show modal add product batch when add new product to bill
 
   invoice: invoiceInterface = {
+    goodsIssueNoteTypeId: 1,
     customerId: null,
     product: [],
     customer: null
@@ -62,40 +65,28 @@ export class RetailTemplateComponent implements OnInit {
     if (event.length === 13) {
       if (event.slice(0, 3) == 'BAT') {
         this.productservice.searchProduct(event).subscribe((result) => {
-          console.log(result.items)
           if (this.listProductInBill.length > 0) {
             let checkBatchExist = true
-
             this.listProductInBill.forEach((item) => {
               if (result.items[0].id === item.product.id) {
                 productsearchInbill = item
-                console.log(productsearchInbill)
                 item.listBatches.forEach((batch: any) => {
                   if (batch.batchId === result.items[0].batches[0].id) {
-                    console.log('ok')
                     checkBatchExist = false
                   }
                 })
-
                 if (checkBatchExist) {
-
                   let tempListBatches = [...productsearchInbill.listBatches]
-
                   tempListBatches = [...tempListBatches, {
                     quantity: 1,
                     unit: result.items[0].batches[0].currentQuantity[0].id,
                     batchId: result.items[0].batches[0].id
                   }]
-
-                  console.log(tempListBatches)
-
                   this.productservice.getProductByID(result.items[0].id).subscribe((result2) => {
                     this.store.dispatch(counterSlice.addBatchesToProductinBill({
                       product: result2.data,
                       listBatches: tempListBatches
                     }))
-
-                    console.log(result2)
                   })
                 } else {
                   this.notification.create(
@@ -104,6 +95,19 @@ export class RetailTemplateComponent implements OnInit {
                     'Vui lòng chọn lô khác'
                   )
                 }
+              } else {
+                this.productservice.getProductByID(result.items[0].id).subscribe((result2) => {
+                  this.store.dispatch(counterSlice.addProducttoListBill({
+                    product: result2.data,
+                    listBatches: [
+                      {
+                        quantity: 1,
+                        unit: result.items[0].batches[0].currentQuantity[0].id,
+                        batchId: result.items[0].batches[0].id
+                      }
+                    ]
+                  }))
+                })
               }
             })
 
@@ -128,9 +132,7 @@ export class RetailTemplateComponent implements OnInit {
 
 
     this.productservice.searchProduct(event).subscribe((result) => {
-      console.log(result.items)
       this.listSearchProduct = result.items
-      console.log(this.listSearchProduct)
     })
 
 
@@ -143,20 +145,15 @@ export class RetailTemplateComponent implements OnInit {
   }
 
   addToListBill(): void {
-    console.log(this.searchValue)
     this.productservice.getProductByID(this.searchValue).subscribe((result) => {
       let checkProductExist = true
-      console.log(result)
       if (this.listProductInBill.length > 0) {
-        console.log(this.listProductInBill)
         for (const listProductInBillElement of this.listProductInBill) {
           if (listProductInBillElement.product.id == result.data.id) {
-            console.log("ok")
             checkProductExist = false
           }
         }
         if (checkProductExist) {
-          console.log("ok1")
           this.store.dispatch(counterSlice.addProducttoListBill({
             product: result.data,
             listBatches: []

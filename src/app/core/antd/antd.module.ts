@@ -16,6 +16,7 @@ import { NzSpinModule } from 'ng-zorro-antd/spin';
 import { NzMenuModule } from 'ng-zorro-antd/menu';
 import { NzTagModule } from 'ng-zorro-antd/tag';
 import { NzTabsModule } from 'ng-zorro-antd/tabs';
+import { NzSwitchModule } from 'ng-zorro-antd/switch';
 
 @NgModule({
   declarations: [],
@@ -36,8 +37,8 @@ import { NzTabsModule } from 'ng-zorro-antd/tabs';
     NzSpinModule,
     NzMenuModule,
     NzTagModule,
-    NzTabsModule
-    
+    NzTabsModule,
+    NzSwitchModule
   ]
 })
 export class AntdModule { }

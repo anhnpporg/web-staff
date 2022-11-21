@@ -4,9 +4,10 @@
 }
 
 #product__in__bill {
-    background-color: white;
-    box-shadow: 1px 1px 1px 1px;
-    border-radius: 5px;
+  background-color: white;
+  box-shadow: 1px 1px 1px 1px;
+  border-radius: 5px;
+  height: 800px;
 }
 
 #customer__in__bill {

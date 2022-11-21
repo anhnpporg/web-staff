@@ -1,12 +1,13 @@
-import { FormBuilder, Validators } from '@angular/forms';
-import { Observable } from 'rxjs';
-import { Store, createSelector } from '@ngrx/store';
-import { NzNotificationService } from 'ng-zorro-antd/notification';
-import { goodsReceiptNoteInterface, batch, batchs } from './input-element.model';
-import { ProductService } from './../../../core/services/product/product.service';
-import { NzModalService, NzModalRef } from 'ng-zorro-antd/modal';
-import { Component, Input, OnInit, TemplateRef } from '@angular/core';
+import {FormBuilder, Validators} from '@angular/forms';
+import {Observable} from 'rxjs';
+import {Store, createSelector} from '@ngrx/store';
+import {NzNotificationService} from 'ng-zorro-antd/notification';
+import {goodsReceiptNoteInterface, batch, batchs} from './input-element.model';
+import {ProductService} from './../../../core/services/product/product.service';
+import {NzModalService, NzModalRef} from 'ng-zorro-antd/modal';
+import {Component, Input, OnInit, TemplateRef} from '@angular/core';
 import * as counterSlice from "./../../../core/store/store.slice";
+import {batchInterface, listBatchInterface, ListInputProductInterface} from "../../../core/store/store.model";
 
 @Component({
   selector: '[app-input-element]',
@@ -23,7 +24,7 @@ export class InputElementComponent implements OnInit {
   isVisibleBatches = false;
   batche: any
 
-  addBatchsList: any[] = []
+  // addBatchsList: any[] = []
 
   // chọn lô
   batchesList: any
@@ -41,13 +42,13 @@ export class InputElementComponent implements OnInit {
 
   // ************************8
 
-  batch = {
+  batch: batchInterface = {
     productId: 0,
     manufacturingDate: '',
     expiryDate: ''
   }
 
-  batchs: batchs = {
+  batchs: listBatchInterface = {
     batchId: null,
     quantity: 0,
     productUnitPriceId: 0,
@@ -55,32 +56,38 @@ export class InputElementComponent implements OnInit {
     batch: this.batch
   }
 
-  goodsReceiptNote$: Observable<any> | undefined
-  goodsReceiptNote: any
+  listProductInput$: Observable<any> | undefined
+  listProductInput: ListInputProductInterface[] = []
+  listBatchOfInputProduct: any[] = []
 
   constructor(
     private modal: NzModalService,
     private productService: ProductService,
     private notification: NzNotificationService,
     private readonly store: Store<{}>,
-  ) { }
+  ) {
+  }
+
   ngOnInit(): void {
     console.log(this.InputProduct);
-    this.productService.getBatchesByProductID(this.InputProduct.id).subscribe((result) => {
+    this.productService.getBatchesByProductID(this.InputProduct.product.id).subscribe((result) => {
       this.batchesList = result.data
       this.listUnitProductPrice = result.data[0].currentQuantity
       console.log(result.data);
     })
 
-    this.goodsReceiptNote$ = this.store.select(
-      createSelector(counterSlice.selectFeature, (state) => state.listGoodsReceiptNote)
+    this.listProductInput$ = this.store.select(
+      createSelector(counterSlice.selectFeature, (state) => state.ListInputProduct)
     )
-
-    this.goodsReceiptNote$.subscribe((result) => {
-      this.goodsReceiptNote = result
+    this.listProductInput$.subscribe((result) => {
+      this.listProductInput = result
     })
 
-
+    this.listProductInput.forEach((item, index) => {
+      if (item.product.id == this.InputProduct.product.id) {
+        this.listBatchOfInputProduct = item.listBatch
+      }
+    })
 
   }
 
@@ -90,9 +97,11 @@ export class InputElementComponent implements OnInit {
       this.listUnitProductPrice = result.data.currentQuantity
     })
   }
+
   showModalBatches(): void {
     this.isVisibleBatches = true;
   }
+
   handleOkBatches(): void {
     console.log('Button ok clicked!');
     this.isVisibleBatches = false;
@@ -104,42 +113,52 @@ export class InputElementComponent implements OnInit {
       batch: null
     }
 
-    console.log(this.batchs);
+    let tempListProductInput: any[] = [...this.listProductInput]
 
-    // this.batchs.batchId = this.selectBatch.id
-    var check = true;
-    for (let i = 0; i < this.goodsReceiptNote.batches.length; i++) {
-      if (this.goodsReceiptNote.batches[i].batchId == this.batchs.batchId) {
-        check = false
-        break
+    tempListProductInput.forEach((item: any, index: number) => {
+      if (item.product.id == this.InputProduct.product.id) {
+
+        console.log(item.listBatch)
+
+        let temp: any[] = []
+
+        let checkExistBatch = true
+
+        item.listBatch.forEach((batch: any, index: number) => {
+          if (batch.batchId == this.batchs.batchId) {
+            checkExistBatch = false
+          }
+        })
+
+        if (checkExistBatch) {
+          console.log('ok')
+          temp = item.listBatch
+
+          temp = [...temp, this.batchs]
+
+          tempListProductInput[index] = {...tempListProductInput[index], listBatch: temp}
+          console.log(tempListProductInput)
+
+          // console.log(this.listProductInput)
+          this.store.dispatch(counterSlice.addProductToListInput(tempListProductInput))
+
+        } else {
+          this.notification.create(
+            "error",
+            "Lô hàng đã tồn tại",
+            ""
+          )
+        }
       }
-    }
-    if (check) {
-      this.listBatches = [...this.listBatches, this.batchs]
-
-      if (this.goodsReceiptNote) {
-        this.store.dispatch(counterSlice.addgoodsReceiptNote({ ...this.goodsReceiptNote, batches: this.listBatches }))
+    })
 
 
-        this.quantityBatch = 0
-        this.selectUnitProductPrice = 0
-        this.totalPrice = 0
-        
-      }
-
-    } else {
-      this.notification.create(
-        'error',
-        'Lô hàng đã tồn tại',
-        ''
-      );
-    }
   }
+
   handleCancelBatches(): void {
     console.log('Button cancel clicked!');
     this.isVisibleBatches = false;
   }
-
 
   showModalNewBatch(): void {
     this.isVisible = true;
@@ -149,7 +168,7 @@ export class InputElementComponent implements OnInit {
     this.isVisible = false;
 
     this.batch = {
-      productId: this.InputProduct.id,
+      productId: this.InputProduct.product.id,
       manufacturingDate: this.manufacturingDate,
       expiryDate: this.expiryDate
     }
@@ -161,8 +180,48 @@ export class InputElementComponent implements OnInit {
       totalPrice: this.totalPrice,
       batch: this.batch
     }
-    this.listBatches = [...this.listBatches, this.batchs]
-    this.store.dispatch(counterSlice.addgoodsReceiptNote({ ...this.goodsReceiptNote, batches: this.listBatches }))
+    let tempListProductInput: any[] = [...this.listProductInput]
+
+    tempListProductInput.forEach((item: any, index: number) => {
+      if (item.product.id == this.InputProduct.product.id) {
+
+        console.log(item.listBatch)
+
+        let temp: any[] = []
+
+        let checkExistBatch = true
+
+        item.listBatch.forEach((batch: any, index: number) => {
+          if (batch.batchId == this.batchs.batchId) {
+            checkExistBatch = false
+          }
+        })
+
+        if (checkExistBatch) {
+          console.log('ok')
+          temp = item.listBatch
+
+          temp = [...temp, this.batchs]
+
+          tempListProductInput[index] = {...tempListProductInput[index], listBatch: temp}
+          console.log(tempListProductInput)
+
+          // console.log(this.listProductInput)
+          this.store.dispatch(counterSlice.addProductToListInput(tempListProductInput))
+
+        } else {
+          this.notification.create(
+            "error",
+            "Lô hàng đã tồn tại",
+            ""
+          )
+        }
+      }
+    })
+
+
+    // this.listBatches = [...this.listBatches, this.batchs]
+    // this.store.dispatch(counterSlice.addgoodsReceiptNote({...this.goodsReceiptNote, batches: this.listBatches}))
 
     this.quantityBatch = 0
     this.selectUnitProductPrice = 0
@@ -180,12 +239,41 @@ export class InputElementComponent implements OnInit {
       nzTitle: 'Xóa lô đã chọn',
       nzContent: 'Bạn muốn xóa lô thuốc này',
       nzOnOk: () => {
-        var tem = [...this.listBatches]
-        tem.splice(index, 1)
-        this.listBatches = [...tem]
-        this.store.dispatch(counterSlice.addgoodsReceiptNote({ ...this.goodsReceiptNote, batches: this.listBatches }))
+        let tempListProductInput: any[] = [...this.listProductInput]
+        tempListProductInput.forEach((item: any, index: number) => {
+          if (item.product.id == this.InputProduct.product.id) {
+            let temp = [...item.listBatch]
+            temp.splice(index, 1)
+            console.log(temp)
+            tempListProductInput[index] = {...tempListProductInput[index], listBatch: temp}
+            console.log(tempListProductInput)
+            this.store.dispatch(counterSlice.addProductToListInput(tempListProductInput))
+          }
+        })
       }
 
     });
   }
+
+  deleteProduct() {
+
+    this.confirmModal = this.modal.confirm({
+      nzTitle: 'Xóa sản phẩm đã chọn',
+      nzContent: 'Bạn muốn xóa thuốc này, khi xóa các lô của sản phẩm này cũng sẽ bị xóa',
+      nzOnOk: () => {
+        let tempListProductInput: any[] = [...this.listProductInput]
+        tempListProductInput.forEach((item: any, index: number) => {
+          if (item.product.id == this.InputProduct.product.id) {
+            tempListProductInput.splice(index, 1)
+          }
+        })
+
+        this.store.dispatch(counterSlice.addProductToListInput(tempListProductInput))
+      }
+    })
+
+
+
+  }
+
 }

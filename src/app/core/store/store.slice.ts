@@ -1,19 +1,18 @@
-import {state} from '@angular/animations';
-import {product, goodsIssueNote} from './../../home/retail/retail.model';
 import {createSlice, current} from "@reduxjs/toolkit";
 import {createFeatureSelector} from "@ngrx/store";
 import {invoiceInterface} from "src/app/home/retail/retail.model";
-import {productinbillInterface} from "./store.model";
+import {ListInputProductInterface, productinbillInterface} from "./store.model";
 
 const counterSlice = createSlice({
 
-
   name: "counter",
   initialState: {
+    ListBrokenProduct: [] as any,
     ListProductInbill: [] as productinbillInterface[],
-    ListInputProduct: [] as any[],
+    ListInputProduct: [] as ListInputProductInterface[],
     listGoodsReceiptNote: [] as any,
     invoice: {
+      goodsIssueNoteTypeId: 1,
       customerId: null,
       product: [] as any,
       customer: null
@@ -21,6 +20,17 @@ const counterSlice = createSlice({
 
   },
   reducers: {
+    resetState: (state, action) => {
+      state.ListProductInbill = []
+      state.ListInputProduct = []
+      state.listGoodsReceiptNote = []
+      state.invoice = {
+        goodsIssueNoteTypeId: 1,
+        customerId: null,
+        product: [] as any,
+        customer: null
+      }
+    },
     deleteBacthProductInBill: (state, action) => {
       console.log(action.payload)
       let tempListProductInBill = [...current(state.ListProductInbill)]
@@ -36,34 +46,28 @@ const counterSlice = createSlice({
           console.log(state.ListProductInbill)
         }
       })
-
-
     },
     addProducttoListBill: (state, action) => {
       console.log(action.payload)
       state.ListProductInbill = [...state.ListProductInbill, action.payload]
       console.log(state.ListProductInbill);
-
-      // let invocieTemp = { ...state.invoice }
-      // let productTemp: any[] = state.invoice.product
-      //
-      // for (let i = 0; i < state.ListProductInbill.length; i++) {
-      //     if (state.ListProductInbill[i].product.id == action.payload.id) {
-      //         productTemp = [...productTemp, {
-      //             productId: action.payload.id,
-      //             goodsIssueNote: [{
-      //                 quantity: 1,
-      //                 unit: state.ListProductInbill[i].product.productUnits[0].id,
-      //                 batchId: state.ListProductInbill[i].product.batches[0].id
-      //             }]
-      //         }]
-      //     }
-      // }
-      // invocieTemp.product = productTemp
-      // state.invoice = { ...invocieTemp }
-      // console.log(state.invoice);
-
-
+      let invocieTemp = {...state.invoice}
+      let productTemp: any[] = state.invoice.product
+      for (let i = 0; i < state.ListProductInbill.length; i++) {
+        if (state.ListProductInbill[i].product.id == action.payload.id) {
+          productTemp = [...productTemp, {
+            productId: action.payload.id,
+            goodsIssueNote: [{
+              quantity: 1,
+              unit: state.ListProductInbill[i].product.productUnits[0].id,
+              batchId: state.ListProductInbill[i].product.batches[0].id
+            }]
+          }]
+        }
+      }
+      invocieTemp.product = productTemp
+      state.invoice = {...invocieTemp}
+      console.log(state.invoice);
     }, addBatchesToProductinBill: (state, action) => {
       console.log(action.payload)
       let tempListProductInBill = [...current(state.ListProductInbill)]
@@ -73,16 +77,9 @@ const counterSlice = createSlice({
           tempListProductInBill[index] = action.payload
         }
       })
-
-      console.log(tempListProductInBill)
-
       state.ListProductInbill = tempListProductInBill
       console.log(state.ListProductInbill)
-
     }, deleteProductInBill: (state, action) => {
-      // console.log(state.ListProductInbill);
-      // console.log(current(state));
-
       let tempListInBill = current(state.ListProductInbill)
       console.log(tempListInBill);
       tempListInBill.forEach((element, index) => {
@@ -92,10 +89,8 @@ const counterSlice = createSlice({
         }
       });
       state.ListProductInbill = [...tempListInBill]
-
       let temInvocie = current(state.invoice)
       let temProductInvoice = temInvocie.product
-
       temProductInvoice.forEach((element, index) => {
         if (element.productId == action.payload) {
           let a = temProductInvoice.filter(item => item.productId != action.payload)
@@ -106,12 +101,10 @@ const counterSlice = createSlice({
       state.invoice = {...temInvocie}
     }, addCustomer: (state, action) => {
       state.invoice = action.payload
-      console.log(state.invoice);
-
     },
     addProductToListInput: (state, action) => {
-      state.ListInputProduct = [...state.ListInputProduct, action.payload]
-      console.log(state.ListInputProduct);
+      state.ListInputProduct = action.payload
+      console.log(state.ListInputProduct)
     },
     addgoodsReceiptNote: (state, action) => {
       state.listGoodsReceiptNote = action.payload
@@ -129,7 +122,8 @@ const {
     addBatchesToProductinBill,
     addCustomer,
     deleteProductInBill,
-    deleteBacthProductInBill
+    deleteBacthProductInBill,
+    resetState,
   },
   name
 } = counterSlice;
@@ -143,7 +137,8 @@ export {
   addBatchesToProductinBill,
   addCustomer,
   deleteProductInBill,
-  deleteBacthProductInBill
+  deleteBacthProductInBill,
+  resetState,
 };
 
 export const selectFeature = createFeatureSelector<ReturnType<typeof reducer>>(

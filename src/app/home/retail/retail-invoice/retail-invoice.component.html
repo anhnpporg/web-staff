@@ -1,0 +1,54 @@
+<div class="container-fluid">
+  <img src="./../../../../assets/img/logo.png" alt="" width="50">
+  <h5>Nhà thuốc út nhàn</h5>
+  <div>40 đường 225a, phường Tân Phú, thành phố Thủ Đức</div>
+  <div>Hotline: 093-8970-968</div>
+
+  <div class="text-left">
+    <h2>Hóa đơn bán lẻ</h2>
+    <div>Ngày: {{today | date:'dd/MM/yy hh:mm'}}</div>
+    <div>NV: {{invoiceData?.createdBy.name}}</div>
+    <div>KH: {{invoiceData?.customer.fullName}}</div>
+    <div>ĐT: {{invoiceData?.customer.phoneNumber}}</div>
+    <div>
+      <div>
+        Đơn hàng:
+      </div>
+      <div class="text-center">
+        <ngx-barcode bc-value={{invoiceData?.barcode}} [bc-display-value]="true" [bc-width]="1"
+                     [bc-height]="50"></ngx-barcode>
+      </div>
+    </div>
+    <div>
+
+    </div>
+  </div>
+  <table>
+    <thead>
+    <th>Tên sản phẩm</th>
+    <th>SL</th>
+    <th>Đơn giá</th>
+    <th>Thành tiền</th>
+    </thead>
+    <tbody *ngFor="let item of invoiceDetail">
+    <tr class="text-left">
+      <td colspan="4">Tên sản phẩm {{item.product.name}}</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>{{item.quantity}} {{item.unit}}</td>
+      <td>{{item.unitPrice | currency:'VND'}}</td>
+      <td>{{item.totalPrice | currency:'VND'}}</td>
+    </tr>
+    </tbody>
+    <tbody>
+    <tr></tr>
+    <tr>
+      <td></td>
+      <td></td>
+      <td>tổng tiền</td>
+      <td>{{totalBillPrice | currency:'VND'}}</td>
+    </tr>
+    </tbody>
+  </table>
+</div>
