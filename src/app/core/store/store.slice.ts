@@ -16,10 +16,20 @@ const counterSlice = createSlice({
       customerId: null,
       product: [] as any,
       customer: null
-    } as invoiceInterface
-
+    } as invoiceInterface,
+    invoiceID: 0,
+    ListReturnProduct: [] as any
   },
   reducers: {
+    addListReturnProduct: (state, action) => {
+      state.ListReturnProduct = action.payload
+      console.log(state.ListReturnProduct)
+    },
+    addInvoiceID: (state, action) => {
+      state.invoiceID = action.payload
+      console.log(state.invoiceID)
+      console.log(action.payload)
+    },
     resetState: (state, action) => {
       state.ListProductInbill = []
       state.ListInputProduct = []
@@ -124,6 +134,8 @@ const {
     deleteProductInBill,
     deleteBacthProductInBill,
     resetState,
+    addInvoiceID,
+    addListReturnProduct
   },
   name
 } = counterSlice;
@@ -139,6 +151,8 @@ export {
   deleteProductInBill,
   deleteBacthProductInBill,
   resetState,
+  addInvoiceID,
+  addListReturnProduct
 };
 
 export const selectFeature = createFeatureSelector<ReturnType<typeof reducer>>(

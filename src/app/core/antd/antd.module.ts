@@ -17,6 +17,7 @@ import { NzMenuModule } from 'ng-zorro-antd/menu';
 import { NzTagModule } from 'ng-zorro-antd/tag';
 import { NzTabsModule } from 'ng-zorro-antd/tabs';
 import { NzSwitchModule } from 'ng-zorro-antd/switch';
+import { NzTableModule } from 'ng-zorro-antd/table';
 
 @NgModule({
   declarations: [],
@@ -38,7 +39,8 @@ import { NzSwitchModule } from 'ng-zorro-antd/switch';
     NzMenuModule,
     NzTagModule,
     NzTabsModule,
-    NzSwitchModule
+    NzSwitchModule,
+    NzTableModule
   ]
 })
 export class AntdModule { }

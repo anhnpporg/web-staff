@@ -89,5 +89,17 @@ export class ProductService {
     return this.httpClient.get(DOMAIN + `invoice-management/invoices/${id}`, {headers: this.headers})
   }
 
+  getInvocieDetailByBarcode(barcode: string): Observable<any> {
+    return this.httpClient.get(DOMAIN + `invoice-management/invoices/barcode/invoice-detail?barcode=${barcode}`, {headers: this.headers})
+  }
+
+  getInvocieByBarcode(barcode: string): Observable<any> {
+    return this.httpClient.get(DOMAIN + `invoice-management/invoices/barcode?barcode=${barcode}`, {headers: this.headers})
+  }
+
+  getListProductUnitByProductId(id: string): Observable<any> {
+    return this.httpClient.get(DOMAIN + `product-units-management/${id}/product-units`, {headers: this.headers})
+  }
+
 
 }

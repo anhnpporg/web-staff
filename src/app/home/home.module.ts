@@ -32,6 +32,7 @@ import {
 import { BrokenProductComponent } from './retail/broken-product/broken-product.component';
 import { RetailInvoiceComponent } from './retail/retail-invoice/retail-invoice.component';
 import {NgxBarcodeModule} from "@greatcloak/ngx-barcode";
+import { ReturnProductDetailComponent } from './return-product/return-product-detail/return-product-detail.component';
 
 const homeRoute: Routes = [
   {
@@ -62,6 +63,8 @@ const homeRoute: Routes = [
     ReturnProductTemplateComponent,
     BrokenProductComponent,
     RetailInvoiceComponent,
+    ReturnProductDetailComponent,
+
 
   ],
   imports: [

@@ -24,8 +24,8 @@
             <th></th>
             <th></th>
             </thead>
-            <tbody *ngFor="let product of listProductInput let index = index" app-input-element
-                   [InputProduct]="product" [index]="index">
+            <tbody *ngFor="let product of listProductInput; let index = index">
+            <app-input-element [InputProduct]="product" [index]="index"></app-input-element>
             </tbody>
           </table>
 

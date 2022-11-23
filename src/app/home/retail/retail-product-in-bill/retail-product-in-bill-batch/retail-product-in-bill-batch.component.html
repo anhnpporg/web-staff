@@ -6,7 +6,7 @@
   Đơn giá: {{unitInfo?.price}}
 </td>
 <td>
-  <nz-select nzShowSearch nzAllowClear nzPlaceHolder="Select a person" [(ngModel)]="unitID" (ngModelChange)="changeUnit()">
+  <nz-select nzPlaceHolder="Select a person" [(ngModel)]="unitID" (ngModelChange)="changeUnit()">
     <nz-option *ngFor="let item of listUnitProductPrice"
                nzLabel="{{item.currentQuantity}} {{item.unit}}"
                [nzValue]="item.id"></nz-option>
@@ -14,7 +14,8 @@
 </td>
 <td>
   Số lượng:
-  <nz-input-number [(ngModel)]="quantity" (ngModelChange)="changeQuantity()" [nzMax]="maxQuantity" [nzMin]="1"></nz-input-number>
+  <nz-input-number [(ngModel)]="quantity" (change)="changeQuantity()" [nzMax]="maxQuantity"
+                   [nzMin]="1"></nz-input-number>
 </td>
 <td><i class="fa fa-trash-alt" role="button" (click)="deleteconsignment()"></i></td>
 

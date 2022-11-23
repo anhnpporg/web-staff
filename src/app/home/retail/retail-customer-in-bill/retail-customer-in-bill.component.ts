@@ -19,16 +19,13 @@ import {goodsIssueNoteInterface} from "../../../core/store/store.model";
 })
 export class RetailCustomerInBillComponent implements OnInit {
 
+  invoiceID: number = 0
 
   // danh sách sản phẩm
   listProductInBill$: Observable<any> | undefined // lấy từ kho lưu trữ (store.slice.ts)
   listProductInBill: any[] = [] // lưu thông tin lấy từ kho lưu trữ (listProductInBill$)
   invocie$: Observable<any> | undefined
   invoice: any
-
-
-  @ViewChild('printBtn') printBtn: ElementRef<HTMLElement> | undefined;
-
   selectedValue: any = ''
   phoneNumber: string = ''
   customerName: string = ''
@@ -49,7 +46,6 @@ export class RetailCustomerInBillComponent implements OnInit {
   // invoiceRedux: any
   totalBillPrice: number = 0
 
-
   constructor(
     private user: UserService,
     private productservice: ProductService,
@@ -67,12 +63,9 @@ export class RetailCustomerInBillComponent implements OnInit {
     )
     this.listProductInBill$.subscribe((result) => {
       this.listProductInBill = result
-      console.log(this.listProductInBill)
-
       if (this.listProductInBill.length > 0) {
         this.totalBillPrice = 0
         this.listProductInBill.forEach((element) => {
-          console.log("ok", element.listBatches)
           element.listBatches.forEach((batch: any) => {
             this.productservice.getProductUnitbyUnitID(batch.unit).subscribe((result) => {
               this.totalBillPrice += (batch.quantity * result.data.price)
@@ -87,7 +80,6 @@ export class RetailCustomerInBillComponent implements OnInit {
     )
     this.invocie$.subscribe((result) => {
       this.invoice = result
-      console.log(this.invoice)
     })
 
   }
@@ -133,9 +125,7 @@ export class RetailCustomerInBillComponent implements OnInit {
           })
         })
 
-        console.log(tempproduct)
         this.invoice = {...this.invoice, product: tempproduct}
-        console.log(this.invoice)
 
         if (this.invoice.product.length <= 0) {
           this.notification.create(
@@ -152,31 +142,22 @@ export class RetailCustomerInBillComponent implements OnInit {
             )
           } else {
             this.productservice.retailInvoice(this.invoice).subscribe((result) => {
-              console.log(result.message)
 
-
-              if(result){
-
-                this.notification.create(
-                  "success",
-                  result.message,
-                  ""
-                )
-
-
-                this.store.dispatch(counterSlice.resetState('ok'))
-                let currentUrl = this.router.url;
-                this.router.navigateByUrl('/', {skipLocationChange: true}).then(() => {
-                  this.router.navigate([currentUrl]);
-                })
-
-                let print = this.printBtn?.nativeElement
-                print?.click();
-
+              if (result) {
+                this.invoiceID = result.invoiceId
+                if (this.invoiceID != 0) {
+                  this.notification.create(
+                    "success",
+                    "Tạo hóa đơn thành công",
+                    ""
+                  )
+                  this.store.dispatch(counterSlice.resetState('ok'))
+                  let currentUrl = this.router.url;
+                  this.router.navigateByUrl('/', {skipLocationChange: true}).then(() => {
+                    this.router.navigate([currentUrl]);
+                  })
+                }
               }
-
-
-
             }, err => {
               this.notification.create(
                 "error",
@@ -193,10 +174,7 @@ export class RetailCustomerInBillComponent implements OnInit {
 
   }
 
-  searchcustomer(value
-                   :
-                   string
-  ) {
+  searchcustomer(value: string) {
     if (value == '') {
       value = '0'
     }
@@ -213,7 +191,6 @@ export class RetailCustomerInBillComponent implements OnInit {
     this.customerName = this.selectedValue.fullName
     this.customerInfo = this.selectedValue
 
-    console.log(this.invoice);
 
     this.invoice = {...this.invoice, customerId: this.customerInfo.id, customer: null}
 
@@ -231,33 +208,22 @@ export class RetailCustomerInBillComponent implements OnInit {
   inputValue ?: string;
   options: string[] = [];
 
-  onInput(event
-            :
-            Event
-  ):
+  onInput(event: Event):
     void {
     const value = (event.target as HTMLInputElement).value;
     this.options = value ? [value, value + value, value + value + value] : [];
   }
 
-  addReciveMoney(money
-                   :
-                   number
-  ) {
+  addReciveMoney(money: number) {
     this.reciveMoney = money
   }
 
-  showModalAddNewCustomer()
-    :
-    void {
+  showModalAddNewCustomer(): void {
     this.isVisibleNewCustomer = true;
   }
 
-  handleOkAddNewCustomer()
-    :
-    void {
+  handleOkAddNewCustomer(): void {
 
-    console.log('Button ok clicked!');
     this.isVisibleNewCustomer = false;
 
     this.invoice = {
@@ -270,9 +236,7 @@ export class RetailCustomerInBillComponent implements OnInit {
 
   }
 
-  handleCancelAddNewCustomer()
-    :
-    void {
+  handleCancelAddNewCustomer(): void {
     this.isVisibleNewCustomer = false;
   }
 }

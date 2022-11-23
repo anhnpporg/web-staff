@@ -10,7 +10,7 @@ import * as counterSlice from "./../../../core/store/store.slice";
 import {batchInterface, listBatchInterface, ListInputProductInterface} from "../../../core/store/store.model";
 
 @Component({
-  selector: '[app-input-element]',
+  selector: 'app-input-element',
   templateUrl: './input-element.component.html',
   styleUrls: ['./input-element.component.css']
 })

@@ -57,7 +57,8 @@
           <button nz-button [nzType]="'dashed'" (click)="showInvoiceHistory()"><span>Lịch sử mua
                             hàng</span></button>
           <nz-modal [(nzVisible)]="isVisibleHistoryInvoice" nzTitle="Lịch sử mua hàng"
-                    (nzOnCancel)="handleCancelInvoiceHistory()" (nzOnOk)="handleOkInvoiceHistory()" [nzBodyStyle]="{height: '500px', overflow:'auto'}">
+                    (nzOnCancel)="handleCancelInvoiceHistory()" (nzOnOk)="handleOkInvoiceHistory()"
+                    [nzBodyStyle]="{height: '500px', overflow:'auto'}">
             <ng-container *nzModalContent>
               <app-retail-customer-history-invoice [customerId]="customerInfo.id">
               </app-retail-customer-history-invoice>
@@ -94,19 +95,23 @@
         <div class="row">
           <div class="col-3">
             <button nz-button nzShape="round" class="money__button"
-                    (click)="addReciveMoney(50000)">₫50.000</button>
+                    (click)="addReciveMoney(50000)">₫50.000
+            </button>
           </div>
           <div class="col-3">
             <button nz-button nzShape="round" class="money__button"
-                    (click)="addReciveMoney(100000)">₫100.000</button>
+                    (click)="addReciveMoney(100000)">₫100.000
+            </button>
           </div>
           <div class="col-3">
             <button nz-button nzShape="round" class="money__button"
-                    (click)="addReciveMoney(200000)">₫200.000</button>
+                    (click)="addReciveMoney(200000)">₫200.000
+            </button>
           </div>
           <div class="col-3">
             <button nz-button nzShape="round" class="money__button"
-                    (click)="addReciveMoney(500000)">₫500.000</button>
+                    (click)="addReciveMoney(500000)">₫500.000
+            </button>
           </div>
         </div>
       </div>
@@ -126,16 +131,11 @@
   <nz-divider></nz-divider>
   <div style="position: absolute; bottom: 35px; width: calc(100% - 32px);" class="d-flex align-content-end flex-wrap">
     <button class="border w-100 p-3 d-flex justify-content-around btn btn-success" (click)="createInvoice()"
-            >
+            (click)="clickPrint.printClick()">
       <span>Thanh toán</span>
-      <button class="d-none" printSectionId="print-section" ngxPrint #printBtn></button>
     </button>
-    <div id="print-section" style="display: none;">
-      <app-retail-invoice></app-retail-invoice>
-<!--      <app-retail-bill-template [printBill]="printBill" #setUpPrintBill>-->
-<!--      </app-retail-bill-template>-->
+    <div class="d-none">
+      <app-retail-invoice [invoiceID]="invoiceID" #clickPrint></app-retail-invoice>
     </div>
-  </div>
-  <div>
   </div>
 </div>
