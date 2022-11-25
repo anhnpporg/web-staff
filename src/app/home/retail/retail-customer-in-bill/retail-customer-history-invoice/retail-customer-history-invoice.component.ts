@@ -1,5 +1,7 @@
-import { ProductService } from './../../../../core/services/product/product.service';
-import { Component, Input, OnInit } from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
+import {ProductService} from "../../../../core/services/product/product.service";
+import {log} from "ng-zorro-antd/core/logger";
+import {NzNotificationService} from "ng-zorro-antd/notification";
 
 @Component({
   selector: 'app-retail-customer-history-invoice',
@@ -13,16 +15,24 @@ export class RetailCustomerHistoryInvoiceComponent implements OnInit {
   listInvoiceID: any[] = []
 
   constructor(
-    private productService: ProductService
-  ) { }
+    private productService: ProductService,
+    private notification: NzNotificationService
+  ) {
+  }
 
   ngOnInit(): void {
+    console.log(this.customerId)
     this.productService.getListInvoicebyCustomerID(this.customerId).subscribe((result) => {
       this.listInvoiceID = result.data
       console.log(this.listInvoiceID);
-      
-    })
 
+    },err =>{
+      this.notification.create(
+        "error",
+        err.error.message,
+        ""
+      )
+    })
   }
 
 }

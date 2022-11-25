@@ -10,7 +10,7 @@
     border-radius: 5px;
 }
 
-#customer__in__bill {
+.customer__in__bill {
     background-color: white;
     /* box-shadow: 1px 1px 1px 1px; */
     box-shadow: 0px 0 30px rgb(1 41 112 / 10%);

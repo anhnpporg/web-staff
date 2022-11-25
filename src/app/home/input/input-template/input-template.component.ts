@@ -1,8 +1,10 @@
-import { goodsReceiptNoteInterface } from './../input-element/input-element.model';
-import { Store, createSelector } from '@ngrx/store';
-import { ProductService } from './../../../core/services/product/product.service';
-import { Component, OnInit } from '@angular/core';
+import {goodsReceiptNoteInterface} from './../input-element/input-element.model';
+import {Store, createSelector} from '@ngrx/store';
+import {ProductService} from './../../../core/services/product/product.service';
+import {Component, OnInit} from '@angular/core';
 import * as counterSlice from "./../../../core/store/store.slice";
+import {Observable} from "rxjs";
+import {NzNotificationService} from "ng-zorro-antd/notification";
 
 @Component({
   selector: 'app-input-template',
@@ -11,40 +13,65 @@ import * as counterSlice from "./../../../core/store/store.slice";
 })
 export class InputTemplateComponent implements OnInit {
 
-  goodsReceiptNote: goodsReceiptNoteInterface = {
-    goodsReceiptNoteTypeId: 1,
-    invoiceId: null,
-    supplierId: null,
-    batches: [],
-    supplier: null
-  }
+  inputValue: string = ''
+  options: any[] = [];
+  listProductInput$: Observable<any> | undefined
+  listProductInput: any[] = []
 
   constructor(
     private product: ProductService,
-    private readonly store: Store<{}>
-  ) { }
-
-  ngOnInit(): void {
+    private readonly store: Store<{}>,
+    private notification: NzNotificationService
+  ) {
   }
 
-  inputValue: string = ''
-  options: any[] = [];
-  listProductInput: any[] = []
+  ngOnInit(): void {
+
+    this.listProductInput$ = this.store.select(
+      createSelector(counterSlice.selectFeature, (state) => state.ListInputProduct)
+    )
+    this.listProductInput$.subscribe((result) => {
+      this.listProductInput = result
+    })
+
+  }
+
 
   onInput(event: any): void {
     console.log(event);
 
-    this.product.getAllProduct(event).subscribe((result) => {
-      console.log(result.items);
+    if (event == '') {
+      event = 'a'
+    }
 
+    this.product.searchProduct(event).subscribe((result) => {
+      console.log(result.items);
       this.options = result.items
     })
   }
+
   onSelect(event: any) {
     console.log(event);
-    this.listProductInput = [event]
+    let checkExistProduct = true
 
-    this.store.dispatch(counterSlice.addgoodsReceiptNote(this.goodsReceiptNote))
+    this.listProductInput.forEach((item, index) => {
+      if (item.product.id == event.id) {
+        checkExistProduct = false
+      }
+    })
+    if (checkExistProduct) {
+      this.listProductInput = [...this.listProductInput, {
+        product: event,
+        listBatch: []
+      }]
 
+      this.store.dispatch(counterSlice.addProductToListInput(this.listProductInput))
+    } else {
+      this.notification.create(
+        "error",
+        "Sản phẩm đã tồn tại",
+        ""
+      )
+    }
   }
 }
