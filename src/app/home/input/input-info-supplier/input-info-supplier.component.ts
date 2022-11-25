@@ -1,6 +1,6 @@
 import {Router} from '@angular/router';
 import {NzNotificationService} from 'ng-zorro-antd/notification';
-import {batchs, goodsReceiptNoteInterface} from './../input-element/input-element.model';
+import {batchs, createModelInterface, goodsReceiptNoteInterface} from './../input-element/input-element.model';
 import {ProductService} from './../../../core/services/product/product.service';
 import {Component, OnInit} from '@angular/core';
 import {Store, createSelector} from '@ngrx/store';
@@ -22,9 +22,12 @@ export class InputInfoSupplierComponent implements OnInit {
   goodsReceiptNote: goodsReceiptNoteInterface = {
     goodsReceiptNoteTypeId: 1,
     invoiceId: null,
-    supplierId: null,
-    batches: [],
-    supplier: null
+    createModel: [{
+      supplierId: null,
+      batches: [],
+      supplier: null
+    }],
+    isFull: true
   }
   newSupplier: string = ''
 
@@ -48,9 +51,12 @@ export class InputInfoSupplierComponent implements OnInit {
   }
 
   selectSupplierChange() {
-    this.goodsReceiptNote.supplierId = this.selectSupplier.id
-    this.goodsReceiptNote.supplier = null
+    console.log(this.selectSupplier)
+    this.goodsReceiptNote.createModel[0].supplierId = this.selectSupplier.id
+    this.goodsReceiptNote.createModel[0].supplier = null
     this.newSupplier = ''
+
+    console.log(this.goodsReceiptNote)
   }
 
 
@@ -60,10 +66,10 @@ export class InputInfoSupplierComponent implements OnInit {
 
   handleOkSupplier(): void {
     this.isVisible = false;
-    this.goodsReceiptNote.supplier = {
+    this.goodsReceiptNote.createModel[0].supplier = {
       name: this.newSupplier
     }
-    this.goodsReceiptNote.supplierId = null
+    this.goodsReceiptNote.createModel[0].supplierId = null
     this.selectSupplier = ''
   }
 
@@ -91,23 +97,23 @@ export class InputInfoSupplierComponent implements OnInit {
       })
     })
 
-    this.goodsReceiptNote.batches = tempBatches
+    this.goodsReceiptNote.createModel[0].batches = tempBatches
 
     console.log(this.goodsReceiptNote)
-    if (this.goodsReceiptNote.batches.length <= 0) {
+    if (this.goodsReceiptNote.createModel[0].batches.length <= 0) {
       this.notification.create(
         "error",
         "Chọn lô sản phẩm",
         ""
       )
-    } else if (this.goodsReceiptNote.supplier == null && this.goodsReceiptNote == null) {
+    } else if (this.goodsReceiptNote.createModel[0].supplier == null && this.goodsReceiptNote == null) {
       this.notification.create(
         "error",
         "Chọn nhà cung cấp",
         ""
       )
     } else {
-      this.productService.PostGoodReceiptNoteManager([this.goodsReceiptNote]).subscribe((resultInput) => {
+      this.productService.PostGoodReceiptNoteManager(this.goodsReceiptNote).subscribe((resultInput) => {
         console.log(resultInput)
         if (resultInput) {
           this.notification.create(
@@ -133,3 +139,4 @@ export class InputInfoSupplierComponent implements OnInit {
   }
 
 }
+

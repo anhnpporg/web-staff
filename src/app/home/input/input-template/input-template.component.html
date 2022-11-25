@@ -3,7 +3,7 @@
     <div class="col-9">
       <div class="p-3" id="product__in__bill">
         <div class="example-input">
-          <nz-select nzShowSearch nzAllowClear nzPlaceHolder="chọn nhà cung cấp" style="width: 100%;"
+          <nz-select nzShowSearch nzAllowClear nzPlaceHolder="Tìm kiếm thuốc" style="width: 100%;"
                      [(ngModel)]="inputValue" (nzOnSearch)="onInput($event)" (ngModelChange)="onSelect($event)">
             <nz-option *ngFor="let option of options let i = index" [nzValue]="option"
                        [nzLabel]="option.name + ' - ' + option.id">
@@ -12,22 +12,9 @@
         </div>
         <nz-divider></nz-divider>
         <div>
-          <table class="table table-striped">
-            <thead>
-            <th></th>
-            <th>STT</th>
-            <th>barcode</th>
-            <th>Tên hàng</th>
-            <th></th>
-            <th></th>
-            <th></th>
-            <th></th>
-            <th></th>
-            </thead>
-            <tbody *ngFor="let product of listProductInput; let index = index">
+          <div *ngFor="let product of listProductInput; let index = index">
             <app-input-element [InputProduct]="product" [index]="index"></app-input-element>
-            </tbody>
-          </table>
+          </div>
 
         </div>
       </div>

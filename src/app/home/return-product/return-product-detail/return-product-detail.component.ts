@@ -4,6 +4,7 @@ import {createSelector, Store} from "@ngrx/store";
 import * as counterSlice from "./../../../core/store/store.slice";
 import {Observable} from "rxjs";
 import {NzModalRef, NzModalService} from "ng-zorro-antd/modal";
+import {goodReceiptNote} from "./../../../core/store/store.slice";
 
 @Component({
   selector: '[app-return-product-detail]',
@@ -18,12 +19,15 @@ export class ReturnProductDetailComponent implements OnInit {
   @Input() productData: any
   @Input() index: number = 0
   listUnitProduct: any[] = []
-  SelectUnit: number = 0
+  SelectUnit: any
   quantityProduct: number = 0
-
+  unitSelectPrice: number = 0
+  batchTotalprice: number = 0
 
   invoiceDetailData: any
   invoiceDetailData$: Observable<any> | undefined
+  goodReceiptNote: any
+  goodReceiptNote$: Observable<any> | undefined
 
 
   constructor(
@@ -34,22 +38,15 @@ export class ReturnProductDetailComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    console.log(this.checkFull)
-    this.SelectUnit = this.productData.unit
-    this.quantityProduct = this.productData.quantity
-
     this.productService.getListProductUnitByProductId(this.productData.product.id).subscribe((result) => {
-      console.log(result)
       this.listUnitProduct = result.data
-
       this.listUnitProduct.forEach((item) => {
         if (item.unit == this.productData.unit) {
           this.SelectUnit = item.id
+          this.unitSelectPrice = item.price
         }
       })
-
     })
-
     this.invoiceDetailData$ = this.store.select(
       createSelector(counterSlice.selectFeature, (state) => state.ListReturnProduct)
     )
@@ -58,27 +55,75 @@ export class ReturnProductDetailComponent implements OnInit {
     })
 
 
+    this.goodReceiptNote$ = this.store.select((
+      createSelector(counterSlice.selectFeature, (state) => state.goodsReceiptNote)
+    ))
+    this.goodReceiptNote$.subscribe((result) => {
+      this.goodReceiptNote = result
+      console.log(this.goodReceiptNote)
+      this.quantityProduct = this.goodReceiptNote.createModel[0]?.batches[this.index]?.quantity
 
+    })
 
   }
 
 
   selectUnitPrice() {
+    this.batchTotalprice = this.SelectUnit.price * this.quantityProduct
+    let tempgood = {...this.goodReceiptNote}
+    let tempBatches = [...tempgood.createModel[0].batches]
+    let tempUnit = {...tempBatches[this.index]}
+
+    tempUnit.productUnitPriceId = this.SelectUnit.id
+
+    tempBatches[this.index] = tempUnit
+    let tempCreateModel = [{
+      batches: tempBatches
+    }]
+    tempgood.createModel = tempCreateModel
+
+    console.log(tempgood)
+    this.goodReceiptNote = tempgood
+    this.store.dispatch(counterSlice.goodReceiptNote(this.goodReceiptNote))
 
   }
 
   changeQuantity() {
-    let temp = [...this.invoiceDetailData]
+    let tempgood = {...this.goodReceiptNote}
+    let tempBatches = [...tempgood.createModel[0].batches]
+    let tempUnit = {...tempBatches[this.index]}
 
-    temp.forEach((item, index) => {
-      if (this.productData.batch.id == item.batch.id) {
-        temp[index] = {...temp[index], quantity: this.quantityProduct}
-      }
-    })
+    tempUnit.quantity = this.quantityProduct
 
-    console.log(temp)
+    tempBatches[this.index] = tempUnit
+    let tempCreateModel = [{
+      batches: tempBatches
+    }]
+    tempgood.createModel = tempCreateModel
 
+    console.log(tempgood)
+    this.goodReceiptNote = tempgood
+    this.store.dispatch(counterSlice.goodReceiptNote(this.goodReceiptNote))
   }
+
+  changeTotalPrice() {
+    let tempgood = {...this.goodReceiptNote}
+    let tempBatches = [...tempgood.createModel[0].batches]
+    let tempUnit = {...tempBatches[this.index]}
+
+    tempUnit.totalPrice = this.batchTotalprice
+
+    tempBatches[this.index] = tempUnit
+    let tempCreateModel = [{
+      batches: tempBatches
+    }]
+    tempgood.createModel = tempCreateModel
+
+    console.log(tempgood)
+    this.goodReceiptNote = tempgood
+    this.store.dispatch(counterSlice.goodReceiptNote(this.goodReceiptNote))
+  }
+
 
   deleteBatch() {
     this.confirmModal = this.modal.confirm({
@@ -95,10 +140,19 @@ export class ReturnProductDetailComponent implements OnInit {
 
         console.log(this.invoiceDetailData)
 
+        let tempgood = {...this.goodReceiptNote}
+        let tempBatches = [...tempgood.createModel[0].batches]
+        tempBatches.splice(this.index, 1)
+        let tempCreateModel = [{
+          batches: tempBatches
+        }]
+        tempgood.createModel = tempCreateModel
+
+        this.goodReceiptNote = tempgood
         this.store.dispatch(counterSlice.addListReturnProduct(this.invoiceDetailData))
+        this.store.dispatch(counterSlice.goodReceiptNote(this.goodReceiptNote))
+        console.log(this.goodReceiptNote)
       }
     });
   }
-
-
 }

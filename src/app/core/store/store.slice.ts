@@ -1,7 +1,7 @@
 import {createSlice, current} from "@reduxjs/toolkit";
 import {createFeatureSelector} from "@ngrx/store";
 import {invoiceInterface} from "src/app/home/retail/retail.model";
-import {ListInputProductInterface, productinbillInterface} from "./store.model";
+import {goodsReceiptNoteInterface, ListInputProductInterface, productinbillInterface} from "./store.model";
 
 const counterSlice = createSlice({
 
@@ -18,9 +18,19 @@ const counterSlice = createSlice({
       customer: null
     } as invoiceInterface,
     invoiceID: 0,
-    ListReturnProduct: [] as any
+    ListReturnProduct: [] as any,
+    goodsReceiptNote: {
+      goodsReceiptNoteTypeId: 2,
+      createModel: [] as any,
+      invoiceId: 0,
+      isFull: true
+    }
   },
   reducers: {
+    goodReceiptNote: (state, action) => {
+      state.goodsReceiptNote = action.payload
+      console.log(action.payload)
+    },
     addListReturnProduct: (state, action) => {
       state.ListReturnProduct = action.payload
       console.log(state.ListReturnProduct)
@@ -40,6 +50,13 @@ const counterSlice = createSlice({
         product: [] as any,
         customer: null
       }
+      state.goodsReceiptNote = {
+        goodsReceiptNoteTypeId: 2,
+        createModel: [] as any,
+        invoiceId: 0,
+        isFull: true
+      }
+      state.listGoodsReceiptNote = []
     },
     deleteBacthProductInBill: (state, action) => {
       console.log(action.payload)
@@ -49,7 +66,6 @@ const counterSlice = createSlice({
         if (item.product.id === action.payload.product.id) {
           let tempGoogissueNote = tempListProductInBill[index].listBatches.filter(item => item.batchId !== action.payload.id)
 
-          console.log(tempGoogissueNote)
           tempListProductInBill[index] = {...tempListProductInBill[index], listBatches: tempGoogissueNote}
           console.log(tempListProductInBill)
           state.ListProductInbill = [...tempListProductInBill]
@@ -135,7 +151,9 @@ const {
     deleteBacthProductInBill,
     resetState,
     addInvoiceID,
-    addListReturnProduct
+    addListReturnProduct,
+    goodReceiptNote
+
   },
   name
 } = counterSlice;
@@ -152,7 +170,8 @@ export {
   deleteBacthProductInBill,
   resetState,
   addInvoiceID,
-  addListReturnProduct
+  addListReturnProduct,
+  goodReceiptNote
 };
 
 export const selectFeature = createFeatureSelector<ReturnType<typeof reducer>>(

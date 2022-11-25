@@ -1,3 +1,5 @@
+import {supplier} from "../../home/input/input-element/input-element.model";
+
 export interface productinbillInterface {
   product: any,
   listBatches: goodsIssueNoteInterface[]
@@ -28,4 +30,16 @@ export interface listBatchInterface {
 export interface ListInputProductInterface {
   product: any,
   listBatch: listBatchInterface[]
+}
+
+
+export interface createModelInterface {
+  batches: listBatchInterface[] | null,
+}
+
+export interface goodsReceiptNoteInterface {
+  goodsReceiptNoteTypeId: number,
+  createModel: any[],
+  invoiceId: number,
+  isFull: boolean
 }

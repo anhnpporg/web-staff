@@ -1,8 +1,7 @@
-<td>{{index}}</td>
+<td>{{index + 1}}</td>
 <td>{{ productData?.product.name }}</td>
 <td>{{ productData?.batch.name }}</td>
-<td>{{productData?.quantity}}</td>
-<td>{{productData.unit}}</td>
+<td>{{productData?.quantity}} {{productData.unit}}</td>
 <td>{{productData?.unitPrice | currency:'VND'}}</td>
 <td>{{productData?.quantity * productData?.unitPrice | currency:'VND'}}</td>
 <td *ngIf="checkFull != true">
@@ -10,9 +9,13 @@
                    [nzStep]="1" (ngModelChange)="changeQuantity()"></nz-input-number>
 </td>
 <td *ngIf="checkFull != true">
-  <nz-select nzPlaceHolder="Select a person" [(ngModel)]="SelectUnit">
-    <nz-option *ngFor="let item of listUnitProduct" [nzLabel]="item.unit" [nzValue]="item.id"></nz-option>
+  <nz-select nzPlaceHolder="Select a person" [(ngModel)]="SelectUnit" (ngModelChange)="selectUnitPrice()">
+    <nz-option *ngFor="let item of listUnitProduct" [nzLabel]="item.unit" [nzValue]="item"></nz-option>
   </nz-select>
+</td>
+<td *ngIf="checkFull != true">
+  <nz-input-number [(ngModel)]="batchTotalprice" [nzMin]="1"
+                   [nzStep]="1" (ngModelChange)="changeTotalPrice()"></nz-input-number>
 </td>
 <td *ngIf="checkFull != true">
   <i class="fa fa-trash" role="button" (click)="deleteBatch()"></i>

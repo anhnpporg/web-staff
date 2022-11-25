@@ -16,19 +16,11 @@ import {ProfileChagePasswordComponent} from './profile/profile-chage-password/pr
 import counterReducer, {name as counterFeatureKey} from "./../core/store/store.slice";
 import {InputInfoSupplierComponent} from './input/input-info-supplier/input-info-supplier.component';
 import {RetailProductInBillComponent} from './retail/retail-product-in-bill/retail-product-in-bill.component';
-import {
-  RetailProductInBillBatchComponent
-} from './retail/retail-product-in-bill/retail-product-in-bill-batch/retail-product-in-bill-batch.component';
+import {RetailProductInBillBatchComponent} from './retail/retail-product-in-bill/retail-product-in-bill-batch/retail-product-in-bill-batch.component';
 import {RetailCustomerInBillComponent} from './retail/retail-customer-in-bill/retail-customer-in-bill.component';
-import {
-  RetailCustomerHistoryInvoiceComponent
-} from './retail/retail-customer-in-bill/retail-customer-history-invoice/retail-customer-history-invoice.component';
-import {
-  RetailCustomerHistoryInvoiceDetailComponent
-} from './retail/retail-customer-in-bill/retail-customer-history-invoice/retail-customer-history-invoice-detail/retail-customer-history-invoice-detail.component';
-import {
-  ReturnProductTemplateComponent
-} from './return-product/return-product-template/return-product-template.component';
+import {RetailCustomerHistoryInvoiceComponent} from './retail/retail-customer-in-bill/retail-customer-history-invoice/retail-customer-history-invoice.component';
+import {RetailCustomerHistoryInvoiceDetailComponent} from './retail/retail-customer-in-bill/retail-customer-history-invoice/retail-customer-history-invoice-detail/retail-customer-history-invoice-detail.component';
+import {ReturnProductTemplateComponent} from './return-product/return-product-template/return-product-template.component';
 import { BrokenProductComponent } from './retail/broken-product/broken-product.component';
 import { RetailInvoiceComponent } from './retail/retail-invoice/retail-invoice.component';
 import {NgxBarcodeModule} from "@greatcloak/ngx-barcode";

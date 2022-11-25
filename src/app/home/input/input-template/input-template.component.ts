@@ -13,15 +13,6 @@ import {NzNotificationService} from "ng-zorro-antd/notification";
 })
 export class InputTemplateComponent implements OnInit {
 
-  // goodsReceiptNote: goodsReceiptNoteInterface = {
-  //   goodsReceiptNoteTypeId: 1,
-  //   invoiceId: null,
-  //   supplierId: null,
-  //   batches: [],
-  //   supplier: null
-  // }
-
-
   inputValue: string = ''
   options: any[] = [];
   listProductInput$: Observable<any> | undefined
@@ -48,6 +39,10 @@ export class InputTemplateComponent implements OnInit {
 
   onInput(event: any): void {
     console.log(event);
+
+    if (event == '') {
+      event = 'a'
+    }
 
     this.product.searchProduct(event).subscribe((result) => {
       console.log(result.items);
@@ -78,9 +73,5 @@ export class InputTemplateComponent implements OnInit {
         ""
       )
     }
-
-
-    // this.store.dispatch(counterSlice.addgoodsReceiptNote(this.goodsReceiptNote))
-
   }
 }

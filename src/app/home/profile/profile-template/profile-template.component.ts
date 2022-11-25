@@ -51,6 +51,12 @@ export class ProfileTemplateComponent implements OnInit {
           'Thành công',
           'Cập nhật nhân viên thành công'
         );
+      },err =>{
+        this.notification.create(
+          "error",
+          err.error.message,
+          ""
+        )
       })
 
 

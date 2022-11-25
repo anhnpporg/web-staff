@@ -19,6 +19,8 @@ import {goodsIssueNoteInterface} from "../../../core/store/store.model";
 })
 export class RetailCustomerInBillComponent implements OnInit {
 
+  // @ViewChild('printBtn') printBtn: ElementRef<HTMLElement> | undefined;
+
   invoiceID: number = 0
 
   // danh sách sản phẩm
@@ -69,6 +71,12 @@ export class RetailCustomerInBillComponent implements OnInit {
           element.listBatches.forEach((batch: any) => {
             this.productservice.getProductUnitbyUnitID(batch.unit).subscribe((result) => {
               this.totalBillPrice += (batch.quantity * result.data.price)
+            },err =>{
+              this.notification.create(
+                "error",
+                err.error.message,
+                ""
+              )
             })
           })
         })
@@ -99,7 +107,7 @@ export class RetailCustomerInBillComponent implements OnInit {
   createInvoice() {
     this.confirmModal = this.modal.confirm({
       nzTitle: 'Bán hàng',
-      nzContent: 'xuất hóa đơn',
+      nzContent: 'bán hàng',
       nzOnOk: () => {
 
         this.listProductInBill$ = this.store.select(
@@ -142,22 +150,39 @@ export class RetailCustomerInBillComponent implements OnInit {
             )
           } else {
             this.productservice.retailInvoice(this.invoice).subscribe((result) => {
-
               if (result) {
                 this.invoiceID = result.invoiceId
+
+                console.log("ok")
                 if (this.invoiceID != 0) {
                   this.notification.create(
                     "success",
                     "Tạo hóa đơn thành công",
                     ""
                   )
-                  this.store.dispatch(counterSlice.resetState('ok'))
-                  let currentUrl = this.router.url;
-                  this.router.navigateByUrl('/', {skipLocationChange: true}).then(() => {
-                    this.router.navigate([currentUrl]);
-                  })
                 }
               }
+              this.confirmModal = this.modal.confirm({
+                nzTitle: 'Bán hàng',
+                nzContent: 'xuất hóa đơn',
+                nzOnOk: () => {
+                  console.log(this.invoiceID)
+                  if (this.invoiceID != 0) {
+                    document.getElementById('print__bill__button')?.click()
+                    this.store.dispatch(counterSlice.resetState('ok'))
+                  }
+                },
+                nzOnCancel: () => {
+                  this.store.dispatch(counterSlice.resetState('ok'))
+                  let currentUrl = this.router.url;
+                  this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
+                    this.router.navigate([currentUrl]);
+                    console.log(currentUrl);
+                  });
+                }
+              })
+
+
             }, err => {
               this.notification.create(
                 "error",
@@ -165,12 +190,12 @@ export class RetailCustomerInBillComponent implements OnInit {
                 ""
               )
             })
+
           }
         }
       }
       ,
     });
-
 
   }
 
@@ -183,6 +208,12 @@ export class RetailCustomerInBillComponent implements OnInit {
       if (this.listCustomer.length == 0) {
         this.phoneNumber = value
       }
+    },err =>{
+      this.notification.create(
+        "error",
+        err.error.message,
+        ""
+      )
     })
   }
 
@@ -194,16 +225,18 @@ export class RetailCustomerInBillComponent implements OnInit {
 
     this.invoice = {...this.invoice, customerId: this.customerInfo.id, customer: null}
 
+    console.log(this.invoice)
+
     this.store.dispatch(counterSlice.addCustomer(this.invoice))
 
   }
 
-  openBill() {
-    const a = document.getElementById('side__bar__bill');
-    if (a != null) {
-      a.style.display = 'block'
-    }
-  }
+  // openBill() {
+  //   const a = document.getElementById('side__bar__bill');
+  //   if (a != null) {
+  //     a.style.display = 'block'
+  //   }
+  // }
 
   inputValue ?: string;
   options: string[] = [];

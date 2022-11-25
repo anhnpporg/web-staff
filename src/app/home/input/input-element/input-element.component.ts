@@ -74,6 +74,12 @@ export class InputElementComponent implements OnInit {
       this.batchesList = result.data
       this.listUnitProductPrice = result.data[0].currentQuantity
       console.log(result.data);
+    },err =>{
+      this.notification.create(
+        "error",
+        err.error.message,
+        ""
+      )
     })
 
     this.listProductInput$ = this.store.select(
@@ -95,6 +101,12 @@ export class InputElementComponent implements OnInit {
   getUnitProductPrice() {
     this.productService.getBatchByBatchID(this.selectBatch).subscribe((result) => {
       this.listUnitProductPrice = result.data.currentQuantity
+    },err =>{
+      this.notification.create(
+        "error",
+        err.error.message,
+        ""
+      )
     })
   }
 
@@ -189,39 +201,15 @@ export class InputElementComponent implements OnInit {
 
         let temp: any[] = []
 
-        let checkExistBatch = true
+        temp = item.listBatch
 
-        item.listBatch.forEach((batch: any, index: number) => {
-          if (batch.batchId == this.batchs.batchId) {
-            checkExistBatch = false
-          }
-        })
+        temp = [...temp, this.batchs]
 
-        if (checkExistBatch) {
-          console.log('ok')
-          temp = item.listBatch
-
-          temp = [...temp, this.batchs]
-
-          tempListProductInput[index] = {...tempListProductInput[index], listBatch: temp}
-          console.log(tempListProductInput)
-
-          // console.log(this.listProductInput)
-          this.store.dispatch(counterSlice.addProductToListInput(tempListProductInput))
-
-        } else {
-          this.notification.create(
-            "error",
-            "Lô hàng đã tồn tại",
-            ""
-          )
-        }
+        tempListProductInput[index] = {...tempListProductInput[index], listBatch: temp}
+        console.log(tempListProductInput)
+        this.store.dispatch(counterSlice.addProductToListInput(tempListProductInput))
       }
     })
-
-
-    // this.listBatches = [...this.listBatches, this.batchs]
-    // this.store.dispatch(counterSlice.addgoodsReceiptNote({...this.goodsReceiptNote, batches: this.listBatches}))
 
     this.quantityBatch = 0
     this.selectUnitProductPrice = 0
@@ -271,7 +259,6 @@ export class InputElementComponent implements OnInit {
         this.store.dispatch(counterSlice.addProductToListInput(tempListProductInput))
       }
     })
-
 
 
   }

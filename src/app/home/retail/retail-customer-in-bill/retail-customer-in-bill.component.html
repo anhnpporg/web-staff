@@ -130,12 +130,12 @@
   </div>
   <nz-divider></nz-divider>
   <div style="position: absolute; bottom: 35px; width: calc(100% - 32px);" class="d-flex align-content-end flex-wrap">
-    <button class="border w-100 p-3 d-flex justify-content-around btn btn-success" (click)="createInvoice()"
-            (click)="clickPrint.printClick()">
+    <button class="border w-100 p-3 d-flex justify-content-around btn btn-success" (click)="createInvoice()">
       <span>Thanh toán</span>
     </button>
     <div class="d-none">
-      <app-retail-invoice [invoiceID]="invoiceID" #clickPrint></app-retail-invoice>
+      <app-retail-invoice [invoiceID]="invoiceID" [totalBillPrice]="totalBillPrice" ></app-retail-invoice>
     </div>
+
   </div>
 </div>
