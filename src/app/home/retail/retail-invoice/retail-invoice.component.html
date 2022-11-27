@@ -45,6 +45,8 @@
     <nz-divider></nz-divider>
     <div style="float: right">
       <h5>Tổng tiền: {{totalBillPrice | currency:'VND'}}</h5>
+      <h5>Giả giá: {{usePointPrice | currency:'VND'}}</h5>
+      <h5>Còn lại {{totalBillPrice - usePointPrice | currency:'VND'}}</h5>
     </div>
     <table style="width: 100%">
       <thead>

@@ -8,7 +8,7 @@
   /* box-shadow: 1px 1px 1px 1px; */
   box-shadow: 0px 0 30px rgb(1 41 112 / 10%);
   border-radius: 5px;
-  height: 800px;
+  height: 85vh;
 }
 
 #customer__in__bill {
@@ -16,7 +16,7 @@
   /* box-shadow: 1px 1px 1px 1px; */
   box-shadow: 0px 0 30px rgb(1 41 112 / 10%);
   border-radius: 5px;
-  height: 800px;
+  height: 85vh;
 }
 
 .ant-modal {
@@ -32,13 +32,13 @@
   display: none;
 }
 
-#bill__template {
-  width: 25%;
-  background-color: white;
-  margin: auto;
-  padding: 20px 30px;
-  height: 850px;
-  overflow: auto;
-}
+/*#bill__template {*/
+/*  width: 25%;*/
+/*  background-color: white;*/
+/*  margin: auto;*/
+/*  padding: 20px 30px;*/
+/*  height: 90vh;*/
+/*  overflow: auto;*/
+/*}*/
 
 

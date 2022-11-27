@@ -7,16 +7,31 @@
           <div class="d-flex justify-content-md-between align-items-center">
             <nz-select nzShowSearch nzAllowClear nzPlaceHolder="Thêm Thuốc vào hóa đơn"
                        [(ngModel)]="searchValue" style="width: 90%;" (ngModelChange)="addToListBill()"
-                       (nzOnSearch)="searchProduct($event)" >
-              <nz-option *ngFor="let item of listSearchProduct"
+                       (nzOnSearch)="searchProduct($event)">
+              <nz-option nzCustomContent *ngFor="let item of listSearchProduct"
                          [nzLabel]="'Tên '+item.name + ' - vị trí: ' + item.shelf.name" nzValue={{item.id}}>
+                <div class="row border-bottom p-1">
+                  <div class="col-4">
+                    <h6>Tên: {{item.name}}</h6>
+                    <p>Vị trí {{item.shelf.name}}</p>
+                  </div>
+                  <div class="col-8">
+                    <div class="row">
+                      <div *ngFor="let active of item.activeSubstances" class="col-2y mb-3">
+                        <nz-tag nzColor="success">{{active.name}}</nz-tag>
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
               </nz-option>
             </nz-select>
-<!--            <i class="fa fa-barcode" role="button" style="font-size: 20px;"></i>-->
-<!--            <i class="fa fa-clipboard-list" role="button" style="font-size: 20px;" nz-button></i>-->
+            <!--            <i class="fa fa-barcode" role="button" style="font-size: 20px;"></i>-->
+            <!--            <i class="fa fa-clipboard-list" role="button" style="font-size: 20px;" nz-button></i>-->
             <div>
-              <label>Xuất hỏng: <nz-switch [(ngModel)]="switchValue"></nz-switch></label>
-
+              <label>Xuất hỏng:
+                <nz-switch [(ngModel)]="switchValue"></nz-switch>
+              </label>
             </div>
           </div>
           <nz-divider></nz-divider>

@@ -24,6 +24,7 @@ export class RetailInvoiceComponent implements OnInit {
   invoiceData: any
   invoiceDetail: any[] = []
   @Input() totalBillPrice: number = 0
+  @Input() usePointPrice = 0
 
 
   constructor(

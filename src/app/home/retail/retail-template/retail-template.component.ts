@@ -28,6 +28,7 @@ export class RetailTemplateComponent implements OnInit {
 
   invoice: invoiceInterface = {
     goodsIssueNoteTypeId: 1,
+    usePoint: 0,
     customerId: null,
     product: [],
     customer: null
