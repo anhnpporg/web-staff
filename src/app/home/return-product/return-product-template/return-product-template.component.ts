@@ -91,7 +91,6 @@ export class ReturnProductTemplateComponent implements OnInit {
   }
 
   ReturnProduct() {
-
     if (this.invoiceData) {
       if (this.switchFullInvocie) {
         let full = {
@@ -122,56 +121,50 @@ export class ReturnProductTemplateComponent implements OnInit {
           )
         })
       } else {
-        console.log("k full")
         let goodReceiptNote$ = this.store.select((
           createSelector(counterSlice.selectFeature, (state) => state.goodsReceiptNote)
         ))
+        let a: any = null
         goodReceiptNote$.subscribe((result1) => {
 
-          let check = true
-          result1.createModel[0].batches.forEach((item: any) => {
-            if (item.productUnitPriceId == 0) {
-              check = false
-            }
-          })
+            a = result1
 
-          if (check) {
-            this.productService.PostGoodReceiptNoteManager(result1).subscribe((result) => {
-              console.log(result)
-              this.notification.create(
-                "success",
-                result.message,
-                ""
-              )
-              this.store.dispatch(counterSlice.resetState('ok'))
-              let currentUrl = this.router.url;
-              this.router.navigateByUrl('/', {skipLocationChange: true}).then(() => {
-                this.router.navigate([currentUrl]);
-              });
+          }
+        )
 
-            }, err => {
-              this.notification.create(
-                "error",
-                err.error.message,
-                ""
-              )
-            })
-          } else {
+        if (a != null) {
+          this.productService.PostGoodReceiptNoteManager(a).subscribe((result) => {
+            this.notification.create(
+              "success",
+              result.message,
+              ""
+            )
+            this.store.dispatch(counterSlice.resetState('ok'))
+            let currentUrl = this.router.url;
+            this.router.navigateByUrl('/', {skipLocationChange: true}).then(() => {
+              this.router.navigate([currentUrl]);
+            });
+          }, err => {
+            console.log(err.error)
             this.notification.create(
               "error",
-              "Đơn vị trống",
-              "vui lòng chọn đơn vị"
+              err.error.message,
+              ""
             )
-          }
-        })
+          })
+        }
 
       }
     } else {
-      this.notification.create(
-        "error",
-        'Không có thông tin',
-        'Vui lòng nhập đơn hàng để có thông tin đơn hàng'
-      );
+      this
+        .notification
+        .create(
+          "error"
+          ,
+          'Không có thông tin'
+          ,
+          'Vui lòng nhập đơn hàng để có thông tin đơn hàng'
+        );
     }
 
 
@@ -183,18 +176,25 @@ export class ReturnProductTemplateComponent implements OnInit {
     let listBatch: any[] = []
     if (this.switchFullInvocie != true) {
       this.invoiceDetailData.forEach((item: any, index: number) => {
-          listBatch = [...listBatch, {
-            batchId: item.batch.id,
-            quantity: item.quantity,
-            productUnitPriceId: 0,
-            totalPrice: item.unitPrice * item.quantity,
-            batch: null
-          }]
-          this.goodsReceiptNote.createModel[0].batches = listBatch
-          console.log(this.goodsReceiptNote)
-          if (this.goodsReceiptNote.createModel[0].batches.length == this.invoiceDetailData.length) {
-            this.store.dispatch(counterSlice.goodReceiptNote(this.goodsReceiptNote))
-          }
+
+          console.log(item)
+
+          this.productService.getListProductUnitByProductId(item.product.id).subscribe((result) => {
+            listBatch = [...listBatch, {
+              batchId: item.batch.id,
+              quantity: item.quantity,
+              productUnitPriceId: result.data[0].id,
+              totalPrice: item.unitPrice * item.quantity,
+              batch: null
+            }]
+
+            this.goodsReceiptNote.createModel[0].batches = listBatch
+            console.log(this.goodsReceiptNote)
+            if (this.goodsReceiptNote.createModel[0].batches.length == this.invoiceDetailData.length) {
+              this.store.dispatch(counterSlice.goodReceiptNote(this.goodsReceiptNote))
+            }
+          })
+
         }
       )
     }

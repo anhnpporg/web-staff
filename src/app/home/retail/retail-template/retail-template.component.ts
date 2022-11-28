@@ -54,18 +54,23 @@ export class RetailTemplateComponent implements OnInit {
     // })
   }
 
+  UnShowListSearchProduct() {
 
-  searchProduct(event: any): void {
+    let a = document.getElementById('tippy__search__product')?.style
+
+    if (a) {
+      a.display = "none"
+    }
+
+  }
+
+  searchProduct(value: any): void {
 
     let productsearchInbill
 
-    if (event == "") {
-      event = 0
-    }
-
-    if (event.length === 13) {
-      if (event.slice(0, 3) == 'BAT') {
-        this.productservice.searchProduct(event).subscribe((result) => {
+    if (this.searchValue.length === 13) {
+      if (this.searchValue.slice(0, 3) == 'BAT') {
+        this.productservice.searchProduct(this.searchValue).subscribe((result) => {
           if (this.listProductInBill.length > 0) {
             let checkBatchExist = true
             this.listProductInBill.forEach((item) => {
@@ -130,10 +135,15 @@ export class RetailTemplateComponent implements OnInit {
         })
       }
     }
-
-
-    this.productservice.searchProduct(event).subscribe((result) => {
+    this.productservice.searchProduct(this.searchValue).subscribe((result) => {
       this.listSearchProduct = result.items
+      console.log(this.listSearchProduct)
+      let a = document.getElementById('tippy__search__product')?.style
+      // if (this.listSearchProduct.length > 0) {
+      if (a) {
+        a.display = "block"
+      }
+      // }
     })
 
 
@@ -145,7 +155,9 @@ export class RetailTemplateComponent implements OnInit {
     })
   }
 
-  addToListBill(): void {
+  addToListBill(id: number): void {
+    this.searchValue = id
+    console.log(id)
     this.productservice.getProductByID(this.searchValue).subscribe((result) => {
       let checkProductExist = true
       if (this.listProductInBill.length > 0) {
@@ -159,6 +171,7 @@ export class RetailTemplateComponent implements OnInit {
             product: result.data,
             listBatches: []
           }))
+          this.searchValue = ''
         } else {
           this.notification.create(
             'Error',
@@ -171,6 +184,8 @@ export class RetailTemplateComponent implements OnInit {
           product: result.data,
           listBatches: []
         }))
+
+        this.searchValue = ''
       }
 
     })

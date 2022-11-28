@@ -9,10 +9,11 @@
             <th>Sản phẩm</th>
             <th>Lô</th>
             <th>Số lượng</th>
-            <th>Đơn giá</th>
-            <th>Thành tiền</th>
+            <th>Đã trả</th>
+<!--            <th >Đơn giá</th>-->
+            <th *ngIf="switchFullInvocie == true">Thành tiền</th>
             <th *ngIf="switchFullInvocie != true">Số lượng trả lại</th>
-            <th *ngIf="switchFullInvocie != true">Đơn vị</th>
+<!--            <th *ngIf="switchFullInvocie != true">Đơn vị</th>-->
             <th *ngIf="switchFullInvocie != true">Tổng giá</th>
             <th *ngIf="switchFullInvocie != true">Xóa</th>
           </tr>
@@ -52,7 +53,7 @@
         </div>
         <div class="mb-3 row">
           <div class="col-6"><span>Giá trị hóa đơn: </span></div>
-          <div class="col-6"><h5>{{invoiceData?.totalPrice | currency:'VND'}}</h5></div>
+          <div class="col-6"><h5>{{returnTotalPrice | currency:'VND'}}</h5></div>
         </div>
         <nz-divider></nz-divider>
         <div class="mb-4 "><h3 class="text-center">Thông tin Nhập hàng</h3></div>
@@ -62,13 +63,13 @@
             <nz-switch [(ngModel)]="switchFullInvocie" (ngModelChange)="checkReturnFullProduct()"></nz-switch>
           </div>
         </div>
-        <div class="mb-3 row">
-          <div class="col-6"><span>Giá trị hàng trả lại</span></div>
-          <div class="col-6"><h5>{{returnTotalPrice | currency:'VND'}}</h5></div>
-        </div>
+<!--        <div class="mb-3 row">-->
+<!--          <div class="col-6"><span>Giá trị hàng trả lại</span></div>-->
+<!--          <div class="col-6"><h5>{{returnTotalPrice | currency:'VND'}}</h5></div>-->
+<!--        </div>-->
         <nz-divider></nz-divider>
         <div class="position-absolute" style="bottom: 16px; width: calc(100% - 32px);">
-          <button class="w-100 btn btn-success btn-lg" (click)="ReturnProduct()">Trả hàng</button>
+          <button class="w-100 btn btn-success btn-lg" (click)="ReturnProduct()" id="returnButton">Trả hàng</button>
         </div>
       </div>
     </div>
