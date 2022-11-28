@@ -25,6 +25,8 @@ import { BrokenProductComponent } from './retail/broken-product/broken-product.c
 import { RetailInvoiceComponent } from './retail/retail-invoice/retail-invoice.component';
 import {NgxBarcodeModule} from "@greatcloak/ngx-barcode";
 import { ReturnProductDetailComponent } from './return-product/return-product-detail/return-product-detail.component';
+import {ClickOutsideModule} from "ng-click-outside";
+import { SamplePrescriptionTemplateComponent } from './sample-prescription/sample-prescription-template/sample-prescription-template.component';
 
 const homeRoute: Routes = [
   {
@@ -33,6 +35,7 @@ const homeRoute: Routes = [
       {path: 'input', component: InputTemplateComponent},
       {path: 'profile', component: ProfileTemplateComponent},
       {path: 'return', component: ReturnProductTemplateComponent},
+      {path: 'sample-prescription', component: SamplePrescriptionTemplateComponent}
     ]
   }
 ]
@@ -56,6 +59,7 @@ const homeRoute: Routes = [
     BrokenProductComponent,
     RetailInvoiceComponent,
     ReturnProductDetailComponent,
+    SamplePrescriptionTemplateComponent,
 
 
   ],
@@ -67,7 +71,8 @@ const homeRoute: Routes = [
     FormsModule,
     ReactiveFormsModule,
     StoreModule.forFeature(counterFeatureKey, counterReducer),
-    NgxBarcodeModule
+    NgxBarcodeModule,
+    ClickOutsideModule
   ]
 })
 export class HomeModule {

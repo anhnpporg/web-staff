@@ -16,6 +16,7 @@ export interface customer {
 
 export interface invoiceInterface {
   goodsIssueNoteTypeId: number,
+  usePoint: number,
   customerId: number | null,
   product: product[],
   customer: customer | null

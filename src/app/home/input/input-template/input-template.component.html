@@ -3,7 +3,7 @@
     <div class="col-9">
       <div class="p-3" id="product__in__bill">
         <div class="example-input">
-          <nz-select nzShowSearch nzAllowClear nzPlaceHolder="Tìm kiếm thuốc" style="width: 100%;"
+          <nz-select nzShowSearch nzAllowClear nzPlaceHolder="Tìm kiếm thuốc" style="width: 100%;" nzSize="large"
                      [(ngModel)]="inputValue" (nzOnSearch)="onInput($event)" (ngModelChange)="onSelect($event)">
             <nz-option *ngFor="let option of options let i = index" [nzValue]="option"
                        [nzLabel]="option.name + ' - ' + option.id">

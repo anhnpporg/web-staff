@@ -1,17 +1,13 @@
 <td>{{index + 1}}</td>
 <td>{{ productData?.product.name }}</td>
 <td>{{ productData?.batch.name }}</td>
-<td>{{productData?.quantity}} {{productData.unit}}</td>
-<td>{{productData?.unitPrice | currency:'VND'}}</td>
-<td>{{productData?.quantity * productData?.unitPrice | currency:'VND'}}</td>
+<td>{{productData?.convertedQuantity}} {{productData?.viewBaseProductUnit.baseUnit}}</td>
+<td>{{productData?.returnedQuantity}} {{productData?.viewBaseProductUnit.baseUnit}}</td>
+<td *ngIf="checkFull == true">{{productData?.quantity * productData?.unitPrice | currency:'VND'}}</td>
 <td *ngIf="checkFull != true">
-  <nz-input-number [(ngModel)]="quantityProduct" [nzMin]="1" [nzMax]="productData.quantity"
+  <nz-input-number [(ngModel)]="quantityProduct" [nzMin]="1" [nzMax]="productData?.convertedQuantity"
                    [nzStep]="1" (ngModelChange)="changeQuantity()"></nz-input-number>
-</td>
-<td *ngIf="checkFull != true">
-  <nz-select nzPlaceHolder="Select a person" [(ngModel)]="SelectUnit" (ngModelChange)="selectUnitPrice()">
-    <nz-option *ngFor="let item of listUnitProduct" [nzLabel]="item.unit" [nzValue]="item"></nz-option>
-  </nz-select>
+  {{productData?.viewBaseProductUnit.baseUnit}}
 </td>
 <td *ngIf="checkFull != true">
   <nz-input-number [(ngModel)]="batchTotalprice" [nzMin]="1"
