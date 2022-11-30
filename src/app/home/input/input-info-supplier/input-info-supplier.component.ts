@@ -17,6 +17,7 @@ export class InputInfoSupplierComponent implements OnInit {
 
 
   listSuppliers: any[] = []
+  totalPrice: number = 0
   selectSupplier: any
   isVisible = false
   goodsReceiptNote: goodsReceiptNoteInterface = {
@@ -48,6 +49,26 @@ export class InputInfoSupplierComponent implements OnInit {
     this.productService.getListSuppliers().subscribe((result) => {
       this.listSuppliers = result.data
     })
+
+    this.listProductInput$ = this.store.select(
+      createSelector(counterSlice.selectFeature, (state) => state.ListInputProduct)
+    )
+
+
+    this.listProductInput$.subscribe((result) => {
+      this.totalPrice = 0
+      this.listProductInput = result
+      this.listProductInput.forEach((item: any) => {
+        item.listBatch.forEach((item2: any) => {
+          this.totalPrice += item2.totalPrice
+
+          console.log(this.totalPrice)
+        })
+      })
+    })
+
+
+
   }
 
   selectSupplierChange() {

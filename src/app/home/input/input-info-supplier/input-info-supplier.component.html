@@ -22,8 +22,8 @@
     <nz-divider></nz-divider>
 
     <div>
-        <h5>Thông tin nhà cung cấp</h5>
-        <div class="row">
+        <h5 class="mb-5 text-center">Thông tin nhà cung cấp</h5>
+        <div class="row mb-3">
             <div class="col-4">
                 <h6>Nhà cung cấp:</h6>
             </div>
@@ -34,6 +34,14 @@
                 {{newSupplier}}
             </ng-template>
         </div>
+      <div class="row mb-3">
+        <div class="col-4">
+          <h6>Giá trị đơn hàng:</h6>
+        </div>
+        <div class="col-8" >
+          <h6>{{totalPrice | currency:'VND'}}</h6>
+        </div>
+      </div>
     </div>
 <nz-divider></nz-divider>
     <div>

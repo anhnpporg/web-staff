@@ -94,7 +94,6 @@ export class InputElementComponent implements OnInit {
         this.listBatchOfInputProduct = item.listBatch
       }
     })
-
   }
 
 
