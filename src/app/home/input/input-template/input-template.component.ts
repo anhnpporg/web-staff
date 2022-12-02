@@ -17,6 +17,7 @@ export class InputTemplateComponent implements OnInit {
   options: any[] = [];
   listProductInput$: Observable<any> | undefined
   listProductInput: any[] = []
+  checkBatchesempty: boolean = true
 
   constructor(
     private product: ProductService,
@@ -32,6 +33,14 @@ export class InputTemplateComponent implements OnInit {
     )
     this.listProductInput$.subscribe((result) => {
       this.listProductInput = result
+
+      this.listProductInput.forEach((item, index) => {
+        if (item.listBatch.length == 0) {
+          this.checkBatchesempty = true
+        }else {
+          this.checkBatchesempty = false
+        }
+      })
     })
 
   }
@@ -72,6 +81,44 @@ export class InputTemplateComponent implements OnInit {
         "Sản phẩm đã tồn tại",
         ""
       )
+    }
+  }
+
+  current = 0;
+
+  index = 'First-content';
+
+  pre(): void {
+    this.current -= 1;
+    this.changeContent();
+  }
+
+  next(): void {
+    this.current += 1;
+    this.changeContent();
+  }
+
+  done(): void {
+    console.log('done');
+  }
+
+  changeContent(): void {
+    switch (this.current) {
+      case 0: {
+        this.index = 'First-content';
+        break;
+      }
+      case 1: {
+        this.index = 'Second-content';
+        break;
+      }
+      case 2: {
+        this.index = 'third-content';
+        break;
+      }
+      default: {
+        this.index = 'error';
+      }
     }
   }
 }

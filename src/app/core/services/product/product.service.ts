@@ -35,7 +35,7 @@ export class ProductService {
   }
 
   searchProduct(search: string): Observable<any> {
-    return this.httpClient.get(DOMAIN + `product-management/products/filter?searchValue=${search}&pageSize=5`, {headers: this.headers})
+    return this.httpClient.get(DOMAIN + `product-management/products/filter?searchValue=${search}&isSale=true&pageSize=5`, {headers: this.headers})
   }
 
   //invoice
@@ -45,7 +45,7 @@ export class ProductService {
 
   //batches
   getBatchesByProductID(id: string): Observable<any> {
-    return this.httpClient.get(DOMAIN + `product-management/products/${id}/batches`, {headers: this.headers})
+    return this.httpClient.get(DOMAIN + `product-management/products/batches?productId=${id}&isSale=true`, {headers: this.headers})
   }
 
   getProductByBatchBarcode(barcode: string): Observable<any> {
@@ -74,6 +74,10 @@ export class ProductService {
 
   getBatchesByBatchesID(id: number): Observable<any> {
     return this.httpClient.get(DOMAIN + `product-management/products/${id}`, {headers: this.headers})
+  }
+
+  getBatchById(id: number): Observable<any>{
+    return  this.httpClient.get(DOMAIN + `batch-management/batches/${id}`, {headers: this.headers})
   }
 
   getListSuppliers(): Observable<any> {

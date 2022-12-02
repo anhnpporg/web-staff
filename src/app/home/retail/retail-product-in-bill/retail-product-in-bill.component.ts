@@ -46,7 +46,15 @@ export class RetailProductInBillComponent implements OnInit {
     }
 
     // danh sách lô hàng của sản phẩm
-    this.ListBatchesOfProductInBill = this.productInbill.product.batches
+    // this.ListBatchesOfProductInBill = this.productInbill.product.batches
+
+    this.productInbill.product.batches.forEach((item: any) => {
+      console.log(item)
+      if (item.isActive) {
+        this.ListBatchesOfProductInBill.push(item)
+      }
+    })
+
     this.goodsIssueNote.batchId = this.ListBatchesOfProductInBill[0].id
     if (this.goodsIssueNote.batchId != 0) {
       for (let i = 0; i < this.ListBatchesOfProductInBill.length; i++) {
@@ -131,6 +139,10 @@ export class RetailProductInBillComponent implements OnInit {
 
   handleCancelAddbatch() {
     this.isVisibleAddBatch = false
+  }
+
+  changeNote(){
+    console.log(this.noteInput)
   }
 
 }

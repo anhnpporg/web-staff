@@ -5,13 +5,20 @@
         <i class="fa fa-trash-alt" role="button" (click)="deleteProduct()"></i>
       </td>
       <td style="width: 7%"><h6>{{index + 1}}</h6></td>
-      <td style="width: 15%">
+      <td style="width: 20%">
         <h5>Tên: {{InputProduct.product.name}}</h5>
       </td>
       <td>
         <nz-tag [nzColor]="'green'" *ngFor="let item of listBatchOfInputProduct, let i = index">
-          <span style="margin: 5px 10px 5px 5px;">{{'Lô: ' + item.batchId}} - {{'Số lượng: ' + item.quantity}}</span>
-          <i class="fa fa-times" role="button" (click)="deleteSelectBatches(i)"></i>
+          <div *ngIf="item.batchId != null ; else newBatch">
+            <app-batch-tag-infomation [batchInfo]="item"></app-batch-tag-infomation>
+            <i class="fa fa-times" role="button" (click)="deleteSelectBatches(i)"></i>
+          </div>
+          <ng-template #newBatch>
+              <span>ok</span>
+            <i class="fa fa-times" role="button" (click)="deleteSelectBatches(i)"></i>
+          </ng-template>
+
         </nz-tag>
       </td>
       <td style="width: 10%">
@@ -20,10 +27,12 @@
                   (nzOnOk)="handleOkBatches()" nzOkText="Chọn lô">
           <ng-container *nzModalContent>
             <div class="row">
-
+              <div class="form-group mb-3">
+                <h6>Sản phẩm: {{InputProduct.product.name}}</h6>
+              </div>
               <nz-form-item>
                 <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired>Lô hàng</nz-form-label>
-                <nz-form-control [nzSm]="14" [nzXs]="24">
+                <nz-form-control [nzSm]="17" [nzXs]="24">
                   <nz-select nzShowSearch [nzDropdownRender]="renderTemplate" nzPlaceHolder="custom dropdown render"
                              class="w-100" [(ngModel)]="selectBatch"
                              (ngModelChange)="getUnitProductPrice()">
@@ -47,14 +56,12 @@
 
               <nz-form-item>
                 <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired>Số lượng</nz-form-label>
-                <nz-form-control [nzSm]="14" [nzXs]="24">
+                <nz-form-control [nzSm]="5" [nzXs]="24">
                   <nz-input-number [(ngModel)]="quantityBatch" [nzMin]="1" [nzStep]="1" class="w-100"></nz-input-number>
                 </nz-form-control>
-              </nz-form-item>
 
-              <nz-form-item>
-                <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired>Đơn vị</nz-form-label>
-                <nz-form-control [nzSm]="14" [nzXs]="24">
+                <nz-form-label [nzSm]="5" [nzXs]="24" nzRequired>Đơn vị</nz-form-label>
+                <nz-form-control [nzSm]="7" [nzXs]="24">
                   <nz-select nzShowSearch nzPlaceHolder="Select a person" [(ngModel)]="selectUnitProductPrice">
                     <nz-option *ngFor="let unit of listUnitProductPrice" [nzLabel]="unit.unit"
                                [nzValue]="unit.id"></nz-option>
@@ -64,8 +71,8 @@
 
               <nz-form-item>
                 <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired>Tổng giá nhập</nz-form-label>
-                <nz-form-control [nzSm]="14" [nzXs]="24">
-                  <nz-input-number [(ngModel)]="totalPrice" [nzMin]="1" [nzStep]="1"
+                <nz-form-control [nzSm]="17" [nzXs]="24">
+                  <nz-input-number [(ngModel)]="totalPrice" [nzMin]="1000" [nzStep]="1000"
                                    class="w-100"></nz-input-number>
                 </nz-form-control>
               </nz-form-item>
@@ -116,7 +123,7 @@
     </div>
     <div class="form-group">
       <label>Tổng giá</label>
-      <input type="number" class="form-control" min="1" [(ngModel)]="totalPrice">
+      <input type="number" class="form-control" min="1000" step="1000" [(ngModel)]="totalPrice">
     </div>
   </ng-container>
 </nz-modal>

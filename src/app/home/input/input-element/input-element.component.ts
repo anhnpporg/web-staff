@@ -29,10 +29,10 @@ export class InputElementComponent implements OnInit {
   // chọn lô
   batchesList: any
   selectBatch: any
-  quantityBatch: number = 0
+  quantityBatch: number = 1
   selectUnitProductPrice: number = 0
   listUnitProductPrice: any
-  totalPrice: number = 0
+  totalPrice: number = 1000
   listBatches: batchs[] = []
   /* ************************* */
 
@@ -60,6 +60,8 @@ export class InputElementComponent implements OnInit {
   listProductInput: ListInputProductInterface[] = []
   listBatchOfInputProduct: any[] = []
 
+  checkBatchesempty: boolean = true
+
   constructor(
     private modal: NzModalService,
     private productService: ProductService,
@@ -72,7 +74,9 @@ export class InputElementComponent implements OnInit {
     console.log(this.InputProduct);
     this.productService.getBatchesByProductID(this.InputProduct.product.id).subscribe((result) => {
       this.batchesList = result.data
+      this.selectBatch = this.batchesList[0].id
       this.listUnitProductPrice = result.data[0].currentQuantity
+      this.selectUnitProductPrice = this.listUnitProductPrice[0].id
       console.log(result.data);
     }, err => {
       this.notification.create(
@@ -92,6 +96,7 @@ export class InputElementComponent implements OnInit {
     this.listProductInput.forEach((item, index) => {
       if (item.product.id == this.InputProduct.product.id) {
         this.listBatchOfInputProduct = item.listBatch
+        console.log(item.listBatch)
       }
     })
   }
@@ -162,8 +167,6 @@ export class InputElementComponent implements OnInit {
         }
       }
     })
-
-
   }
 
   handleCancelBatches(): void {

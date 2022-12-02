@@ -71,11 +71,11 @@ export class RetailTemplateComponent implements OnInit {
     if (this.searchValue.length === 13) {
       if (this.searchValue.slice(0, 3) == 'BAT') {
         this.productservice.searchProduct(this.searchValue).subscribe((result) => {
+          console.log(result)
           if (this.listProductInBill.length > 0) {
             let checkBatchExist = true
             this.listProductInBill.forEach((item) => {
               if (result.items[0].id === item.product.id) {
-
                 item.listBatches.forEach((batch: any) => {
                   if (batch.batchId === result.items[0].batches[0].id) {
                     checkBatchExist = false
@@ -117,7 +117,7 @@ export class RetailTemplateComponent implements OnInit {
                 })
               }
             })
-
+            this.searchValue = ''
           } else {
             this.productservice.getProductByID(result.items[0].id).subscribe((result2) => {
               this.store.dispatch(counterSlice.addProducttoListBill({
@@ -131,23 +131,26 @@ export class RetailTemplateComponent implements OnInit {
                 ]
               }))
             })
-
+            this.searchValue = ''
           }
+        }, err => {
+          this.notification.create(
+            'error',
+            err.error.message,
+            ''
+          )
         })
       }
+    } else {
+      this.productservice.searchProduct(this.searchValue).subscribe((result) => {
+        this.listSearchProduct = result.items
+        console.log(this.listSearchProduct)
+        let a = document.getElementById('tippy__search__product')?.style
+        if (a) {
+          a.display = "block"
+        }
+      })
     }
-    this.productservice.searchProduct(this.searchValue).subscribe((result) => {
-      this.listSearchProduct = result.items
-      console.log(this.listSearchProduct)
-      let a = document.getElementById('tippy__search__product')?.style
-      // if (this.listSearchProduct.length > 0) {
-      if (a) {
-        a.display = "block"
-      }
-      // }
-    })
-
-
     this.listProductInBill$ = this.store.select(
       createSelector(counterSlice.selectFeature, (state) => state.ListProductInbill)
     )
@@ -175,7 +178,7 @@ export class RetailTemplateComponent implements OnInit {
           this.searchValue = ''
         } else {
           this.notification.create(
-            'Error',
+            'error',
             'Lỗi',
             'Sản phẩm đã tồn tại trong hóa đơn'
           )

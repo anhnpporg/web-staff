@@ -18,7 +18,7 @@ export class InputInfoSupplierComponent implements OnInit {
 
   listSuppliers: any[] = []
   totalPrice: number = 0
-  selectSupplier: any
+  selectSupplier: any = null
   isVisible = false
   goodsReceiptNote: goodsReceiptNoteInterface = {
     goodsReceiptNoteTypeId: 1,
@@ -86,6 +86,8 @@ export class InputInfoSupplierComponent implements OnInit {
   }
 
   handleOkSupplier(): void {
+    this.selectSupplier = null
+
     this.isVisible = false;
     this.goodsReceiptNote.createModel[0].supplier = {
       name: this.newSupplier
