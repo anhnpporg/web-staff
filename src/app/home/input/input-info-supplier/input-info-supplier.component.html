@@ -55,9 +55,13 @@
 </div>
 
 
-<nz-modal [(nzVisible)]="isVisiblePrint" nzTitle="Thông tin phiếu nhập" (nzOnCancel)="handleCancelprint()" (nzOnOk)="handleOkprint()"  [nzStyle]="{ width:'60%' }">
+<button printSectionId="print-section" ngxPrint class="d-none" id="print__bill__data"></button>
+
+<nz-modal [(nzVisible)]="isVisiblePrint" nzTitle="Thông tin phiếu nhập hàng" (nzOnCancel)="handleCancelprint()" nzOkText="In Phiếu nhập hàng" (nzOnOk)="handleOkprint()"  [nzStyle]="{ width:'60%' }">
   <ng-container *nzModalContent >
+    <div id="print-section">
     <app-print-input [listInputID]="listInputId"></app-print-input>
+  </div>
   </ng-container>
 </nz-modal>
 

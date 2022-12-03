@@ -26,7 +26,6 @@ export class PrintInputComponent implements OnInit {
         this.productService.getGoodsReceiptNoteById(item.grnId).subscribe((result) => {
           this.listInputInfo.push(result.data)
           console.log(this.listInputInfo);
-          
         }), (err: any) => {
           this.notification.create(
             'error',

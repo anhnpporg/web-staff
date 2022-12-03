@@ -1,14 +1,14 @@
 import { NzModalRef } from 'ng-zorro-antd/modal';
 import { NzModalService } from 'ng-zorro-antd/modal';
-import {Router} from '@angular/router';
-import {NzNotificationService} from 'ng-zorro-antd/notification';
-import {batchs, createModelInterface, goodsReceiptNoteInterface} from './../input-element/input-element.model';
-import {ProductService} from './../../../core/services/product/product.service';
-import {Component, OnInit} from '@angular/core';
-import {Store, createSelector} from '@ngrx/store';
+import { Router } from '@angular/router';
+import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { batchs, createModelInterface, goodsReceiptNoteInterface } from './../input-element/input-element.model';
+import { ProductService } from './../../../core/services/product/product.service';
+import { Component, OnInit } from '@angular/core';
+import { Store, createSelector } from '@ngrx/store';
 import * as counterSlice from "./../../../core/store/store.slice";
-import {async, Observable} from 'rxjs';
-import {ListInputProductInterface} from "../../../core/store/store.model";
+import { async, Observable } from 'rxjs';
+import { ListInputProductInterface } from "../../../core/store/store.model";
 
 @Component({
   selector: 'app-input-info-supplier',
@@ -114,26 +114,26 @@ export class InputInfoSupplierComponent implements OnInit {
 
     this.confirmModal = this.modal.confirm({
       nzTitle: 'Xác nhận',
-      nzOkText:'Xác nhận',
+      nzOkText: 'Xác nhận',
       nzContent: 'Vui lòng xác nhận thông tin nhập hàng ',
-      nzOnOk: () =>{
+      nzOnOk: () => {
         this.listProductInput$ = this.store.select(
           createSelector(counterSlice.selectFeature, (state) => state.ListInputProduct)
         )
         this.listProductInput$.subscribe((result) => {
           this.listProductInput = result
         })
-    
+
         let tempBatches: any[] = []
-    
+
         this.listProductInput.forEach((item, index) => {
           item.listBatch.forEach((item2, index) => {
             tempBatches = [...tempBatches, item2]
           })
         })
-    
+
         this.goodsReceiptNote.createModel[0].batches = tempBatches
-    
+
         console.log(this.goodsReceiptNote)
         if (this.goodsReceiptNote.createModel[0].batches.length <= 0) {
           this.notification.create(
@@ -152,9 +152,9 @@ export class InputInfoSupplierComponent implements OnInit {
             console.log(resultInput)
             if (resultInput) {
 
-              this.listInputId = resultInput.data 
+              this.listInputId = resultInput.data
               console.log(this.listInputId);
-              
+
 
               this.notification.create(
                 'success',
@@ -163,10 +163,7 @@ export class InputInfoSupplierComponent implements OnInit {
               );
               this.store.dispatch(counterSlice.resetState('ok'))
               this.isVisiblePrint = true;
-              // let currentUrl = this.router.url;
-              // this.router.navigateByUrl('/', {skipLocationChange: true}).then(() => {
-              //   this.router.navigate([currentUrl]);
-              // });
+
             }
           }, err => {
             console.log(err.error.message)
@@ -181,11 +178,20 @@ export class InputInfoSupplierComponent implements OnInit {
     });
   }
 
-  handleOkprint(){
+  handleOkprint() {
     this.isVisiblePrint = false;
+    document.getElementById('print__bill__data')?.click()
+    let currentUrl = this.router.url;
+    this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
+      this.router.navigate([currentUrl]);
+    });
   }
-  handleCancelprint(){
+  handleCancelprint() {
     this.isVisiblePrint = false;
+    let currentUrl = this.router.url;
+    this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
+      this.router.navigate([currentUrl]);
+    });
   }
 
 }
