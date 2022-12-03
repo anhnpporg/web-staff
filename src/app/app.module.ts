@@ -14,6 +14,10 @@ import {vi_VN} from 'ng-zorro-antd/i18n';
 import {StoreModule} from '@ngrx/store';
 import {isLoginGuard} from "./core/guards/isLogin.guard";
 
+import { registerLocaleData } from '@angular/common';
+import vi from '@angular/common/locales/vi';
+registerLocaleData(vi);
+
 
 const routes: Routes = [
   {path: '', loadChildren: () => LoginModule},
@@ -38,7 +42,8 @@ const routes: Routes = [
   ],
   providers: [
     {provide: NZ_I18N, useValue: vi_VN},
-    isLoginGuard
+    isLoginGuard,
+
   ],
   bootstrap: [AppComponent]
 })

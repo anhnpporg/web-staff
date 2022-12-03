@@ -22,7 +22,7 @@ export class BatchTagInfomationComponent implements OnInit {
 
   ngOnInit(): void {
 
-    if (this.batchInfo) {
+    if (this.batchInfo.batchId != null) {
       this.productService.getBatchById(this.batchInfo.batchId).subscribe((result) => {
         console.log(result.data)
         this.fullInfomationOfBatch = result.data

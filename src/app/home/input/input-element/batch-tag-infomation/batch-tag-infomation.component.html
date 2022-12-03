@@ -1,1 +1,10 @@
-<span style="margin: 5px 10px 5px 5px;">{{'Lô: ' + batchInfo.batchId}} - {{'Số lượng: ' + batchInfo.quantity}} - HSD: {{fullInfomationOfBatch?.expiryDate | date:'dd/MM/yyyy'}}</span>
+<div *ngIf="batchInfo.batchId != null ; else newBatch">
+<span style="margin: 5px 10px 5px 5px;">{{'Lô: ' + batchInfo.batchId}} - {{'Số lượng: ' + batchInfo.quantity}}
+  - HSD: {{fullInfomationOfBatch?.expiryDate | date:'dd/MM/yyyy'}}
+  - Tổng giá: {{batchInfo.totalPrice | currency:'VND'}}</span>
+</div>
+<ng-template #newBatch>
+  <span style="margin: 5px 10px 5px 5px;">Lô: Mới tạo - {{'Số lượng: ' + batchInfo.quantity}}
+    - HSD: {{batchInfo?.batch.expiryDate | date:'dd/MM/yyyy'}}
+    - Tổng giá: {{batchInfo.totalPrice | currency:'VND'}}</span>
+</ng-template>
