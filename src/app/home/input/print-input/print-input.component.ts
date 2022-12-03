@@ -19,10 +19,14 @@ export class PrintInputComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    console.log(this.listInputID);
+    
     if (this.listInputID) {
       this.listInputID.forEach((item) => {
-        this.productService.getGoodsReceiptNoteById(item.grId).subscribe((result) => {
+        this.productService.getGoodsReceiptNoteById(item.grnId).subscribe((result) => {
           this.listInputInfo.push(result.data)
+          console.log(this.listInputInfo);
+          
         }), (err: any) => {
           this.notification.create(
             'error',
