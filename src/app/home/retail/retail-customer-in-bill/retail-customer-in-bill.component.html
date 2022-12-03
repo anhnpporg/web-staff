@@ -132,9 +132,9 @@
         </div>
       </div>
       <div class="col-5 mb-5">
-        <h6>Thối lại</h6>
+        <h6>Thối lại:</h6>
       </div>
-      <div class="col-7 mb-5">
+      <div class="col-7 mb-5" *ngIf="reciveMoney > 0">
         <div *ngIf="reciveMoney + (usePoint * pointConvert) - totalBillPrice  >= 0;else empty">
           <h6>{{reciveMoney + (usePoint * pointConvert) - totalBillPrice | currency:'VND'}}</h6>
         </div>

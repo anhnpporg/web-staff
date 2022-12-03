@@ -9,6 +9,10 @@ import {Component, Input, OnInit, TemplateRef} from '@angular/core';
 import * as counterSlice from "./../../../core/store/store.slice";
 import {batchInterface, listBatchInterface, ListInputProductInterface} from "../../../core/store/store.model";
 
+import {differenceInCalendarDays, setHours} from 'date-fns';
+
+import {DisabledTimeFn, DisabledTimePartial} from 'ng-zorro-antd/date-picker';
+
 @Component({
   selector: 'app-input-element',
   templateUrl: './input-element.component.html',
@@ -29,10 +33,10 @@ export class InputElementComponent implements OnInit {
   // chọn lô
   batchesList: any
   selectBatch: any
-  quantityBatch: number = 0
+  quantityBatch: number = 1
   selectUnitProductPrice: number = 0
   listUnitProductPrice: any
-  totalPrice: number = 0
+  totalPrice: number = 1000
   listBatches: batchs[] = []
   /* ************************* */
 
@@ -60,6 +64,8 @@ export class InputElementComponent implements OnInit {
   listProductInput: ListInputProductInterface[] = []
   listBatchOfInputProduct: any[] = []
 
+  checkBatchesempty: boolean = true
+
   constructor(
     private modal: NzModalService,
     private productService: ProductService,
@@ -68,11 +74,24 @@ export class InputElementComponent implements OnInit {
   ) {
   }
 
+
+  today = new Date();
+  tomorow: any = new Date().setDate(this.today.getDate() + 1)
+
+
+  disabledDate = (current: Date): boolean => {
+    return differenceInCalendarDays(current, this.today) > 0;
+  }
+  disabledDateExp = (current: Date): boolean => {
+    return differenceInCalendarDays(this.tomorow, current) > 0;
+  }
+
   ngOnInit(): void {
-    console.log(this.InputProduct);
     this.productService.getBatchesByProductID(this.InputProduct.product.id).subscribe((result) => {
       this.batchesList = result.data
+      this.selectBatch = this.batchesList[0].id
       this.listUnitProductPrice = result.data[0].currentQuantity
+      this.selectUnitProductPrice = this.listUnitProductPrice[0].id
       console.log(result.data);
     }, err => {
       this.notification.create(
@@ -92,9 +111,9 @@ export class InputElementComponent implements OnInit {
     this.listProductInput.forEach((item, index) => {
       if (item.product.id == this.InputProduct.product.id) {
         this.listBatchOfInputProduct = item.listBatch
+        console.log(item.listBatch)
       }
     })
-
   }
 
 
@@ -163,8 +182,6 @@ export class InputElementComponent implements OnInit {
         }
       }
     })
-
-
   }
 
   handleCancelBatches(): void {
@@ -176,47 +193,66 @@ export class InputElementComponent implements OnInit {
     this.isVisible = true;
   }
 
+  checkManufacturingDate: boolean = true
+  checkExpiryDate: boolean = true
+
+
   handleOkNewBatch(): void {
-    this.isVisible = false;
-    this.handleCancelBatches()
 
-    this.batch = {
-      productId: this.InputProduct.product.id,
-      manufacturingDate: this.manufacturingDate,
-      expiryDate: this.expiryDate
+    if (this.manufacturingDate == '') {
+      this.checkManufacturingDate = false
+    }else {
+      this.checkManufacturingDate = true
+    }
+    if (this.expiryDate == '') {
+      this.checkExpiryDate = false
+    }else {
+      this.checkExpiryDate = true
     }
 
-    this.batchs = {
-      batchId: null,
-      quantity: this.quantityBatch,
-      productUnitPriceId: this.selectUnitProductPrice,
-      totalPrice: this.totalPrice,
-      batch: this.batch
-    }
-    let tempListProductInput: any[] = [...this.listProductInput]
-
-    tempListProductInput.forEach((item: any, index: number) => {
-      if (item.product.id == this.InputProduct.product.id) {
-
-        console.log(item.listBatch)
-
-        let temp: any[] = []
-
-        temp = item.listBatch
-
-        temp = [...temp, this.batchs]
-
-        tempListProductInput[index] = {...tempListProductInput[index], listBatch: temp}
-        console.log(tempListProductInput)
-        this.store.dispatch(counterSlice.addProductToListInput(tempListProductInput))
+    if (this.checkExpiryDate && this.checkManufacturingDate) {
+      this.batch = {
+        productId: this.InputProduct.product.id,
+        manufacturingDate: this.manufacturingDate,
+        expiryDate: this.expiryDate
       }
-    })
 
-    this.quantityBatch = 0
-    this.selectUnitProductPrice = 0
-    this.totalPrice = 0
-    this.manufacturingDate = ''
-    this.expiryDate = ''
+      this.batchs = {
+        batchId: null,
+        quantity: this.quantityBatch,
+        productUnitPriceId: this.selectUnitProductPrice,
+        totalPrice: this.totalPrice,
+        batch: this.batch
+      }
+      let tempListProductInput: any[] = [...this.listProductInput]
+
+      tempListProductInput.forEach((item: any, index: number) => {
+        if (item.product.id == this.InputProduct.product.id) {
+
+          console.log(item.listBatch)
+
+          let temp: any[] = []
+
+          temp = item.listBatch
+
+          temp = [...temp, this.batchs]
+
+          tempListProductInput[index] = {...tempListProductInput[index], listBatch: temp}
+          console.log(tempListProductInput)
+          this.store.dispatch(counterSlice.addProductToListInput(tempListProductInput))
+        }
+      })
+
+      this.quantityBatch = 0
+      this.selectUnitProductPrice = 0
+      this.totalPrice = 0
+      this.manufacturingDate = ''
+      this.expiryDate = ''
+
+      this.isVisible = false;
+      this.handleCancelBatches()
+    }
+
   }
 
   handleCancelNewBatch(): void {
@@ -263,8 +299,6 @@ export class InputElementComponent implements OnInit {
         this.store.dispatch(counterSlice.addProductToListInput(tempListProductInput))
       }
     })
-
-
   }
 
 }
