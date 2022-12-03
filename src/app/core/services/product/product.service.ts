@@ -105,5 +105,9 @@ export class ProductService {
     return this.httpClient.get(DOMAIN + `product-units-management/${id}/product-units`, {headers: this.headers})
   }
 
+  getGoodsReceiptNoteById(id: number): Observable<any> {
+    return this.httpClient.get(DOMAIN + `goods-receipt-note-management/goods-receipt-notes/${id}`, {headers: this.headers})
+  }
+
 
 }

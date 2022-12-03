@@ -28,6 +28,7 @@ import { ReturnProductDetailComponent } from './return-product/return-product-de
 import {ClickOutsideModule} from "ng-click-outside";
 import { SamplePrescriptionTemplateComponent } from './sample-prescription/sample-prescription-template/sample-prescription-template.component';
 import { BatchTagInfomationComponent } from './input/input-element/batch-tag-infomation/batch-tag-infomation.component';
+import { PrintInputComponent } from './input/print-input/print-input.component';
 
 const homeRoute: Routes = [
   {
@@ -62,6 +63,7 @@ const homeRoute: Routes = [
     ReturnProductDetailComponent,
     SamplePrescriptionTemplateComponent,
     BatchTagInfomationComponent,
+    PrintInputComponent,
 
 
   ],

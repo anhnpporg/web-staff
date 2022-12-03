@@ -1,3 +1,5 @@
+import { NzModalRef } from 'ng-zorro-antd/modal';
+import { NzModalService } from 'ng-zorro-antd/modal';
 import {Router} from '@angular/router';
 import {NzNotificationService} from 'ng-zorro-antd/notification';
 import {batchs, createModelInterface, goodsReceiptNoteInterface} from './../input-element/input-element.model';
@@ -14,6 +16,8 @@ import {ListInputProductInterface} from "../../../core/store/store.model";
   styleUrls: ['./input-info-supplier.component.css']
 })
 export class InputInfoSupplierComponent implements OnInit {
+
+  confirmModal?: NzModalRef;
 
 
   listSuppliers: any[] = []
@@ -32,6 +36,8 @@ export class InputInfoSupplierComponent implements OnInit {
   }
   newSupplier: string = ''
 
+  listInputId: any[] = []
+  isVisiblePrint: boolean = false
 
   listProductInput$: Observable<any> | undefined
   listProductInput: ListInputProductInterface[] = []
@@ -40,7 +46,8 @@ export class InputInfoSupplierComponent implements OnInit {
     private productService: ProductService,
     private store: Store<{}>,
     private notification: NzNotificationService,
-    private router: Router
+    private router: Router,
+    private modal: NzModalService
   ) {
   }
 
@@ -105,60 +112,80 @@ export class InputInfoSupplierComponent implements OnInit {
 
     console.log(this.goodsReceiptNote)
 
-    this.listProductInput$ = this.store.select(
-      createSelector(counterSlice.selectFeature, (state) => state.ListInputProduct)
-    )
-    this.listProductInput$.subscribe((result) => {
-      this.listProductInput = result
-    })
-
-    let tempBatches: any[] = []
-
-    this.listProductInput.forEach((item, index) => {
-      item.listBatch.forEach((item2, index) => {
-        tempBatches = [...tempBatches, item2]
-      })
-    })
-
-    this.goodsReceiptNote.createModel[0].batches = tempBatches
-
-    console.log(this.goodsReceiptNote)
-    if (this.goodsReceiptNote.createModel[0].batches.length <= 0) {
-      this.notification.create(
-        "error",
-        "Chọn lô sản phẩm",
-        ""
-      )
-    } else if (this.goodsReceiptNote.createModel[0].supplier == null && this.goodsReceiptNote == null) {
-      this.notification.create(
-        "error",
-        "Chọn nhà cung cấp",
-        ""
-      )
-    } else {
-      this.productService.PostGoodReceiptNoteManager(this.goodsReceiptNote).subscribe((resultInput) => {
-        console.log(resultInput)
-        if (resultInput) {
+    this.confirmModal = this.modal.confirm({
+      nzTitle: 'Xác nhận',
+      nzOkText:'Xác nhận',
+      nzContent: 'Vui lòng xác nhận thông tin nhập hàng ',
+      nzOnOk: () =>{
+        this.listProductInput$ = this.store.select(
+          createSelector(counterSlice.selectFeature, (state) => state.ListInputProduct)
+        )
+        this.listProductInput$.subscribe((result) => {
+          this.listProductInput = result
+        })
+    
+        let tempBatches: any[] = []
+    
+        this.listProductInput.forEach((item, index) => {
+          item.listBatch.forEach((item2, index) => {
+            tempBatches = [...tempBatches, item2]
+          })
+        })
+    
+        this.goodsReceiptNote.createModel[0].batches = tempBatches
+    
+        console.log(this.goodsReceiptNote)
+        if (this.goodsReceiptNote.createModel[0].batches.length <= 0) {
           this.notification.create(
-            'success',
-            resultInput.message,
-            ''
-          );
-          this.store.dispatch(counterSlice.resetState('ok'))
-          let currentUrl = this.router.url;
-          this.router.navigateByUrl('/', {skipLocationChange: true}).then(() => {
-            this.router.navigate([currentUrl]);
-          });
+            "error",
+            "Chọn lô sản phẩm",
+            ""
+          )
+        } else if (this.goodsReceiptNote.createModel[0].supplier == null && this.goodsReceiptNote == null) {
+          this.notification.create(
+            "error",
+            "Chọn nhà cung cấp",
+            ""
+          )
+        } else {
+          this.productService.PostGoodReceiptNoteManager(this.goodsReceiptNote).subscribe((resultInput) => {
+            console.log(resultInput)
+            if (resultInput) {
+
+              this.listInputId = resultInput.data 
+              console.log(this.listInputId);
+              
+
+              this.notification.create(
+                'success',
+                resultInput.message,
+                ''
+              );
+              this.store.dispatch(counterSlice.resetState('ok'))
+              this.isVisiblePrint = true;
+              // let currentUrl = this.router.url;
+              // this.router.navigateByUrl('/', {skipLocationChange: true}).then(() => {
+              //   this.router.navigate([currentUrl]);
+              // });
+            }
+          }, err => {
+            console.log(err.error.message)
+            this.notification.create(
+              'error',
+              err.error.message,
+              ''
+            );
+          })
         }
-      }, err => {
-        console.log(err.error.message)
-        this.notification.create(
-          'error',
-          err.error.message,
-          ''
-        );
-      })
-    }
+      }
+    });
+  }
+
+  handleOkprint(){
+    this.isVisiblePrint = false;
+  }
+  handleCancelprint(){
+    this.isVisiblePrint = false;
   }
 
 }

@@ -193,7 +193,6 @@ export class InputElementComponent implements OnInit {
     this.isVisible = true;
   }
 
-
   checkManufacturingDate: boolean = true
   checkExpiryDate: boolean = true
 
