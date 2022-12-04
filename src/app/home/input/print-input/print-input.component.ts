@@ -10,22 +10,30 @@ import { Component, Input, OnInit } from '@angular/core';
 export class PrintInputComponent implements OnInit {
 
   @Input() listInputID: any[] = []
+  @Input() status: boolean = true
 
   listInputInfo: any[] = []
+  totalPriceBill: number = 0
 
   constructor(
     private productService: ProductService,
     private notification: NzNotificationService
   ) { }
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
     console.log(this.listInputID);
     
     if (this.listInputID) {
-      this.listInputID.forEach((item) => {
+      await this.listInputID.forEach((item) => {
         this.productService.getGoodsReceiptNoteById(item.grnId).subscribe((result) => {
-          this.listInputInfo.push(result.data)
+          
+          this.productService.getBatchById(result.data.batch.id).subscribe((product)=>{
+            this.listInputInfo.push({data: result.data, productName: product.data.product.name})
+            this.totalPriceBill += result.data.totalPrice
+          })
+          
           console.log(this.listInputInfo);
+          
         }), (err: any) => {
           this.notification.create(
             'error',
@@ -33,7 +41,9 @@ export class PrintInputComponent implements OnInit {
             ''
           )
         }
+
       })
+      
 
     }
   }
