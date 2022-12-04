@@ -7,13 +7,18 @@
         <h1 style="text-align: center;">Phiếu trả hàng</h1>
     </ng-template>
 
+
+    <div style="margin: 20px;">
+        <h3>Nhà cung cấp: {{listInputInfo[0].data.supplier.name}}</h3>
+        <h3>Tổng tiền: {{totalPriceBill | currency:'VND'}}</h3>
+    </div>
 <div>
     <!-- <h1>{{item.grnId}}</h1> -->
     <table class="table" style="width: 100%;">
         <thead class="table-light">
             <tr style="font-size: 15px ;">
                 <th>Tên sản phẩm</th>
-                <th *ngIf="status" >Nhà cung cấp</th>
+                <th >Nhà cung cấp</th>
                 <th>Mã lô sản phẩm</th>
                 <th>Hạn sử dụng</th>
                 <th>Số lượng</th>
@@ -32,11 +37,6 @@
                 <td>{{item.data.totalPrice | currency:'VND'}}</td>
               </tr>
         </tbody>
-        <tfoot>
-            <td colspan="5"></td>
-            <td><b>Tổng tiền</b></td>
-            <td><b>{{totalPriceBill | currency:'VND'}}</b></td>
-        </tfoot>
     </table>
     
 </div>

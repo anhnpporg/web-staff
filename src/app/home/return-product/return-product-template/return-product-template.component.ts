@@ -220,6 +220,8 @@ export class ReturnProductTemplateComponent implements OnInit {
   }
 
   handleOkReturnProduct(){
+
+    document.getElementById('print__bill__data__return')?.click()
     this.isVisibleReturnProduct = false
   }
 

@@ -85,9 +85,10 @@
   </div>
 </div>
 
+<button printSectionId="print-section" ngxPrint class="d-none" id="print__bill__data__return"></button>
 <nz-modal [(nzVisible)]="isVisibleReturnProduct" nzTitle="The first Modal" (nzOnCancel)="handleCancelReturnProduct()" (nzOnOk)="handleOkReturnProduct()" [nzStyle]="{ width:'60%' }">
   <ng-container *nzModalContent>
-    <div id="print-section" style="min-height: 70vh;">
+    <div id="print-section" style="height: 70vh; overflow: auto;">
       <app-print-input [listInputID]="listReturnProductId" [status]="false"></app-print-input>
     </div>
   </ng-container>
