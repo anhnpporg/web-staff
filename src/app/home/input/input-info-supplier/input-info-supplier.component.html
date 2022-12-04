@@ -59,7 +59,7 @@
 
 <nz-modal [(nzVisible)]="isVisiblePrint" nzTitle="Thông tin phiếu nhập hàng" (nzOnCancel)="handleCancelprint()" nzOkText="In Phiếu nhập hàng" (nzOnOk)="handleOkprint()"  [nzStyle]="{ width:'60%' }">
   <ng-container *nzModalContent >
-    <div id="print-section">
+    <div id="print-section" style="min-height: 70vh;">
     <app-print-input [listInputID]="listInputId"></app-print-input>
   </div>
   </ng-container>

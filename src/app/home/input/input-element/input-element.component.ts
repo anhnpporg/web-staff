@@ -1,17 +1,17 @@
-import {FormBuilder, Validators} from '@angular/forms';
-import {Observable} from 'rxjs';
-import {Store, createSelector} from '@ngrx/store';
-import {NzNotificationService} from 'ng-zorro-antd/notification';
-import {goodsReceiptNoteInterface, batch, batchs} from './input-element.model';
-import {ProductService} from './../../../core/services/product/product.service';
-import {NzModalService, NzModalRef} from 'ng-zorro-antd/modal';
-import {Component, Input, OnInit, TemplateRef} from '@angular/core';
+import { FormBuilder, Validators } from '@angular/forms';
+import { Observable } from 'rxjs';
+import { Store, createSelector } from '@ngrx/store';
+import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { goodsReceiptNoteInterface, batch, batchs } from './input-element.model';
+import { ProductService } from './../../../core/services/product/product.service';
+import { NzModalService, NzModalRef } from 'ng-zorro-antd/modal';
+import { Component, Input, OnInit, TemplateRef } from '@angular/core';
 import * as counterSlice from "./../../../core/store/store.slice";
-import {batchInterface, listBatchInterface, ListInputProductInterface} from "../../../core/store/store.model";
+import { batchInterface, listBatchInterface, ListInputProductInterface } from "../../../core/store/store.model";
 
-import {differenceInCalendarDays, setHours} from 'date-fns';
+import { differenceInCalendarDays, setHours } from 'date-fns';
 
-import {DisabledTimeFn, DisabledTimePartial} from 'ng-zorro-antd/date-picker';
+import { DisabledTimeFn, DisabledTimePartial } from 'ng-zorro-antd/date-picker';
 
 @Component({
   selector: 'app-input-element',
@@ -167,7 +167,7 @@ export class InputElementComponent implements OnInit {
 
           temp = [...temp, this.batchs]
 
-          tempListProductInput[index] = {...tempListProductInput[index], listBatch: temp}
+          tempListProductInput[index] = { ...tempListProductInput[index], listBatch: temp }
           console.log(tempListProductInput)
 
           // console.log(this.listProductInput)
@@ -273,7 +273,7 @@ export class InputElementComponent implements OnInit {
             let temp = [...item.listBatch]
             temp.splice(index, 1)
             console.log(temp)
-            tempListProductInput[index] = {...tempListProductInput[index], listBatch: temp}
+            tempListProductInput[index] = { ...tempListProductInput[index], listBatch: temp }
             console.log(tempListProductInput)
             this.store.dispatch(counterSlice.addProductToListInput(tempListProductInput))
           }

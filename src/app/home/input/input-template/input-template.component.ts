@@ -5,6 +5,7 @@ import {Component, OnInit} from '@angular/core';
 import * as counterSlice from "./../../../core/store/store.slice";
 import {Observable} from "rxjs";
 import {NzNotificationService} from "ng-zorro-antd/notification";
+import { ExcelInputTemplateService } from './excel-input-template.service';
 
 @Component({
   selector: 'app-input-template',
@@ -18,11 +19,13 @@ export class InputTemplateComponent implements OnInit {
   listProductInput$: Observable<any> | undefined
   listProductInput: any[] = []
   checkBatchesempty: boolean = true
+  isVisibleUploadExcel: boolean = false
 
   constructor(
     private product: ProductService,
     private readonly store: Store<{}>,
-    private notification: NzNotificationService
+    private notification: NzNotificationService,
+    private excelService: ExcelInputTemplateService
   ) {
   }
 
@@ -121,4 +124,32 @@ export class InputTemplateComponent implements OnInit {
       }
     }
   }
+
+
+  opneModalUploadExcel(){
+    this.isVisibleUploadExcel = true;
+  }
+
+  handleOkUploadExcel(){
+    this.isVisibleUploadExcel = false;
+  }
+
+  handleCancelUploadExcel(){
+    this.isVisibleUploadExcel = false;
+  }
+
+  handleUpload(event: any) {
+    const file = event.target.files[0];
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => {
+        console.log(reader.result);
+    };
+}
+
+generateExcel() {
+
+   this.excelService.generateExcel();
+ }
+
 }
