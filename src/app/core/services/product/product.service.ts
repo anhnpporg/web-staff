@@ -109,5 +109,4 @@ export class ProductService {
     return this.httpClient.get(DOMAIN + `goods-receipt-note-management/goods-receipt-notes/${id}`, {headers: this.headers})
   }
 
-
 }

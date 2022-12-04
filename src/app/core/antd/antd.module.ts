@@ -20,6 +20,7 @@ import { NzSwitchModule } from 'ng-zorro-antd/switch';
 import { NzTableModule } from 'ng-zorro-antd/table';
 import { NzStepsModule } from 'ng-zorro-antd/steps';
 import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
+import { NzDrawerModule } from 'ng-zorro-antd/drawer';
 import { NzUploadModule } from 'ng-zorro-antd/upload';
 
 @NgModule({
@@ -47,6 +48,7 @@ import { NzUploadModule } from 'ng-zorro-antd/upload';
     NzIconModule,
     NzStepsModule,
     NzDatePickerModule,
+    NzDrawerModule
     NzUploadModule
   ]
 })
