@@ -25,7 +25,7 @@ export class ReceiptNoteDetailComponent implements OnInit {
 
   ngOnInit(): void {
     this.product.getGoodsReceiptNoteById(this.GRNId).subscribe((result)=>{
-      console.log(result);
+      // console.log(result);
       this.data = result.data
       this.barcode = result.data.batch.barcode
       this.GRNtype = result.data.goodsReceiptNoteType.name

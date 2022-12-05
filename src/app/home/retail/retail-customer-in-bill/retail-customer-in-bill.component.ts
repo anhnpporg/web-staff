@@ -130,6 +130,7 @@ export class RetailCustomerInBillComponent implements OnInit {
         this.listProductInBill.forEach((element, index) => {
           tempproduct.push({
             productId: element.product.id,
+            use: element.use,
             goodsIssueNote: element.listBatches
           })
         })
@@ -147,7 +148,6 @@ export class RetailCustomerInBillComponent implements OnInit {
           this.productservice.retailInvoice(this.invoice).subscribe((result) => {
             if (result) {
               this.invoiceID = result.data.invoiceId
-              // console.log(result.invoiceId)
 
               console.log("ok")
               if (this.invoiceID != 0) {
@@ -156,9 +156,9 @@ export class RetailCustomerInBillComponent implements OnInit {
                   "Tạo hóa đơn thành công",
                   ""
                 )
+                this.store.dispatch(counterSlice.resetState('ok'))
               }
             }
-            console.log(this.invoiceID)
             this.isVisibleInvoicePrint = true
           }, err => {
             console.log(err)

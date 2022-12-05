@@ -13,13 +13,13 @@
           <h6>Đường dùng: {{productInbill.product.routeOfAdministration.name}}</h6>
         </td>
         <td colspan="4">
-          <textarea rows="2" placeholder="Ghi chú" nz-input [(ngModel)]="noteInput" (ngModelChange)="changeNote()"></textarea>
+          <textarea rows="2" placeholder="Ghi chú" nz-input [(ngModel)]="noteInput" (change)="changeNote()"></textarea>
         </td>
         <td style="display: flex; margin: auto; width: 5%" role="button" (click)="showConfirmDeleteProductInBill()">
           <i class="fa fa-times-circle"></i>
         </td>
       </tr>
-      <tr app-retail-product-in-bill-batch *ngFor="let item of productInbill.listBatches" [batch]="item">
+      <tr app-retail-product-in-bill-batch *ngFor="let item of productInbill.listBatches" [batch]="item" [useNote]="noteInput">
       </tr>
       <tr>
         <td colspan="6"></td>
@@ -32,7 +32,7 @@
 </div>
 
 <nz-modal [(nzVisible)]="isVisibleAddBatch" nzTitle="Chọn lô cho thuốc {{productInbill.product.name}}"
-          (nzOnCancel)="handleCancelAddbatch()" (nzOnOk)="handleOkAddBatch()">
+          (nzOnCancel)="handleCancelAddbatch()" (nzOnOk)="handleOkAddBatch()" nzOkText="Chọn lô">
   <ng-container *nzModalContent>
     <div>
       <div class="form-group">

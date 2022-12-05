@@ -1,9 +1,11 @@
-import {Component, Input, OnInit} from '@angular/core';
-import {NzModalRef, NzModalService} from "ng-zorro-antd/modal";
-import {Store} from "@ngrx/store";
+import { product } from './../retail.model';
+import { Observable } from 'rxjs';
+import { Component, Input, OnInit } from '@angular/core';
+import { NzModalRef, NzModalService } from "ng-zorro-antd/modal";
+import { createSelector, Store } from "@ngrx/store";
 import * as counterSlice from "./../../../core/store/store.slice";
-import {goodsIssueNote} from "../retail.model";
-import {NzNotificationService} from "ng-zorro-antd/notification";
+import { goodsIssueNote } from "../retail.model";
+import { NzNotificationService } from "ng-zorro-antd/notification";
 
 
 @Component({
@@ -18,7 +20,7 @@ export class RetailProductInBillComponent implements OnInit {
   @Input() index: number = 0
   confirmModal?: NzModalRef
 
-// batches
+  // batches
   isVisibleAddBatch: boolean = false
   ListBatchesOfProductInBill: any[] = [] // danh sách lô hàng của sản phẩm được chọn
   ListUnitOfBatches: any[] = [] // danh sách đơn vị của lô hàng được chọn
@@ -30,6 +32,8 @@ export class RetailProductInBillComponent implements OnInit {
     batchId: 0
   }
 
+  listProductInBill$: Observable<any> | undefined // lấy từ kho lưu trữ (store.slice.ts)
+  listProductInBill: any[] = [] // lưu thông tin lấy từ kho lưu trữ (listProductInBill$)
 
   noteInput: string = ''
 
@@ -44,16 +48,21 @@ export class RetailProductInBillComponent implements OnInit {
     if (this.productInbill.listBatches.length == 0) {
       this.isVisibleAddBatch = true
     }
-
-    // danh sách lô hàng của sản phẩm
-    // this.ListBatchesOfProductInBill = this.productInbill.product.batches
-
     this.productInbill.product.batches.forEach((item: any) => {
-      console.log(item)
       if (item.isActive) {
         this.ListBatchesOfProductInBill.push(item)
       }
     })
+
+    this.listProductInBill$ = this.store.select(
+      createSelector(counterSlice.selectFeature, (state) => state.ListProductInbill)
+    )
+    this.listProductInBill$.subscribe((result) => {
+      this.listProductInBill = result
+    })
+
+    this.noteInput = this.productInbill.use
+
 
     this.goodsIssueNote.batchId = this.ListBatchesOfProductInBill[0].id
     if (this.goodsIssueNote.batchId != 0) {
@@ -104,7 +113,6 @@ export class RetailProductInBillComponent implements OnInit {
 
   handleOkAddBatch() {
     this.isVisibleAddBatch = false
-    console.log(this.goodsIssueNote)
     let checkExistbatch = true
     let tempListbatches = [...this.productInbill.listBatches]
 
@@ -115,7 +123,6 @@ export class RetailProductInBillComponent implements OnInit {
     })
 
     if (checkExistbatch) {
-      console.log(checkExistbatch)
       tempListbatches = [...this.productInbill.listBatches, this.goodsIssueNote]
     } else {
       this.notification.create(
@@ -126,8 +133,16 @@ export class RetailProductInBillComponent implements OnInit {
     }
 
 
+    let tempNote: any
+
+    if (this.noteInput == '') {
+      tempNote = null
+    } else {
+      tempNote = this.noteInput
+    }
     this.store.dispatch(counterSlice.addBatchesToProductinBill({
       product: this.productInbill.product,
+      use: tempNote,
       listBatches: tempListbatches
     }))
 
@@ -141,8 +156,15 @@ export class RetailProductInBillComponent implements OnInit {
     this.isVisibleAddBatch = false
   }
 
-  changeNote(){
-    console.log(this.noteInput)
+  changeNote() {
+    this.store.dispatch(counterSlice.addBatchesToProductinBill({
+      product: this.productInbill.product,
+      use: this.noteInput,
+      listBatches: this.productInbill.listBatches
+    }))
+
+
+
   }
 
 }
