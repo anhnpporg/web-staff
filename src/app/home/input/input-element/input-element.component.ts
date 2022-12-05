@@ -177,7 +177,7 @@ export class InputElementComponent implements OnInit {
           this.notification.create(
             "error",
             "Lô hàng đã tồn tại",
-            ""
+            "Bấm vào lô hàng để chỉnh sửa hoặc chọn lô hàng khác"
           )
         }
       }
@@ -201,16 +201,20 @@ export class InputElementComponent implements OnInit {
 
     if (this.manufacturingDate == '') {
       this.checkManufacturingDate = false
-    }else {
+    } else {
       this.checkManufacturingDate = true
     }
     if (this.expiryDate == '') {
       this.checkExpiryDate = false
-    }else {
+    } else {
       this.checkExpiryDate = true
     }
 
     if (this.checkExpiryDate && this.checkManufacturingDate) {
+
+
+
+
       this.batch = {
         productId: this.InputProduct.product.id,
         manufacturingDate: this.manufacturingDate,
@@ -230,16 +234,43 @@ export class InputElementComponent implements OnInit {
         if (item.product.id == this.InputProduct.product.id) {
 
           console.log(item.listBatch)
+          let check = true
+          item.listBatch.forEach((element: any) => {
+            if (element.batch != null) {
 
-          let temp: any[] = []
+              let tempExpiry = new Date(this.expiryDate)
+              let tempManufacturing = new Date(this.manufacturingDate)
+              let tempBatchExp = new Date(element.batch.expiryDate)
+              let temBatchManu = new Date(element.batch.manufacturingDate)
 
-          temp = item.listBatch
+              if (tempManufacturing.getFullYear() == temBatchManu.getFullYear() && tempExpiry.getFullYear() == tempBatchExp.getFullYear()) {
+                if (tempManufacturing.getMonth() == temBatchManu.getMonth() && tempExpiry.getMonth() == tempBatchExp.getMonth()) {
+                  if (tempManufacturing.getDate() == temBatchManu.getDate() && tempExpiry.getDate() == tempBatchExp.getDate()) {
+                    check = false
+                  }
+                }
+              }
 
-          temp = [...temp, this.batchs]
+            }
+          });
 
-          tempListProductInput[index] = {...tempListProductInput[index], listBatch: temp}
-          console.log(tempListProductInput)
-          this.store.dispatch(counterSlice.addProductToListInput(tempListProductInput))
+          if (check) {
+            let temp: any[] = []
+
+            temp = item.listBatch
+
+            temp = [...temp, this.batchs]
+
+            tempListProductInput[index] = { ...tempListProductInput[index], listBatch: temp }
+            console.log(tempListProductInput)
+            this.store.dispatch(counterSlice.addProductToListInput(tempListProductInput))
+          } else {
+            this.notification.create(
+              "error",
+              "Lô hàng đã tồn tại",
+              "Bấm vào lô hàng để chỉnh sửa hoặc chọn lô hàng khác"
+            )
+          }
         }
       })
 

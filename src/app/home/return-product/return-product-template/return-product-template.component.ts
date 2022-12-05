@@ -90,6 +90,12 @@ export class ReturnProductTemplateComponent implements OnInit {
 
           this.switchFullInvocie = true
 
+        }, err => {
+          this.notification.create(
+            "error",
+            err.error.message,
+            ""
+          )
         })
       }
     }
@@ -112,7 +118,7 @@ export class ReturnProductTemplateComponent implements OnInit {
           console.log(result)
           this.listReturnProductId = result.data
           console.log(this.listReturnProductId);
-          
+
           this.isVisibleReturnProduct = true
           this.notification.create(
             "success",
@@ -215,11 +221,11 @@ export class ReturnProductTemplateComponent implements OnInit {
   }
 
 
-  handleCancelReturnProduct(){
+  handleCancelReturnProduct() {
     this.isVisibleReturnProduct = false
   }
 
-  handleOkReturnProduct(){
+  handleOkReturnProduct() {
 
     document.getElementById('print__bill__data__return')?.click()
     this.isVisibleReturnProduct = false
