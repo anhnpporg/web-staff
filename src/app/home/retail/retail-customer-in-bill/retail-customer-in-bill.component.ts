@@ -63,9 +63,11 @@ export class RetailCustomerInBillComponent implements OnInit {
 
     this.listProductInBill$ = this.store.select(
       createSelector(counterSlice.selectFeature, (state) => state.ListProductInbill)
+      
     )
     this.listProductInBill$.subscribe((result) => {
       this.listProductInBill = result
+      this.isVisibleHistoryInvoice = false
       if (this.listProductInBill.length > 0) {
         this.totalBillPrice = 0
         this.listProductInBill.forEach((element) => {

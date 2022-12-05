@@ -5,7 +5,6 @@ import {ProductService} from './../../../core/services/product/product.service';
 import {Component, OnInit} from '@angular/core';
 import {NzNotificationService} from 'ng-zorro-antd/notification';
 import * as counterSlice from "./../../../core/store/store.slice";
-import {log} from "ng-zorro-antd/core/logger";
 
 @Component({
   selector: 'app-retail-template',
