@@ -33,6 +33,7 @@ import { HistorySellComponent } from './profile/history-sell/history-sell.compon
 import { HistoryReceiptNoteComponent } from './profile/history-receipt-note/history-receipt-note.component';
 import { ReceiptNoteDetailComponent } from './profile/receipt-note-detail/receipt-note-detail.component';
 import { SellDetailComponent } from './profile/sell-detail/sell-detail.component';
+import { SearchCustomerReturnProductComponent } from './return-product/return-product-template/search-customer-return-product/search-customer-return-product.component';
 
 const homeRoute: Routes = [
   {
@@ -72,6 +73,7 @@ const homeRoute: Routes = [
     HistoryReceiptNoteComponent,
     ReceiptNoteDetailComponent,
     SellDetailComponent,
+    SearchCustomerReturnProductComponent,
 
 
   ],

@@ -92,7 +92,6 @@ export class InputElementComponent implements OnInit {
       this.selectBatch = this.batchesList[0].id
       this.listUnitProductPrice = result.data[0].currentQuantity
       this.selectUnitProductPrice = this.listUnitProductPrice[0].id
-      console.log(result.data);
     }, err => {
       this.notification.create(
         "error",
@@ -111,7 +110,6 @@ export class InputElementComponent implements OnInit {
     this.listProductInput.forEach((item, index) => {
       if (item.product.id == this.InputProduct.product.id) {
         this.listBatchOfInputProduct = item.listBatch
-        console.log(item.listBatch)
       }
     })
   }
@@ -134,7 +132,6 @@ export class InputElementComponent implements OnInit {
   }
 
   handleOkBatches(): void {
-    console.log('Button ok clicked!');
     this.isVisibleBatches = false;
     this.batchs = {
       batchId: this.selectBatch,
@@ -148,31 +145,18 @@ export class InputElementComponent implements OnInit {
 
     tempListProductInput.forEach((item: any, index: number) => {
       if (item.product.id == this.InputProduct.product.id) {
-
-        console.log(item.listBatch)
-
         let temp: any[] = []
-
         let checkExistBatch = true
-
         item.listBatch.forEach((batch: any, index: number) => {
           if (batch.batchId == this.batchs.batchId) {
             checkExistBatch = false
           }
         })
-
         if (checkExistBatch) {
-          console.log('ok')
           temp = item.listBatch
-
           temp = [...temp, this.batchs]
-
           tempListProductInput[index] = { ...tempListProductInput[index], listBatch: temp }
-          console.log(tempListProductInput)
-
-          // console.log(this.listProductInput)
           this.store.dispatch(counterSlice.addProductToListInput(tempListProductInput))
-
         } else {
           this.notification.create(
             "error",
@@ -185,7 +169,6 @@ export class InputElementComponent implements OnInit {
   }
 
   handleCancelBatches(): void {
-    console.log('Button cancel clicked!');
     this.isVisibleBatches = false;
   }
 
@@ -209,18 +192,12 @@ export class InputElementComponent implements OnInit {
     } else {
       this.checkExpiryDate = true
     }
-
     if (this.checkExpiryDate && this.checkManufacturingDate) {
-
-
-
-
       this.batch = {
         productId: this.InputProduct.product.id,
         manufacturingDate: this.manufacturingDate,
         expiryDate: this.expiryDate
       }
-
       this.batchs = {
         batchId: null,
         quantity: this.quantityBatch,
@@ -229,15 +206,11 @@ export class InputElementComponent implements OnInit {
         batch: this.batch
       }
       let tempListProductInput: any[] = [...this.listProductInput]
-
       tempListProductInput.forEach((item: any, index: number) => {
         if (item.product.id == this.InputProduct.product.id) {
-
-          console.log(item.listBatch)
           let check = true
           item.listBatch.forEach((element: any) => {
             if (element.batch != null) {
-
               let tempExpiry = new Date(this.expiryDate)
               let tempManufacturing = new Date(this.manufacturingDate)
               let tempBatchExp = new Date(element.batch.expiryDate)
@@ -256,13 +229,9 @@ export class InputElementComponent implements OnInit {
 
           if (check) {
             let temp: any[] = []
-
             temp = item.listBatch
-
             temp = [...temp, this.batchs]
-
             tempListProductInput[index] = { ...tempListProductInput[index], listBatch: temp }
-            console.log(tempListProductInput)
             this.store.dispatch(counterSlice.addProductToListInput(tempListProductInput))
           } else {
             this.notification.create(
@@ -279,18 +248,13 @@ export class InputElementComponent implements OnInit {
       this.totalPrice = 0
       this.manufacturingDate = ''
       this.expiryDate = ''
-
       this.isVisible = false;
       this.handleCancelBatches()
     }
-
   }
 
   handleCancelNewBatch(): void {
-
-    console.log("ok")
     this.isVisible = false;
-
   }
 
   deleteSelectBatches(index: number) {
@@ -303,19 +267,15 @@ export class InputElementComponent implements OnInit {
           if (item.product.id == this.InputProduct.product.id) {
             let temp = [...item.listBatch]
             temp.splice(index, 1)
-            console.log(temp)
             tempListProductInput[index] = { ...tempListProductInput[index], listBatch: temp }
-            console.log(tempListProductInput)
             this.store.dispatch(counterSlice.addProductToListInput(tempListProductInput))
           }
         })
       }
-
     });
   }
 
   deleteProduct() {
-
     this.confirmModal = this.modal.confirm({
       nzTitle: 'Xóa sản phẩm đã chọn',
       nzContent: 'Bạn muốn xóa thuốc này, khi xóa các lô của sản phẩm này cũng sẽ bị xóa',
@@ -326,7 +286,6 @@ export class InputElementComponent implements OnInit {
             tempListProductInput.splice(index, 1)
           }
         })
-
         this.store.dispatch(counterSlice.addProductToListInput(tempListProductInput))
       }
     })
