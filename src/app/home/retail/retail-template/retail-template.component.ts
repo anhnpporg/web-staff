@@ -46,12 +46,13 @@ export class RetailTemplateComponent implements OnInit {
 
   ngOnInit(): void {
 
-    // this.listProductInBill$ = this.store.select(
-    //   createSelector(counterSlice.selectFeature, (state) => state.ListProductInbill)
-    // )
-    // this.listProductInBill$.subscribe((result) => {
-    //   this.listProductInBill = result
-    // })
+    this.listProductInBill$ = this.store.select(
+      createSelector(counterSlice.selectFeature, (state) => state.ListProductInbill)
+    )
+    this.listProductInBill$.subscribe((result) => {
+      this.listProductInBill = result
+      
+    })
   }
 
   UnShowListSearchProduct() {
@@ -71,7 +72,6 @@ export class RetailTemplateComponent implements OnInit {
     if (this.searchValue.length === 13) {
       if (this.searchValue.slice(0, 3) == 'BAT') {
         this.productservice.searchProduct(this.searchValue).subscribe((result) => {
-          console.log(result)
           if (this.listProductInBill.length > 0) {
             let checkBatchExist = true
             this.listProductInBill.forEach((item) => {
@@ -92,6 +92,7 @@ export class RetailTemplateComponent implements OnInit {
                   this.productservice.getProductByID(result.items[0].id).subscribe((result2) => {
                     this.store.dispatch(counterSlice.addBatchesToProductinBill({
                       product: result2.data,
+                      use: null,
                       listBatches: tempListBatches
                     }))
                   })
@@ -144,7 +145,6 @@ export class RetailTemplateComponent implements OnInit {
     } else {
       this.productservice.searchProduct(this.searchValue).subscribe((result) => {
         this.listSearchProduct = result.items
-        console.log(this.listSearchProduct)
         let a = document.getElementById('tippy__search__product')?.style
         if (a) {
           a.display = "block"
@@ -161,7 +161,6 @@ export class RetailTemplateComponent implements OnInit {
 
   addToListBill(id: number): void {
     this.searchValue = id
-    console.log(id)
     this.productservice.getProductByID(this.searchValue).subscribe((result) => {
       let checkProductExist = true
       if (this.listProductInBill.length > 0) {
@@ -173,6 +172,7 @@ export class RetailTemplateComponent implements OnInit {
         if (checkProductExist) {
           this.store.dispatch(counterSlice.addProducttoListBill({
             product: result.data,
+            use: null,
             listBatches: []
           }))
           this.searchValue = ''
@@ -186,6 +186,7 @@ export class RetailTemplateComponent implements OnInit {
       } else {
         this.store.dispatch(counterSlice.addProducttoListBill({
           product: result.data,
+          use: null,
           listBatches: []
         }))
 

@@ -1,10 +1,10 @@
-import {goodsReceiptNoteInterface} from './../input-element/input-element.model';
-import {Store, createSelector} from '@ngrx/store';
-import {ProductService} from './../../../core/services/product/product.service';
-import {Component, OnInit} from '@angular/core';
+import { goodsReceiptNoteInterface } from './../input-element/input-element.model';
+import { Store, createSelector } from '@ngrx/store';
+import { ProductService } from './../../../core/services/product/product.service';
+import { Component, OnInit } from '@angular/core';
 import * as counterSlice from "./../../../core/store/store.slice";
-import {Observable} from "rxjs";
-import {NzNotificationService} from "ng-zorro-antd/notification";
+import { Observable } from "rxjs";
+import { NzNotificationService } from "ng-zorro-antd/notification";
 import { ExcelInputTemplateService } from './excel-input-template.service';
 
 @Component({
@@ -40,7 +40,7 @@ export class InputTemplateComponent implements OnInit {
       this.listProductInput.forEach((item, index) => {
         if (item.listBatch.length == 0) {
           this.checkBatchesempty = true
-        }else {
+        } else {
           this.checkBatchesempty = false
         }
       })
@@ -126,30 +126,39 @@ export class InputTemplateComponent implements OnInit {
   }
 
 
-  opneModalUploadExcel(){
+  opneModalUploadExcel() {
     this.isVisibleUploadExcel = true;
   }
 
-  handleOkUploadExcel(){
-    this.isVisibleUploadExcel = false;
+  checkUploadFile: boolean = false
+  fileUploadInputProduct: any = 0
+  handleOkUploadExcel() {
+    if (this.fileUploadInputProduct) {
+      this.isVisibleUploadExcel = false;
+      const reader = new FileReader();
+      reader.readAsDataURL(this.fileUploadInputProduct);
+      reader.onload = () => {
+        console.log(reader.result);
+        //gọi API chổ này
+      };
+      this.fileUploadInputProduct = 0
+    } else {
+      this.fileUploadInputProduct = 1
+    }
   }
 
-  handleCancelUploadExcel(){
+  handleCancelUploadExcel() {
     this.isVisibleUploadExcel = false;
   }
 
   handleUpload(event: any) {
     const file = event.target.files[0];
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = () => {
-        console.log(reader.result);
-    };
-}
+    this.fileUploadInputProduct = file
+  }
 
-generateExcel() {
+  generateExcel() {
 
-   this.excelService.generateExcel();
- }
+    this.excelService.generateExcel();
+  }
 
 }

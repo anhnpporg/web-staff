@@ -36,7 +36,8 @@
       </nz-steps>
       <!--<nz-divider></nz-divider>-->
       <div class="steps-content" *ngIf="current == 0">
-        <div class="example-input mt-5 d-flex justify-content-around">
+        <p style="color: red; margin: 20px 0 0 15px;">* Tìm kiếm, chọn thuốc và chọn lô để nhập hàng</p>
+        <div class="example-input d-flex justify-content-around">
           <nz-select nzShowSearch nzPlaceHolder="Tìm kiếm thuốc" style="width: 75%;" nzSize="large"
             [(ngModel)]="inputValue" (nzOnSearch)="onInput($event)" (ngModelChange)="onSelect($event)">
             <nz-option *ngFor="let option of options let i = index" [nzValue]="option"
@@ -48,12 +49,15 @@
             Nhập hàng bằng file excel
           </button>
           <nz-modal [(nzVisible)]="isVisibleUploadExcel" nzTitle="Nhập hàng bằng file excel"
-            (nzOnCancel)="handleCancelUploadExcel()" (nzOnOk)="handleOkUploadExcel()">
+            (nzOnCancel)="handleCancelUploadExcel()" (nzOnOk)="handleOkUploadExcel()" nzOkText="Nhập hàng">
             <ng-container *nzModalContent>
-              <div style="height: 30vh">
+              <div style="height: 30vh" class="text-center">
+                <button nz-button nzSize="large"><a href="./../../../../assets/InputTemplate.xlsx" download>
+                    <i class="fa fa-download"></i> Tải mẫu nhập hàng</a></button>
+                <nz-divider></nz-divider>
                 <input class="form-control" type="file" accept=".xlsx" id="formFileMultiple" multiple
                   (change)="handleUpload($event)">
-                <button nz-button nzSize="large" (click)="generateExcel()">Tải mẫu nhập hàng</button>
+                <p *ngIf="fileUploadInputProduct == 1" style="color: red; text-align:left">* Chọn file để nhập hàng</p>
               </div>
             </ng-container>
           </nz-modal>
