@@ -22,7 +22,10 @@ export class BatchTagInfomationComponent implements OnInit {
   fullInfomationOfBatch: any
 
 
-  unit: string = ''
+  unit = {
+    id: 0,
+    unitName: ''
+  }
   productInfor: any
   @Input() productName: any
 
@@ -78,8 +81,17 @@ export class BatchTagInfomationComponent implements OnInit {
       this.expiryDate = this.batchInfo.batch.expiryDate
     }
 
+    this.productService.getBatchByBatchID(this.batchInfo.batchId).subscribe((result: any) => {
+      console.log(result);
+      this.listUnitProductPrice = result.data.currentQuantity
+
+    })
+
     this.productService.getProductUnitbyUnitID(this.batchInfo.productUnitPriceId).subscribe((result) => {
-      this.unit = result.data.unit
+      this.unit = {
+        id: result.data.id,
+        unitName: result.data.unit
+      }
       this.productInfor = result.data.productId
     }, err => {
       this.notification.create(
@@ -125,6 +137,7 @@ export class BatchTagInfomationComponent implements OnInit {
               let temp3 = { ...item2 }
               temp3.quantity = this.quantityBatch
               temp3.totalPrice = this.totalPrice
+              temp3.productUnitPriceId = this.unit.id
               let temp2 = [...tempListBatches]
               temp2[i] = { ...temp3 }
               tempListBatches = temp2
@@ -137,6 +150,7 @@ export class BatchTagInfomationComponent implements OnInit {
                 let temp3 = { ...item2 }
                 temp3.quantity = this.quantityBatch
                 temp3.totalPrice = this.totalPrice
+                temp3.productUnitPriceId = this.unit.id
                 let temp2 = [...tempListBatches]
                 temp2[i] = { ...temp3 }
                 tempListBatches = temp2
@@ -147,19 +161,9 @@ export class BatchTagInfomationComponent implements OnInit {
           }
         })
       }
-
-
     })
-
-
-
-
-
-
-
   }
   handleCanceleditBatch() {
     this.isVisibleEdit = false
   }
-
 }
