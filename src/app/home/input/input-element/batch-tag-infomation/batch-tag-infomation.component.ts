@@ -66,6 +66,8 @@ export class BatchTagInfomationComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    console.log(this.batchInfo);
+    
 
     this.listProductInput$ = this.store.select(
       createSelector(counterSlice.selectFeature, (state) => state.ListInputProduct)
@@ -81,10 +83,16 @@ export class BatchTagInfomationComponent implements OnInit {
       this.expiryDate = this.batchInfo.batch.expiryDate
     }
 
-    this.productService.getBatchByBatchID(this.batchInfo.batchId).subscribe((result: any) => {
+    this.productService.getListProductUnitByProductId(this.batchInfo.batch.productId).subscribe((result) => {
+      this.listUnitProductPrice = result.data
       console.log(result);
-      this.listUnitProductPrice = result.data.currentQuantity
-
+      
+    }, err => {
+      this.notification.create(
+        "error",
+        err.error.message,
+        ""
+      )
     })
 
     this.productService.getProductUnitbyUnitID(this.batchInfo.productUnitPriceId).subscribe((result) => {
@@ -121,7 +129,7 @@ export class BatchTagInfomationComponent implements OnInit {
     this.isVisibleEdit = true
   }
 
-  async handleOkEditBatch() {
+  handleOkEditBatch() {
 
     let tempListProductInput: any[] = []
     let tempListBatches: any[] = []

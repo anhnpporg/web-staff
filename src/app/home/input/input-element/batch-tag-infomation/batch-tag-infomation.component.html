@@ -76,7 +76,10 @@
 
         <nz-form-label [nzSm]="5" [nzXs]="24">Đơn vị</nz-form-label>
         <nz-form-control [nzSm]="7" [nzXs]="24">
-          {{unit}}
+          <nz-select nzShowSearch [(ngModel)]="unit.id">
+            <nz-option *ngFor="let unit1 of listUnitProductPrice" [nzLabel]="unit1.unit" [nzValue]="unit1.id">
+            </nz-option>
+          </nz-select>
         </nz-form-control>
       </nz-form-item>
       <nz-form-item>
